@@ -145,4 +145,7 @@ Vector4 Mul4x4(const Matrix& m, const Vector4& v);
 Matrix Transpose(const Matrix& m);
 Matrix OrthonormalInverse(const Matrix& m);
 
+// inlines
+#include "math3dinlines.cpp"
+
 #endif

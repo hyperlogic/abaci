@@ -1,20 +1,29 @@
 # build mathtest for Mac OS 10.5.2 (leopard)
 
 GCC = g++
-DEBUG = false
+SYMBOLS = true
+OPT = true
 
-# config specific flags
-ifeq ($(DEBUG),true)
-  CONFIG_CFLAGS = -g
+# symbol flag
+ifeq ($(SYMBOLS),true)
+  SYMBOL_CFLAGS = -g
 else
-  CONFIG_CFLAGS = -O3
+  SYMBOL_CFLAGS =
 endif
 
-# Mac OS X
-# uses SDL, SDL_image, OpenGL, FreeType2, Chicken & Bullet
+# opt flag
+ifeq ($(OPT),true)
+  OPT_CFLAGS = -O3
+else
+  OPT_CFLAGS =
+endif
+
+CONFIG_CFLAGS = $(OPT_CFLAGS) $(SYMBOL_CFLAGS)
+
+# compile flags
 CFLAGS = $(CONFIG_CFLAGS) -Wall -DDARWIN
 
-# er? do i have to do a -Wl, to pass options to the linker?
+# linker flags
 LFLAGS = -lstdc++ -lm
 
 OBJ = math3d.o mathtest.o
@@ -24,6 +33,9 @@ DEPENDS = math3d.h
 
 mathtest : $(OBJ)
 	$(GCC) $(OBJ) -o mathtest $(LFLAGS)
+
+mathtest.o: mathtest.cpp $(DEPENDS)
+	$(GCC) $(CFLAGS) -c $<
 
 math3d.o: math3d.cpp $(DEPENDS)
 	$(GCC) $(CFLAGS) -c $<
