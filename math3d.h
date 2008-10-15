@@ -32,15 +32,9 @@ struct VectorBase
 #ifdef USE_SSE2
 	__m128 data;
 #else
-	//float data[4];
-	float x;
-	float y;
-	float z;
-	float w;
+	float data[4];
 #endif
 };
-	
-
 
 float Dot2(const VectorBase& a, const VectorBase& b);
 float Dot3(const VectorBase& a, const VectorBase& b);

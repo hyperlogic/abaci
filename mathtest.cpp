@@ -23,7 +23,7 @@ int main(int argc, char* argv[])
 
 	r = x + y;
 
-	printf("r = %.5f, %.5f, %.5f\n", r.x, r.y, r.z);
+	printf("r = %.5f, %.5f, %.5f\n", r.X(), r.Y(), r.Z());
 
 	return 0;
 }

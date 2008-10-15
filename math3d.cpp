@@ -4,13 +4,13 @@
 Quat QuatExp(const Quat& q)
 {
 	float angle = Len(q);
-	Vector3 n = UnitVec(Vector3(q.x, q.y, q.z)) * sin(angle/2.0f);
-	return Quat(n.x, n.y, n.z, cos(angle/2.0f));
+	Vector3 n = UnitVec(Vector3(q.X(), q.Y(), q.Z())) * sin(angle/2.0f);
+	return Quat(n.X(), n.Y(), n.Z(), cos(angle/2.0f));
 }
 
 Quat QuatLog(const Quat& q)
 {
-	float cos_a = q.w;
+	float cos_a = q.W();
 	if (cos_a > 1.0f) cos_a = 1.0f;
 	if (cos_a < -1.0f) cos_a = -1.0f;
 
@@ -23,10 +23,10 @@ Quat QuatLog(const Quat& q)
 
     float angle = 2.0f * (float)acos(cos_a);
 	Quat log;
-    log.x = q.x * sin_a * angle;
-    log.y = q.y * sin_a * angle;
-    log.z = q.z * sin_a * angle;
-	log.w = 0.0f;
+    log.X() = q.X() * sin_a * angle;
+    log.Y() = q.Y() * sin_a * angle;
+    log.Z() = q.Z() * sin_a * angle;
+	log.W() = 0.0f;
 	return log;
 }
 
@@ -48,9 +48,9 @@ Matrix::Matrix(const Quat& q, const Vector3& trans)
 
 Matrix::Matrix(const Vector3& scale, const Quat& q, const Vector3& trans)
 {
-	SetXAxis(q.Rotate(Vector3(scale.x,0.0f,0.0f)));
-	SetYAxis(q.Rotate(Vector3(0.0f,scale.y,0.0f)));
-	SetZAxis(q.Rotate(Vector3(0.0f,0.0f,scale.z)));
+	SetXAxis(q.Rotate(Vector3(scale.X(),0.0f,0.0f)));
+	SetYAxis(q.Rotate(Vector3(0.0f,scale.Y(),0.0f)));
+	SetZAxis(q.Rotate(Vector3(0.0f,0.0f,scale.Z())));
 	SetTrans(trans);
 }
 

@@ -17,14 +17,12 @@ inline float& VectorBase::operator[](int i)
 
 inline const float& VectorBase::operator[](int i) const 
 { 
-//	return data[i]; 
-	return (&x)[i];
+	return data[i]; 
 }
 
 inline float& VectorBase::operator[](int i) 
 { 
-//	return data[i]; 
-	return (&x)[i];
+	return data[i]; 
 }
 
 #endif
@@ -81,17 +79,17 @@ inline float RadToDeg(float rad)
 
 inline float Dot2(const VectorBase& a, const VectorBase& b)
 {
-	return (a.x * b.x) + (a.y * b.y);
+	return (a.X() * b.X()) + (a.Y() * b.Y());
 }
 
 inline float Dot3(const VectorBase& a, const VectorBase& b)
 {
-	return (a.x * b.x) + (a.y * b.y) + (a.z * b.z);
+	return (a.X() * b.X()) + (a.Y() * b.Y()) + (a.Z() * b.Z());
 }
 
 inline float Dot4(const VectorBase& a, const VectorBase& b)
 {
-	return (a.x * b.x) + (a.y * b.y) + (a.z * b.z) + (a.w * b.w);
+	return (a.X() * b.X()) + (a.Y() * b.Y()) + (a.Z() * b.Z()) + (a.W() * b.W());
 }
 
 inline Vector2::Vector2(float xIn, float yIn) 
@@ -102,40 +100,40 @@ inline Vector2::Vector2(float xIn, float yIn)
 
 inline void Vector2::Set(float xIn, float yIn)
 {
-	x = xIn;
-	y = yIn;
+	X() = xIn;
+	Y() = yIn;
 }
 
 inline Vector2& Vector2::operator+=(const Vector2& v)
 {
-	x += v.x;
-	y += v.y;
+	X() += v.X();
+	Y() += v.Y();
 	return *this;
 }
 
 inline Vector2 operator-(const Vector2& v)
 {
-	return Vector2(-v.x, -v.y);
+	return Vector2(-v.X(), -v.Y());
 }
 
 inline Vector2 operator-(const Vector2& a, const Vector2& b)
 {
-	return Vector2(a.x - b.x, a.y - b.y);
+	return Vector2(a.X() - b.X(), a.Y() - b.Y());
 }
 
 inline Vector2 operator+(const Vector2& a, const Vector2& b)
 {
-	return Vector2(a.x + b.x, a.y + b.y);
+	return Vector2(a.X() + b.X(), a.Y() + b.Y());
 }
 
 inline Vector2 operator*(const Vector2& v, float factor)
 {
-	return Vector2(factor * v.x, factor * v.y);
+	return Vector2(factor * v.X(), factor * v.Y());
 }
 
 inline Vector2 operator*(float factor, const Vector2& v)
 {
-	return Vector2(factor * v.x, factor * v.y);
+	return Vector2(factor * v.X(), factor * v.Y());
 }
 
 inline float operator*(const Vector2& a, const Vector2& b)
@@ -164,56 +162,56 @@ inline Vector3::Vector3(const Vector2& v, float zIn)
 inline Vector3::Vector3(float xIn, float yIn, float zIn) 
 { 
 	X() = xIn; 
-	y = yIn; 
-	z = zIn; 
+	Y() = yIn; 
+	Z() = zIn; 
 }
 
 inline void Vector3::Set(float xIn, float yIn, float zIn)
 {
-	x = xIn;
-	y = yIn;
-	z = zIn;
+	X() = xIn;
+	Y() = yIn;
+	Z() = zIn;
 }
 
 inline void Vector3::Normalize()
 {
-	float invLen = 1.0f / sqrt((x * x) + (y * y) + (z * z));
- 	x *= invLen;
-	y *= invLen;
-	z *= invLen;
+	float invLen = 1.0f / sqrt((X() * X()) + (Y() * Y()) + (Z() * Z()));
+ 	X() *= invLen;
+	Y() *= invLen;
+	Z() *= invLen;
 }
 
 inline void Vector3::Mul3x4(const Matrix& m)
 {
 	Vector3 v(*this);
-	x = Dot3(m.row0, v) + m.row0.w;
-	y = Dot3(m.row1, v) + m.row1.w;
-	z = Dot3(m.row2, v) + m.row2.w;
+	X() = Dot3(m.row0, v) + m.row0.W();
+	Y() = Dot3(m.row1, v) + m.row1.W();
+	Z() = Dot3(m.row2, v) + m.row2.W();
 }
 
 inline Vector3 operator-(const Vector3& v)
 {
-	return Vector3(-v.x, -v.y, -v.z);
+	return Vector3(-v.X(), -v.Y(), -v.Z());
 }
 
 inline Vector3 operator-(const Vector3& a, const Vector3& b)
 {
-	return Vector3(a.x - b.x, a.y - b.y, a.z - b.z);
+	return Vector3(a.X() - b.X(), a.Y() - b.Y(), a.Z() - b.Z());
 }
 
 inline Vector3 operator+(const Vector3& a, const Vector3& b)
 {
-	return Vector3(a.x + b.x, a.y + b.y, a.z + b.z);
+	return Vector3(a.X() + b.X(), a.Y() + b.Y(), a.Z() + b.Z());
 }
 
 inline Vector3 operator*(const Vector3& v, float factor)
 {
-	return Vector3(v.x * factor, v.y * factor, v.z * factor);
+	return Vector3(v.X() * factor, v.Y() * factor, v.Z() * factor);
 }
 
 inline Vector3 operator*(float factor, const Vector3& v)
 {
-	return Vector3(v.x * factor, v.y * factor, v.z * factor);
+	return Vector3(v.X() * factor, v.Y() * factor, v.Z() * factor);
 }
 
 inline float operator*(const Vector3& a, const Vector3& b)
@@ -234,58 +232,58 @@ inline Vector3 UnitVec(const Vector3& v)
 
 inline Vector3 operator%(const Vector3& a, const Vector3& b)
 {
-	return Vector3((a.y * b.z) - (a.z * b.y), 
-	               (a.z * b.x) - (a.x * b.z), 
-	               (a.x * b.y) - (a.y * b.x));
+	return Vector3((a.Y() * b.Z()) - (a.Z() * b.Y()), 
+	               (a.Z() * b.X()) - (a.X() * b.Z()), 
+	               (a.X() * b.Y()) - (a.Y() * b.X()));
 }
 
 inline Vector4::Vector4(const Vector3& v, float wIn) 
 { 
-	x = v.x; 
-	y = v.y; 
-	z = v.z; 
-	w = wIn; 
+	X() = v.X(); 
+	Y() = v.Y(); 
+	Z() = v.Z(); 
+    W() = wIn; 
 }
 
 inline Vector4::Vector4(float xIn, float yIn, float zIn, float wIn) 
 { 
-	x = xIn; 
-	y = yIn; 
-	z = zIn; 
-	w = wIn; 
+	X() = xIn; 
+	Y() = yIn; 
+	Z() = zIn; 
+	W() = wIn; 
 }
 
 inline void Vector4::Set(float xIn, float yIn, float zIn, float wIn)
 {
-	x = xIn;
-	y = yIn;
-	z = zIn;
-	w = wIn;
+	X() = xIn;
+	Y() = yIn;
+	Z() = zIn;
+	W() = wIn;
 }
 
 inline Vector4 operator-(const Vector4& v)
 {
-	return Vector4(-v.x, -v.y, -v.z, -v.w);
+	return Vector4(-v.X(), -v.Y(), -v.Z(), -v.W());
 }
 
 inline Vector4 operator-(const Vector4& a, const Vector4& b)
 {
-	return Vector4(a.x - b.x, a.y - b.y, a.z - b.z, a.w - b.w);
+	return Vector4(a.X() - b.X(), a.Y() - b.Y(), a.Z() - b.Z(), a.W() - b.W());
 }
 
 inline Vector4 operator+(const Vector4& a, const Vector4& b)
 {
-	return Vector4(a.x + b.x, a.y + b.y, a.z + b.z, a.w + b.w);
+	return Vector4(a.X() + b.X(), a.Y() + b.Y(), a.Z() + b.Z(), a.W() + b.W());
 }
 
 inline Vector4 operator*(const Vector4& v, float factor)
 {
-	return Vector4(factor * v.x, factor * v.y, factor * v.z, factor * v.w);
+	return Vector4(factor * v.X(), factor * v.Y(), factor * v.Z(), factor * v.W());
 }
 
 inline Vector4 operator*(float factor, const Vector4& v)
 {
-	return Vector4(factor * v.x, factor * v.y, factor * v.z, factor * v.w);	
+	return Vector4(factor * v.X(), factor * v.Y(), factor * v.Z(), factor * v.W());	
 }
 
 inline float operator*(const Vector4& a, const Vector4& b)
@@ -306,63 +304,63 @@ inline Vector4 UnitVec(const Vector4& v)
 
 inline Quat::Quat(float xIn, float yIn, float zIn, float wIn) 
 { 
-	x = xIn; 
-	y = yIn; 
-	z = zIn; 
-	w = wIn; 
+	X() = xIn; 
+	Y() = yIn; 
+	Z() = zIn; 
+	W() = wIn; 
 }
 
 inline Quat::Quat(const Vector3& axis, float angle)
 {
 	Vector3 n = UnitVec(axis) * sin(angle/2.0f);
-	x = n.x;
-	y = n.y;
-	z = n.z;
-	w = cos(angle/2.0f);
+	X() = n.X();
+	Y() = n.Y();
+	Z() = n.Z();
+	W() = cos(angle/2.0f);
 }
 
 inline Vector3 Quat::Rotate(const Vector3& v) const
 {
-	Quat q = *this * Quat(v.x, v.y, v.z, 0.0f) * ~*this;
-	return Vector3(q.x, q.y, q.z);
+	Quat q = *this * Quat(v.X(), v.Y(), v.Z(), 0.0f) * ~*this;
+	return Vector3(q.X(), q.Y(), q.Z());
 }
 
 inline Quat operator~(const Quat& v)
 {
-	return Quat(-v.x, -v.y, -v.z, v.w);
+	return Quat(-v.X(), -v.Y(), -v.Z(), v.W());
 }
 
 inline Quat operator-(const Quat& v)
 {
-	return Quat(-v.x, -v.y, -v.z, -v.w);
+	return Quat(-v.X(), -v.Y(), -v.Z(), -v.W());
 }
 
 inline Quat operator-(const Quat& a, const Quat& b)
 {
-	return Quat(a.x - b.x, a.y - b.y, a.z - b.z, a.w - b.w);
+	return Quat(a.X() - b.X(), a.Y() - b.Y(), a.Z() - b.Z(), a.W() - b.W());
 }
 
 inline Quat operator+(const Quat& a, const Quat& b)
 {
-	return Quat(a.x + a.x, a.y + b.y, a.z + b.z, a.w + b.w);
+	return Quat(a.X() + a.X(), a.Y() + b.Y(), a.Z() + b.Z(), a.W() + b.W());
 }
 
 inline Quat operator*(const Quat& v, float factor)
 {
-	return Quat(factor * v.x, factor * v.y, factor * v.z, factor * v.w);
+	return Quat(factor * v.X(), factor * v.Y(), factor * v.Z(), factor * v.W());
 }
 
 inline Quat operator*(float factor, const Quat& v)
 {
-	return Quat(factor * v.x, factor * v.y, factor * v.z, factor * v.w);
+	return Quat(factor * v.X(), factor * v.Y(), factor * v.Z(), factor * v.W());
 }
 
 inline Quat operator*(const Quat& q1, const Quat& q2)
 {
-	return Quat( q1.x * q2.w + q1.y * q2.z - q1.z * q2.y + q1.w * q2.x,
-				-q1.x * q2.z + q1.y * q2.w + q1.z * q2.x + q1.w * q2.y,
-				 q1.x * q2.y - q1.y * q2.x + q1.z * q2.w + q1.w * q2.z,
-				-q1.x * q2.x - q1.y * q2.y - q1.z * q2.z + q1.w * q2.w);
+	return Quat( q1.X() * q2.W() + q1.Y() * q2.Z() - q1.Z() * q2.Y() + q1.W() * q2.X(),
+				-q1.X() * q2.Z() + q1.Y() * q2.W() + q1.Z() * q2.X() + q1.W() * q2.Y(),
+				 q1.X() * q2.Y() - q1.Y() * q2.X() + q1.Z() * q2.W() + q1.W() * q2.Z(),
+				-q1.X() * q2.X() - q1.Y() * q2.Y() - q1.Z() * q2.Z() + q1.W() * q2.W());
 }
 
 inline float Len(const Quat& v)
@@ -423,54 +421,54 @@ inline void Matrix::MakeLookAt(const Vector3& eye, const Vector3& target, const 
 
 inline Vector3 Matrix::GetXAxis() const
 {
-	return Vector3(row0.x, row1.x, row2.x);
+	return Vector3(row0.X(), row1.X(), row2.X());
 }
 
 inline Vector3 Matrix::GetYAxis() const
 {
-	return Vector3(row0.y, row1.y, row2.y);
+	return Vector3(row0.Y(), row1.Y(), row2.Y());
 }
 
 inline Vector3 Matrix::GetZAxis() const
 {
-	return Vector3(row0.z, row1.z, row2.z);
+	return Vector3(row0.Z(), row1.Z(), row2.Z());
 }
 
 inline Vector3 Matrix::GetTrans() const
 {
-	return Vector3(row0.w, row1.w, row2.w);
+	return Vector3(row0.W(), row1.W(), row2.W());
 }
 
 inline void Matrix::SetXAxis(const Vector3 xAxis)
 {
-	row0.x = xAxis.x;
-	row1.x = xAxis.y;
-	row2.x = xAxis.z;
-	row3.x = 0.0f;
+	row0.X() = xAxis.X();
+	row1.X() = xAxis.Y();
+	row2.X() = xAxis.Z();
+	row3.X() = 0.0f;
 }
 
 inline void Matrix::SetYAxis(const Vector3 yAxis)
 {
-	row0.y = yAxis.x;
-	row1.y = yAxis.y;
-	row2.y = yAxis.z;
-	row3.y = 0.0f;
+	row0.Y() = yAxis.X();
+	row1.Y() = yAxis.Y();
+	row2.Y() = yAxis.Z();
+	row3.Y() = 0.0f;
 }
 
 inline void Matrix::SetZAxis(const Vector3 zAxis)
 {
-	row0.z = zAxis.x;
-	row1.z = zAxis.y;
-	row2.z = zAxis.z;
-	row3.z = 0.0f;
+	row0.Z() = zAxis.X();
+	row1.Z() = zAxis.Y();
+	row2.Z() = zAxis.Z();
+	row3.Z() = 0.0f;
 }
 
 inline void Matrix::SetTrans(const Vector3 trans)
 {
-	row0.w = trans.x;
-	row1.w = trans.y;
-	row2.w = trans.z;
-	row3.w = 1.0f;
+	row0.W() = trans.X();
+	row1.W() = trans.Y();
+	row2.W() = trans.Z();
+	row3.W() = 1.0f;
 }
 
 inline void Matrix::SetScale(float scale)
@@ -482,9 +480,9 @@ inline void Matrix::SetScale(float scale)
 
 inline void Matrix::SetScale(const Vector3 scale)
 {
-	SetXAxis(GetXAxis() * scale.x);
-	SetYAxis(GetYAxis() * scale.y);
-	SetZAxis(GetZAxis() * scale.z);
+	SetXAxis(GetXAxis() * scale.X());
+	SetYAxis(GetYAxis() * scale.Y());
+	SetZAxis(GetZAxis() * scale.Z());
 }
 
 inline float Matrix::GetElem(int r, int c) const
@@ -504,7 +502,7 @@ inline Vector3 Mul3x3(const Matrix& m, const Vector3& v)
 
 inline Vector3 Mul3x4(const Matrix& m, const Vector3& v)
 {
-	return Vector3(Dot3(m.row0, v) + m.row0.w, Dot3(m.row1, v) + m.row1.w, Dot3(m.row2, v) + m.row2.w);
+	return Vector3(Dot3(m.row0, v) + m.row0.W(), Dot3(m.row1, v) + m.row1.W(), Dot3(m.row2, v) + m.row2.W());
 }
 
 inline Vector4 Mul4x4(const Matrix& m, const Vector4& v)
