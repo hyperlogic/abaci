@@ -1,6 +1,74 @@
 #include "math3d.h"
 #include <stdio.h>
 
+#ifdef USE_SSE2
+
+inline const float& VectorBase::operator[](int i) const 
+{ 
+	return reinterpret_cast<float*>(&data)[i]; 
+}
+
+inline float& VectorBase::operator[](int i) 
+{ 
+	return reinterpret_cast<float*>(&data)[i]; 
+}
+
+#else
+
+inline const float& VectorBase::operator[](int i) const 
+{ 
+//	return data[i]; 
+	return (&x)[i];
+}
+
+inline float& VectorBase::operator[](int i) 
+{ 
+//	return data[i]; 
+	return (&x)[i];
+}
+
+#endif
+
+inline const float& VectorBase::X() const 
+{ 
+	return (*this)[0];
+}
+
+inline const float& VectorBase::Y() const
+{ 
+	return (*this)[1]; 
+}
+
+inline const float& VectorBase::Z() const
+{ 
+	return (*this)[2]; 
+}
+
+inline const float& VectorBase::W() const 
+{ 
+	return (*this)[3]; 
+}
+
+inline float& VectorBase::X()
+{ 
+	return (*this)[0];
+}
+
+inline float& VectorBase::Y()
+{ 
+	return (*this)[1]; 
+}
+
+inline float& VectorBase::Z()
+{ 
+	return (*this)[2]; 
+}
+
+inline float& VectorBase::W()
+{ 
+	return (*this)[3]; 
+}
+
 inline float DegToRad(float deg)
 { 
 	return deg * ((2 * PI) / 180.0f);
@@ -11,19 +79,25 @@ inline float RadToDeg(float rad)
 	return rad * (180.0f / (2 * PI));
 }
 
-inline float Dot2(const Vector& a, const Vector& b)
+inline float Dot2(const VectorBase& a, const VectorBase& b)
 {
 	return (a.x * b.x) + (a.y * b.y);
 }
 
-inline float Dot3(const Vector& a, const Vector& b)
+inline float Dot3(const VectorBase& a, const VectorBase& b)
 {
 	return (a.x * b.x) + (a.y * b.y) + (a.z * b.z);
 }
 
-inline float Dot4(const Vector& a, const Vector& b)
+inline float Dot4(const VectorBase& a, const VectorBase& b)
 {
 	return (a.x * b.x) + (a.y * b.y) + (a.z * b.z) + (a.w * b.w);
+}
+
+inline Vector2::Vector2(float xIn, float yIn) 
+{ 
+	X() = xIn; 
+	Y() = yIn; 
 }
 
 inline void Vector2::Set(float xIn, float yIn)
@@ -78,6 +152,20 @@ inline Vector2 UnitVec(const Vector2& v)
 {
 	float len = Len(v);
 	return v * (1.0f / len);
+}
+
+inline Vector3::Vector3(const Vector2& v, float zIn) 
+{ 
+	X() = v.X(); 
+	Y() = v.Y(); 
+	Z() = zIn; 
+}
+
+inline Vector3::Vector3(float xIn, float yIn, float zIn) 
+{ 
+	X() = xIn; 
+	y = yIn; 
+	z = zIn; 
 }
 
 inline void Vector3::Set(float xIn, float yIn, float zIn)
@@ -151,6 +239,22 @@ inline Vector3 operator%(const Vector3& a, const Vector3& b)
 	               (a.x * b.y) - (a.y * b.x));
 }
 
+inline Vector4::Vector4(const Vector3& v, float wIn) 
+{ 
+	x = v.x; 
+	y = v.y; 
+	z = v.z; 
+	w = wIn; 
+}
+
+inline Vector4::Vector4(float xIn, float yIn, float zIn, float wIn) 
+{ 
+	x = xIn; 
+	y = yIn; 
+	z = zIn; 
+	w = wIn; 
+}
+
 inline void Vector4::Set(float xIn, float yIn, float zIn, float wIn)
 {
 	x = xIn;
@@ -198,6 +302,14 @@ inline Vector4 UnitVec(const Vector4& v)
 {
 	float len = Len(v);
 	return v * (1.0f / len);
+}
+
+inline Quat::Quat(float xIn, float yIn, float zIn, float wIn) 
+{ 
+	x = xIn; 
+	y = yIn; 
+	z = zIn; 
+	w = wIn; 
 }
 
 inline Quat::Quat(const Vector3& axis, float angle)

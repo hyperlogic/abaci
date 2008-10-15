@@ -3,6 +3,8 @@
 #ifndef MATH3D_H
 #define MATH3D_H
 
+//#define USE_SSE2
+
 #define PI 3.14159265f
 
 struct Matrix;
@@ -10,26 +12,44 @@ struct Matrix;
 float DegToRad(float deg);
 float RadToDeg(float rad);
 
-struct Vector
+struct VectorBase
 {
-	Vector() {}
-	const float& operator[](int i) const { return (&x)[i]; }
-	float& operator[](int i) { return (&x)[i]; }
-	
+	VectorBase() {}
+
+	const float& operator[](int i) const;
+	float& operator[](int i);
+
+	const float& X() const;
+	const float& Y() const;
+	const float& Z() const;
+	const float& W() const;
+
+	float& X();
+	float& Y();
+	float& Z();
+	float& W();
+
+#ifdef USE_SSE2
+	__m128 data;
+#else
+	//float data[4];
 	float x;
 	float y;
 	float z;
 	float w;
+#endif
 };
+	
 
-float Dot2(const Vector& a, const Vector& b);
-float Dot3(const Vector& a, const Vector& b);
-float Dot4(const Vector& a, const Vector& b);
 
-struct Vector2 : public Vector
+float Dot2(const VectorBase& a, const VectorBase& b);
+float Dot3(const VectorBase& a, const VectorBase& b);
+float Dot4(const VectorBase& a, const VectorBase& b);
+
+struct Vector2 : public VectorBase
 {
 	Vector2() {}
-	Vector2(float xIn, float yIn) { x = xIn; y = yIn; }
+	Vector2(float xIn, float yIn);
 	Vector2& operator+=(const Vector2& v);
 	void Set(float xIn, float yIn);
 };
@@ -43,11 +63,11 @@ float operator*(const Vector2& a, const Vector2& b);
 float Len(const Vector2& v);
 Vector2 UnitVec(const Vector2& v);
 
-struct Vector3 : public Vector
+struct Vector3 : public VectorBase
 {
 	Vector3() {}
-	Vector3(const Vector2& v, float zIn) { x = v.x; y = v.y; z = zIn; }
-	Vector3(float xIn, float yIn, float zIn) { x = xIn; y = yIn; z = zIn; }
+	Vector3(const Vector2& v, float zIn);
+	Vector3(float xIn, float yIn, float zIn);
 	void Set(float xIn, float yIn, float zIn);
 	void Normalize();
 	void Mul3x4(const Matrix& m);
@@ -63,11 +83,11 @@ float Len(const Vector3& v);
 Vector3 UnitVec(const Vector3& v);
 Vector3 operator%(const Vector3& a, const Vector3& b);	// cross product
 
-struct Vector4 : public Vector
+struct Vector4 : public VectorBase
 {
 	Vector4() {}
-	Vector4(const Vector3& v, float wIn) { x = v.x; y = v.y; z = v.z; w = wIn; }
-	Vector4(float xIn, float yIn, float zIn, float wIn) { x = xIn; y = yIn; z = zIn; w = wIn; }
+	Vector4(const Vector3& v, float wIn);
+	Vector4(float xIn, float yIn, float zIn, float wIn);
 	void Set(float xIn, float yIn, float zIn, float wIn);
 };
 
@@ -83,7 +103,7 @@ Vector4 UnitVec(const Vector4& v);
 struct Quat : public Vector4
 {
 	Quat() {}
-	Quat(float xIn, float yIn, float zIn, float wIn) { x = xIn; y = yIn; z = zIn; w = wIn; }
+	Quat(float xIn, float yIn, float zIn, float wIn);
 	Quat(const Vector3& axis, float angle);
 	
 	Vector3 Rotate(const Vector3& v) const;
