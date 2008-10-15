@@ -18,6 +18,9 @@ else
   OPT_CFLAGS =
 endif
 
+# for reference, this is how you generate disassembly in intel syntax (as opposed to at&t style)
+# -mintel-syntax -S
+
 CONFIG_CFLAGS = $(OPT_CFLAGS) $(SYMBOL_CFLAGS)
 
 # compile flags
