@@ -1,9 +1,13 @@
-#include <math.h>
-
 #ifndef MATH3D_H
 #define MATH3D_H
 
-//#define USE_SSE2
+#include <math.h>
+
+#define USE_SSE
+
+#ifdef USE_SSE
+#include <xmmintrin.h>
+#endif
 
 #define PI 3.14159265f
 
@@ -29,7 +33,7 @@ struct VectorBase
 	float& Z();
 	float& W();
 
-#ifdef USE_SSE2
+#ifdef USE_SSE
 	__m128 data;
 #else
 	float data[4];
@@ -60,6 +64,9 @@ Vector2 UnitVec(const Vector2& v);
 struct Vector3 : public VectorBase
 {
 	Vector3() {}
+#ifdef USE_SSE
+	Vector3(__m128 dataIn) { data = dataIn; }
+#endif
 	Vector3(const Vector2& v, float zIn);
 	Vector3(float xIn, float yIn, float zIn);
 	void Set(float xIn, float yIn, float zIn);

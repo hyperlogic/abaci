@@ -1,11 +1,11 @@
 #include "math3d.h"
 #include <stdio.h>
 
-#ifdef USE_SSE2
+#ifdef USE_SSE
 
 inline const float& VectorBase::operator[](int i) const 
 { 
-	return reinterpret_cast<float*>(&data)[i]; 
+	return reinterpret_cast<const float*>(&data)[i]; 
 }
 
 inline float& VectorBase::operator[](int i) 
@@ -201,7 +201,11 @@ inline Vector3 operator-(const Vector3& a, const Vector3& b)
 
 inline Vector3 operator+(const Vector3& a, const Vector3& b)
 {
+#ifdef USE_SSE
+	return Vector3(_mm_add_ps(a.data, b.data));
+#else
 	return Vector3(a.X() + b.X(), a.Y() + b.Y(), a.Z() + b.Z());
+#endif
 }
 
 inline Vector3 operator*(const Vector3& v, float factor)
