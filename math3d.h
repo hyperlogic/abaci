@@ -3,7 +3,7 @@
 
 #include <math.h>
 
-#define USE_SSE
+//#define USE_SSE
 
 #ifdef USE_SSE
 #include <xmmintrin.h>
@@ -87,6 +87,9 @@ Vector3 operator%(const Vector3& a, const Vector3& b);	// cross product
 struct Vector4 : public VectorBase
 {
 	Vector4() {}
+#ifdef USE_SSE
+	Vector4(__m128 dataIn) { data = dataIn; }
+#endif
 	Vector4(const Vector3& v, float wIn);
 	Vector4(float xIn, float yIn, float zIn, float wIn);
 	void Set(float xIn, float yIn, float zIn, float wIn);

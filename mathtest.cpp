@@ -5,11 +5,11 @@
 #include <mach/mach.h>
 #include <mach/mach_time.h>
 
-float u[3];
-float v[3];
-Vector3 x;
-Vector3 y;
-Vector3 r;
+float u[4];
+float v[4];
+Vector4 x;
+Vector4 y;
+Vector4 r;
 
 // returns microseconds
 float TimeDiff(uint64_t start, uint64_t end)
@@ -24,13 +24,15 @@ int main(int argc, char* argv[])
 	u[0] = atof(argv[1]);
 	u[1] = atof(argv[2]);
 	u[2] = atof(argv[3]);
+	u[3] = atof(argv[4]);
 
 	v[0] = atof(argv[4]);
 	v[1] = atof(argv[5]);
 	v[2] = atof(argv[6]);
+	v[3] = atof(argv[7]);
 
-	x.Set(u[0], u[1], u[2]);
-	y.Set(v[0], v[1], v[2]);
+	x.Set(u[0], u[1], u[2], u[3]);
+	y.Set(v[0], v[1], v[2], v[3]);
 
 	uint64_t start = mach_absolute_time();
 	
@@ -42,7 +44,7 @@ int main(int argc, char* argv[])
 
 	uint64_t end = mach_absolute_time();
 
-	printf("r = %.5f, %.5f, %.5f\n", r.X(), r.Y(), r.Z());
+	printf("r = %.5f, %.5f, %.5f, %.5f\n", r.X(), r.Y(), r.Z(), r.W());
 
 	printf("took %.5f usec\n", TimeDiff(start, end));
 

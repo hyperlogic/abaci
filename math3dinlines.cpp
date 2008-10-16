@@ -277,7 +277,11 @@ inline Vector4 operator-(const Vector4& a, const Vector4& b)
 
 inline Vector4 operator+(const Vector4& a, const Vector4& b)
 {
+#ifdef USE_SSE
+	return Vector4(_mm_add_ps(a.data, b.data));
+#else
 	return Vector4(a.X() + b.X(), a.Y() + b.Y(), a.Z() + b.Z(), a.W() + b.W());
+#endif
 }
 
 inline Vector4 operator*(const Vector4& v, float factor)
