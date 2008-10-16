@@ -27,7 +27,7 @@ CONFIG_CFLAGS = $(OPT_CFLAGS) $(SYMBOL_CFLAGS)
 CFLAGS = $(CONFIG_CFLAGS) -Wall -DDARWIN
 
 # linker flags
-LFLAGS = -lstdc++ -lm
+LFLAGS = -lstdc++ -lm -framework CoreServices
 
 OBJ = math3d.o mathtest.o
 
