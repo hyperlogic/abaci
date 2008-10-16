@@ -33,8 +33,12 @@ int main(int argc, char* argv[])
 	y.Set(v[0], v[1], v[2]);
 
 	uint64_t start = mach_absolute_time();
-
-	r = x + y;
+	
+	r = x;
+	for (int i = 0; i < 100000; ++i)
+	{
+		r = y + x + x + y + r;
+	}
 
 	uint64_t end = mach_absolute_time();
 
