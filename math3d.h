@@ -57,10 +57,10 @@ Vector2 operator-(const Vector2& a, const Vector2& b);
 Vector2 operator+(const Vector2& a, const Vector2& b);
 Vector2 operator*(const Vector2& v, float factor);
 Vector2 operator*(float factor, const Vector2& v);
-Vector2 operator/(const Vector2& v, float denominator);
-Vector2 operator/(float numerator, const Vector2& v);
 float operator*(const Vector2& a, const Vector2& b);  // dot product
 Vector2 CompMul(const Vector2& a, const Vector2& b);
+Vector2 operator/(const Vector2& v, float denominator);
+Vector2 operator/(float numerator, const Vector2& v);
 Vector2 CompDiv(const Vector2& a, const Vector2& b);
 float Len(const Vector2& v);
 Vector2 UnitVec(const Vector2& v);
@@ -83,7 +83,11 @@ Vector3 operator-(const Vector3& a, const Vector3& b);
 Vector3 operator+(const Vector3& a, const Vector3& b);
 Vector3 operator*(const Vector3& v, float factor);
 Vector3 operator*(float factor, const Vector3& v);
-float operator*(const Vector3& a, const Vector3& b);
+float operator*(const Vector3& a, const Vector3& b); // dot product
+Vector3 CompMul(const Vector3& a, const Vector3& b);
+Vector3 operator/(const Vector3& v, float denominator);
+Vector3 operator/(float numerator, const Vector3& v);
+Vector3 CompDiv(const Vector3& a, const Vector3& b);
 float Len(const Vector3& v);
 Vector3 UnitVec(const Vector3& v);
 Vector3 operator%(const Vector3& a, const Vector3& b);	// cross product

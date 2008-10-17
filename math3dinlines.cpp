@@ -131,16 +131,6 @@ inline Vector2 operator*(const Vector2& v, float factor)
 	return Vector2(factor * v.X(), factor * v.Y());
 }
 
-inline Vector2 operator/(const Vector2& v, float denominator)
-{
-	return Vector2(v.X() / denominator, v.Y() / denominator);
-}
-
-inline Vector2 operator/(float numerator, const Vector2& v)
-{
-	return Vector2(numerator / v.X(), numerator / v.Y());
-}
-
 inline Vector2 operator*(float factor, const Vector2& v)
 {
 	return Vector2(factor * v.X(), factor * v.Y());
@@ -154,6 +144,16 @@ inline float operator*(const Vector2& a, const Vector2& b)
 inline Vector2 CompMul(const Vector2& a, const Vector2& b)
 {
 	return Vector2(a.X() * b.X(), a.Y() * b.Y());
+}
+
+inline Vector2 operator/(const Vector2& v, float denominator)
+{
+	return Vector2(v.X() / denominator, v.Y() / denominator);
+}
+
+inline Vector2 operator/(float numerator, const Vector2& v)
+{
+	return Vector2(numerator / v.X(), numerator / v.Y());
 }
 
 inline Vector2 CompDiv(const Vector2& a, const Vector2& b)
@@ -243,6 +243,26 @@ inline float operator*(const Vector3& a, const Vector3& b)
 	return Dot3(a, b);
 }
 
+inline Vector3 CompMul(const Vector3& a, const Vector3& b)
+{
+	return Vector3(a.X() * b.X(), a.Y() * b.Y(), a.Z() * b.Z());
+}
+
+inline Vector3 operator/(const Vector3& v, float denominator)
+{
+	return Vector3(v.X() / denominator, v.Y() / denominator, v.Z() / denominator);
+}
+
+inline Vector3 operator/(float numerator, const Vector3& v)
+{
+	return Vector3(numerator / v.X(), numerator / v.Y(), numerator / v.Z());
+}
+
+inline Vector3 CompDiv(const Vector3& a, const Vector3& b)
+{
+	return Vector3(a.X() / b.X(), a.Y() / b.Y(), a.Z() / b.Z());
+}
+
 inline float Len(const Vector3& v)
 {
 	return sqrt(v * v);
@@ -251,7 +271,7 @@ inline float Len(const Vector3& v)
 inline Vector3 UnitVec(const Vector3& v)
 {
 	float len = Len(v);
-	return v * (1.0f / len);
+	return v / len;
 }
 
 inline Vector3 operator%(const Vector3& a, const Vector3& b)
