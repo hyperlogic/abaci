@@ -130,16 +130,42 @@ bool FuzzyEqual(float rhs, float lhs)
 	return fabs(rhs - lhs) <= epsilon;
 }
 
+bool ftest(float rhs, float lhs)
+{
+	// For testing purposes, two Nans are "equal" even if they have different bits.
+	if (isnan(rhs) && isnan(lhs))
+		return true;
+
+	return rhs == lhs;
+}
+
 bool Vector2AddTest::Test() const
 {
-	Vector2 a(1, 1);
-	Vector2 b(2, 2);
-	Vector2 c = a + b;
+	for (unsigned int i = 0; i < s_vector2Vec.size(); ++i)
+	{
+		for (unsigned int j = 0; j < s_vector2Vec.size(); ++j)
+		{
+			Vector2 a = s_vector2Vec[i];
+			Vector2 b = s_vector2Vec[j];
 
-	if (FuzzyEqual(c.X(), 3.0f) && FuzzyEqual(c.Y(), 3.0f))
-		return true;
-	else
-		return false;
+			float ax = a.X();
+			float ay = a.Y();
+			float bx = b.X();
+			float by = b.Y();
+			float rx = ax + bx;
+			float ry = ay + by;
+
+			Vector2 r = a + b;
+
+			if (!ftest(r.X(), rx) || !ftest(r.Y(), ry))
+			{
+				printf("a = (%.5f, %.5f), b = (%.5f, %.5f)\n", a.X(), a.Y(), b.X(), b.Y());
+				printf("r = (%.5f, %.5f), rx = %.5f, ry = %.5f\n", r.X(), r.Y(), rx, ry);
+				return false;
+			}
+		}
+	}
+	return true;
 }
 
 int main(int argc, char* argv[])
