@@ -1,4 +1,5 @@
 #include "math3d.h"
+#include <vector>
 #include <stdio.h>
 #include <stdlib.h>
 #include "unittest.h"
@@ -7,105 +8,111 @@
 #include <mach/mach.h>
 #include <mach/mach_time.h>
 
-static const int RANDOM_DATA_SIZE = 1024 * 1024;
-
-Vector3 s_randomVector3[RANDOM_DATA_SIZE];
-Vector4 s_randomVector4[RANDOM_DATA_SIZE];
-Matrix s_randomMatrix[RANDOM_DATA_SIZE];
+// static test containers
+std::vector<Vector2> s_vector2Vec;
+std::vector<Vector3> s_vector3Vec;
+std::vector<Vector4> s_vector4Vec;
+std::vector<Matrix> s_matrixVec;
 
 float s_floatResult;
 Vector4 s_vector4Result;
 
 // 0..1
-float RandomFloat()
+float RandomNormalizedFloat()
 {
 	return (float)rand() / RAND_MAX;
 }
 
-void InitRandomData()
+// -range to range
+float RandomFloat(float range = 10000.0f)
+{
+	return (((float)rand() / (RAND_MAX / 2)) - 1.0f) * range;
+}
+
+void InitData()
 {
 	srand((unsigned int)mach_absolute_time());
+
+	// add random values
+	const int RANDOM_DATA_SIZE = 64;
 	for (int i = 0; i < RANDOM_DATA_SIZE; ++i)
 	{
-		s_randomVector3[i].Set(RandomFloat(), RandomFloat(), RandomFloat());
-		s_randomVector4[i].Set(RandomFloat(), RandomFloat(), RandomFloat(), RandomFloat());
+		s_vector2Vec.push_back(Vector2(RandomFloat(), RandomFloat()));
+		s_vector3Vec.push_back(Vector3(RandomFloat(), RandomFloat(), RandomFloat()));
+		s_vector4Vec.push_back(Vector4(RandomFloat(), RandomFloat(), RandomFloat(), RandomFloat()));
 
 		Vector4 row0(RandomFloat(), RandomFloat(), RandomFloat(), RandomFloat());
 		Vector4 row1(RandomFloat(), RandomFloat(), RandomFloat(), RandomFloat());
 		Vector4 row2(RandomFloat(), RandomFloat(), RandomFloat(), RandomFloat());
 		Vector4 row3(RandomFloat(), RandomFloat(), RandomFloat(), RandomFloat());
-		s_randomMatrix[i] = Matrix(row0, row1, row2, row3);
-	}
-}
-
-// returns microseconds
-float TimeDiff(uint64_t start, uint64_t end)
-{
-    uint64_t absTime = end - start;
-    Nanoseconds nanosec = AbsoluteToNanoseconds( *(AbsoluteTime*)&absTime);
-    return (float) UnsignedWideToUInt64(nanosec) / 1000.0;
-}
-
-class BlockTimer
-{
-public:
-	BlockTimer(const char* descIn) 
-	{
-		desc = descIn; 
-		start = mach_absolute_time();
+		s_matrixVec.push_back(Matrix(row0, row1, row2, row3));
 	}
 
-	~BlockTimer()
-	{
-		uint64_t end = mach_absolute_time();
-		printf("%s took %.1f usec\n", desc, TimeDiff(start, end));
-	}
+	// zero
+	s_vector2Vec.push_back(Vector2(0, 0));
+	s_vector3Vec.push_back(Vector3(0, 0, 0));
+	s_vector4Vec.push_back(Vector4(0, 0, 0, 0));
+	s_matrixVec.push_back(Matrix(Vector4(0, 0, 0, 0), Vector4(0, 0, 0, 0), Vector4(0, 0, 0, 0), Vector4(0, 0, 0, 0)));
 
-	uint64_t start;
-	const char* desc;
-};
+	// ident
+	s_matrixVec.push_back(Matrix(Vector4(1, 0, 0, 0), Vector4(0, 1, 0, 0), Vector4(0, 0, 1, 0), Vector4(0, 0, 0, 1)));
 
-void TimeVector4Add()
-{
-	Vector4 r;
-	{
-		BlockTimer timer("Vector4 addition");
+	// FLT_MAX
+	s_vector2Vec.push_back(Vector2(FLT_MAX, FLT_MAX));
+	s_vector3Vec.push_back(Vector3(FLT_MAX, FLT_MAX, FLT_MAX));
+	s_vector4Vec.push_back(Vector4(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX));
+	s_matrixVec.push_back(Matrix(Vector4(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX), 
+								 Vector4(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX), 
+								 Vector4(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX), 
+								 Vector4(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX)));
 
-		r = s_randomVector4[0];
-		for (int i = 0; i < RANDOM_DATA_SIZE - 3; ++i)
-		{
-			r = s_randomVector4[i] + s_randomVector4[i+1] + s_randomVector4[i+2] + s_randomVector4[i+3] + r;
-		}
-	}
-	s_vector4Result = r;
-}
+	s_vector2Vec.push_back(Vector2(-FLT_MAX, -FLT_MAX));
+	s_vector3Vec.push_back(Vector3(-FLT_MAX, -FLT_MAX, -FLT_MAX));
+	s_vector4Vec.push_back(Vector4(-FLT_MAX, -FLT_MAX, -FLT_MAX, -FLT_MAX));
+	s_matrixVec.push_back(Matrix(Vector4(-FLT_MAX, -FLT_MAX, -FLT_MAX, -FLT_MAX), 
+								 Vector4(-FLT_MAX, -FLT_MAX, -FLT_MAX, -FLT_MAX), 
+								 Vector4(-FLT_MAX, -FLT_MAX, -FLT_MAX, -FLT_MAX), 
+								 Vector4(-FLT_MAX, -FLT_MAX, -FLT_MAX, -FLT_MAX)));
 
-void TimeVector4DotProduct()
-{
-	float a = 1.0f;
-	{
-		BlockTimer timer("Vector4 dot");
+	// FLT_MIN
+	s_vector2Vec.push_back(Vector2(FLT_MIN, FLT_MIN));
+	s_vector3Vec.push_back(Vector3(FLT_MIN, FLT_MIN, FLT_MIN));
+	s_vector4Vec.push_back(Vector4(FLT_MIN, FLT_MIN, FLT_MIN, FLT_MIN));
+	s_matrixVec.push_back(Matrix(Vector4(FLT_MIN, FLT_MIN, FLT_MIN, FLT_MIN), 
+								 Vector4(FLT_MIN, FLT_MIN, FLT_MIN, FLT_MIN), 
+								 Vector4(FLT_MIN, FLT_MIN, FLT_MIN, FLT_MIN), 
+								 Vector4(FLT_MIN, FLT_MIN, FLT_MIN, FLT_MIN)));
 
-		for (int i = 0; i < RANDOM_DATA_SIZE - 1; ++i)
-		{
-			a += s_randomVector4[i] * s_randomVector4[i+1];
-		}
-	}
-	s_floatResult = a;
-}
+	s_vector2Vec.push_back(Vector2(-FLT_MIN, -FLT_MIN));
+	s_vector3Vec.push_back(Vector3(-FLT_MIN, -FLT_MIN, -FLT_MIN));
+	s_vector4Vec.push_back(Vector4(-FLT_MIN, -FLT_MIN, -FLT_MIN, -FLT_MIN));
+	s_matrixVec.push_back(Matrix(Vector4(-FLT_MIN, -FLT_MIN, -FLT_MIN, -FLT_MIN), 
+								 Vector4(-FLT_MIN, -FLT_MIN, -FLT_MIN, -FLT_MIN), 
+								 Vector4(-FLT_MIN, -FLT_MIN, -FLT_MIN, -FLT_MIN), 
+								 Vector4(-FLT_MIN, -FLT_MIN, -FLT_MIN, -FLT_MIN)));
 
-void TimeMul4x4()
-{
-	Vector4 a;
-	{
-		BlockTimer timer("Mul4x4");
-		
-		for (int i = 0; i < RANDOM_DATA_SIZE; ++i)
-		{
-			a = a + Mul4x4(s_randomMatrix[i], s_randomVector4[i]);
-		}
-	}
-	s_vector4Result = a;
+	// inf
+	float inf = FLT_MAX * FLT_MAX;
+
+	s_vector2Vec.push_back(Vector2(inf, inf));
+	s_vector3Vec.push_back(Vector3(inf, inf, inf));
+	s_vector4Vec.push_back(Vector4(inf, inf, inf, inf));
+	s_matrixVec.push_back(Matrix(Vector4(inf, inf, inf, inf), 
+								 Vector4(inf, inf, inf, inf), 
+								 Vector4(inf, inf, inf, inf), 
+								 Vector4(inf, inf, inf, inf)));
+
+	// -inf
+	inf = -FLT_MAX * FLT_MAX;
+	s_vector2Vec.push_back(Vector2(inf, inf));
+	s_vector3Vec.push_back(Vector3(inf, inf, inf));
+	s_vector4Vec.push_back(Vector4(inf, inf, inf, inf));
+	s_matrixVec.push_back(Matrix(Vector4(inf, inf, inf, inf), 
+								 Vector4(inf, inf, inf, inf), 
+								 Vector4(inf, inf, inf, inf), 
+								 Vector4(inf, inf, inf, inf)));
+
+	// TODO: nans, q-nans & denormalized...
 }
 
 class Vector2AddTest : public TestCase
@@ -137,11 +144,7 @@ bool Vector2AddTest::Test() const
 
 int main(int argc, char* argv[])
 {
-	InitRandomData();
-
-	TimeVector4Add();
-	TimeVector4DotProduct();
-	TimeMul4x4();
+	InitData();
 
 	TestSuite vector2Suite("Vector2");
 	vector2Suite.AddTest(new Vector2AddTest());
