@@ -9,6 +9,7 @@
 #include <mach/mach_time.h>
 
 // static test containers
+std::vector<float> s_floatVec;
 std::vector<Vector2> s_vector2Vec;
 std::vector<Vector3> s_vector3Vec;
 std::vector<Vector4> s_vector4Vec;
@@ -49,6 +50,7 @@ void InitTestData()
 	const int RANDOM_DATA_SIZE = 64;
 	for (int i = 0; i < RANDOM_DATA_SIZE; ++i)
 	{
+		s_floatVec.push_back(RandomFloat());
 		s_vector2Vec.push_back(Vector2(RandomFloat(), RandomFloat()));
 		s_vector3Vec.push_back(Vector3(RandomFloat(), RandomFloat(), RandomFloat()));
 		s_vector4Vec.push_back(Vector4(RandomFloat(), RandomFloat(), RandomFloat(), RandomFloat()));
@@ -61,15 +63,17 @@ void InitTestData()
 	}
 
 	// zero
+	s_floatVec.push_back(0);
 	s_vector2Vec.push_back(Vector2(0, 0));
 	s_vector3Vec.push_back(Vector3(0, 0, 0));
 	s_vector4Vec.push_back(Vector4(0, 0, 0, 0));
 	s_matrixVec.push_back(Matrix(Vector4(0, 0, 0, 0), Vector4(0, 0, 0, 0), Vector4(0, 0, 0, 0), Vector4(0, 0, 0, 0)));
 
-	// ident
+	// ident-matrix
 	s_matrixVec.push_back(Matrix(Vector4(1, 0, 0, 0), Vector4(0, 1, 0, 0), Vector4(0, 0, 1, 0), Vector4(0, 0, 0, 1)));
 
 	// FLT_MAX
+	s_floatVec.push_back(FLT_MAX);
 	s_vector2Vec.push_back(Vector2(FLT_MAX, FLT_MAX));
 	s_vector3Vec.push_back(Vector3(FLT_MAX, FLT_MAX, FLT_MAX));
 	s_vector4Vec.push_back(Vector4(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX));
@@ -78,6 +82,7 @@ void InitTestData()
 								 Vector4(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX), 
 								 Vector4(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX)));
 
+	s_floatVec.push_back(-FLT_MAX);
 	s_vector2Vec.push_back(Vector2(-FLT_MAX, -FLT_MAX));
 	s_vector3Vec.push_back(Vector3(-FLT_MAX, -FLT_MAX, -FLT_MAX));
 	s_vector4Vec.push_back(Vector4(-FLT_MAX, -FLT_MAX, -FLT_MAX, -FLT_MAX));
@@ -87,6 +92,7 @@ void InitTestData()
 								 Vector4(-FLT_MAX, -FLT_MAX, -FLT_MAX, -FLT_MAX)));
 
 	// FLT_MIN
+	s_floatVec.push_back(FLT_MIN);
 	s_vector2Vec.push_back(Vector2(FLT_MIN, FLT_MIN));
 	s_vector3Vec.push_back(Vector3(FLT_MIN, FLT_MIN, FLT_MIN));
 	s_vector4Vec.push_back(Vector4(FLT_MIN, FLT_MIN, FLT_MIN, FLT_MIN));
@@ -95,6 +101,7 @@ void InitTestData()
 								 Vector4(FLT_MIN, FLT_MIN, FLT_MIN, FLT_MIN), 
 								 Vector4(FLT_MIN, FLT_MIN, FLT_MIN, FLT_MIN)));
 
+	s_floatVec.push_back(-FLT_MIN);
 	s_vector2Vec.push_back(Vector2(-FLT_MIN, -FLT_MIN));
 	s_vector3Vec.push_back(Vector3(-FLT_MIN, -FLT_MIN, -FLT_MIN));
 	s_vector4Vec.push_back(Vector4(-FLT_MIN, -FLT_MIN, -FLT_MIN, -FLT_MIN));
@@ -105,7 +112,7 @@ void InitTestData()
 
 	// inf
 	float inf = FLT_MAX * FLT_MAX;
-
+	s_floatVec.push_back(inf);
 	s_vector2Vec.push_back(Vector2(inf, inf));
 	s_vector3Vec.push_back(Vector3(inf, inf, inf));
 	s_vector4Vec.push_back(Vector4(inf, inf, inf, inf));
@@ -116,6 +123,7 @@ void InitTestData()
 
 	// -inf
 	inf = -FLT_MAX * FLT_MAX;
+	s_floatVec.push_back(inf);
 	s_vector2Vec.push_back(Vector2(inf, inf));
 	s_vector3Vec.push_back(Vector3(inf, inf, inf));
 	s_vector4Vec.push_back(Vector4(inf, inf, inf, inf));
@@ -127,31 +135,117 @@ void InitTestData()
 	// TODO: nans, q-nans & denormalized...
 }
 
-class Vector2Addition
+template <class UnaryOp>
+class Vector2UnaryOpTest : public TestCase
 {
 public:
-	static const char* GetName() { return "Addition"; }
-	bool operator()(const Vector2& a, const Vector2& b) const
+	Vector2UnaryOpTest() : TestCase(UnaryOp::GetName()) {}
+	~Vector2UnaryOpTest() {}
+
+	bool Test() const
 	{
-		float ax = a.X(); float ay = a.Y();
-		float bx = b.X(); float by = b.Y();
-		float rx = ax + bx;	float ry = ay + by;
-		Vector2 r = a + b;
+		UnaryOp op;
+		for (unsigned int i = 0; i < s_vector2Vec.size(); ++i)
+		{
+			Vector2 a = s_vector2Vec[i];
+			if (!op(a))
+			{
+				printf("a = (%.5f, %.5f)", a.X(), a.Y());
+				return false;
+			}
+		}
+		return true;
+	}
+};
+
+class Vector2Negation
+{
+public:
+	static const char* GetName() { return "Negation"; }
+	bool operator() (const Vector2& a)
+	{
+		float ax = a.X(), ay = a.Y();
+		float rx = -ax, ry = -ay;
+		Vector2 r = -a;
 		return FloatTest(r.X(), rx) && FloatTest(r.Y(), ry);
 	}
 };
 
-class Vector2Subtraction
+class Vector2Length
 {
 public:
-	static const char* GetName() { return "Subtraction"; }
-	bool operator()(const Vector2& a, const Vector2& b) const
+	static const char* GetName() { return "Length"; }
+	bool operator() (const Vector2& a)
 	{
-		float ax = a.X(); float ay = a.Y();
-		float bx = b.X(); float by = b.Y();
-		float rx = ax - bx; float ry = ay - by;
-		Vector2 r = a - b;
-		return FloatTest(r.X(), rx) && FloatTest(r.Y(), ry);
+		float ax = a.X(), ay = a.Y();
+		float r = sqrt((ax * ax) + (ay * ay));
+		float len = Len(a);
+		return FloatTest(r, len);
+	}
+};
+
+class Vector2UnitVec
+{
+public:
+	static const char* GetName() { return "UnitVec"; }
+	bool operator() (const Vector2& a)
+	{
+		float ax = a.X(), ay = a.Y();
+		float len = sqrt((ax * ax) + (ay * ay));
+		float rx = ax / len, ry = ay / len;
+		Vector2 r = UnitVec(a);
+		return FloatTest(rx, r.X()) && FloatTest(ry, r.Y());
+	}
+};
+
+class Vector2ScalarMultiplication
+{
+public:
+	static const char* GetName() { return "Scalar Multiplication"; }
+	bool operator() (const Vector2& a)
+	{
+		float ax = a.X(), ay = a.Y();
+		for (unsigned int i = 0; i < s_floatVec.size(); ++i)
+		{
+			// test (vector * scalar) and (scalar * vector)
+			float s = s_floatVec[i];
+			float r1x = ax * s, r1y = ay * s;
+			float r2x = s * ax, r2y = s * ay;
+			Vector2 r1 = a * s;
+			Vector2 r2 = s * a;
+			if (!(FloatTest(r1x, r1.X()) && FloatTest(r1y, r1.Y()) && FloatTest(r2x, r2.X()) && FloatTest(r2y, r2.Y()) && FloatTest(r1.X(), r2.X()) && FloatTest(r1.Y(), r2.Y())))
+			{
+				printf("s = %.5f", s);
+				return false;
+			}
+		}
+		return true;
+	}
+};
+
+class Vector2ScalarDivision
+{
+public:
+	static const char* GetName() { return "Scalar Division"; }
+	bool operator() (const Vector2& a)
+	{
+		float ax = a.X(), ay = a.Y();
+		for (unsigned int i = 0; i < s_floatVec.size(); ++i)
+		{
+			// test (vector / scalar) and (scalar / vector)
+			float s = s_floatVec[i];
+			float r1x = ax / s, r1y = ay / s;
+			float r2x = s / ax, r2y = s / ay;
+			Vector2 r1 = a / s;
+			Vector2 r2 = s / a;
+
+			if (!(FloatTest(r1x, r1.X()) && FloatTest(r1y, r1.Y()) && FloatTest(r2x, r2.X()) && FloatTest(r2y, r2.Y())))
+			{
+				printf("s = %.5f\n", s);
+				return false;
+			}
+		}
+		return true;
 	}
 };
 
@@ -173,7 +267,7 @@ public:
 				Vector2 b = s_vector2Vec[j];
 				if (!op(a, b))
 				{
-					printf("a = (%.5f, %.5f), b = (%.5f, %.5f)\n", a.X(), a.Y(), b.X(), b.Y());
+					printf("a = (%.5f, %.5f), b = (%.5f, %.5f)", a.X(), a.Y(), b.X(), b.Y());
 					return false;
 				}
 			}
@@ -182,13 +276,91 @@ public:
 	}
 };
 
+class Vector2Addition
+{
+public:
+	static const char* GetName() { return "Addition"; }
+	bool operator()(const Vector2& a, const Vector2& b) const
+	{
+		float ax = a.X(), ay = a.Y();
+		float bx = b.X(), by = b.Y();
+		float rx = ax + bx, ry = ay + by;
+		Vector2 r = a + b;
+		return FloatTest(r.X(), rx) && FloatTest(r.Y(), ry);
+	}
+};
+
+class Vector2Subtraction
+{
+public:
+	static const char* GetName() { return "Subtraction"; }
+	bool operator()(const Vector2& a, const Vector2& b) const
+	{
+		float ax = a.X(), ay = a.Y();
+		float bx = b.X(), by = b.Y();
+		float rx = ax - bx, ry = ay - by;
+		Vector2 r = a - b;
+		return FloatTest(r.X(), rx) && FloatTest(r.Y(), ry);
+	}
+};
+
+class Vector2DotProduct
+{
+public:
+	static const char* GetName() { return "Dot Product"; }
+	bool operator()(const Vector2& a, const Vector2& b) const
+	{
+		float ax = a.X(), ay = a.Y();
+		float bx = b.X(), by = b.Y();
+		float r = (ax * bx) + (ay * by);
+		float dot = a * b;
+		return FloatTest(dot, r);
+	}
+};
+
+class Vector2CompMul
+{
+public:
+	static const char* GetName() { return "Comp Mul"; }
+	bool operator()(const Vector2& a, const Vector2& b) const
+	{
+		float ax = a.X(), ay = a.Y();
+		float bx = b.X(), by = b.Y();
+		float rx = (ax * bx), ry = (ay * by);
+		Vector2 r = CompMul(a, b);
+		return FloatTest(rx, r.X()) && FloatTest(ry, r.Y());
+	}
+};
+
+class Vector2CompDiv
+{
+public:
+	static const char* GetName() { return "Comp Div"; }
+	bool operator()(const Vector2& a, const Vector2& b) const
+	{
+		float ax = a.X(), ay = a.Y();
+		float bx = b.X(), by = b.Y();
+		float rx = (ax / bx), ry = (ay / by);
+		Vector2 r = CompDiv(a, b);
+		return FloatTest(rx, r.X()) && FloatTest(ry, r.Y());
+	}
+};
+
 int main(int argc, char* argv[])
 {
 	InitTestData();
 
 	TestSuite vector2Suite("Vector2");
+	vector2Suite.AddTest(new Vector2UnaryOpTest<Vector2Negation>());
+	vector2Suite.AddTest(new Vector2UnaryOpTest<Vector2Length>());
+	vector2Suite.AddTest(new Vector2UnaryOpTest<Vector2UnitVec>());
+	vector2Suite.AddTest(new Vector2UnaryOpTest<Vector2ScalarMultiplication>());
+	vector2Suite.AddTest(new Vector2UnaryOpTest<Vector2ScalarDivision>());
 	vector2Suite.AddTest(new Vector2BinaryOpTest<Vector2Addition>());
 	vector2Suite.AddTest(new Vector2BinaryOpTest<Vector2Subtraction>());
+	vector2Suite.AddTest(new Vector2BinaryOpTest<Vector2DotProduct>());
+	vector2Suite.AddTest(new Vector2BinaryOpTest<Vector2CompMul>());
+	vector2Suite.AddTest(new Vector2BinaryOpTest<Vector2CompDiv>());
 	vector2Suite.RunTests();
 
 	return 0;

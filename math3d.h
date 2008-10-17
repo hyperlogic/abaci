@@ -49,7 +49,6 @@ struct Vector2 : public VectorBase
 {
 	Vector2() {}
 	Vector2(float xIn, float yIn);
-	Vector2& operator+=(const Vector2& v);
 	void Set(float xIn, float yIn);
 };
 
@@ -58,7 +57,11 @@ Vector2 operator-(const Vector2& a, const Vector2& b);
 Vector2 operator+(const Vector2& a, const Vector2& b);
 Vector2 operator*(const Vector2& v, float factor);
 Vector2 operator*(float factor, const Vector2& v);
-float operator*(const Vector2& a, const Vector2& b);
+Vector2 operator/(const Vector2& v, float denominator);
+Vector2 operator/(float numerator, const Vector2& v);
+float operator*(const Vector2& a, const Vector2& b);  // dot product
+Vector2 CompMul(const Vector2& a, const Vector2& b);
+Vector2 CompDiv(const Vector2& a, const Vector2& b);
 float Len(const Vector2& v);
 Vector2 UnitVec(const Vector2& v);
 

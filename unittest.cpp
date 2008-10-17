@@ -18,7 +18,7 @@ bool TestSuite::RunTests() const
 	bool suiteResult = true;
 	for(TestCaseVec::const_iterator iter = m_testCaseVec.begin(); iter != m_testCaseVec.end(); ++iter)
 	{
-		printf("\tTest : %s : ...", (*iter)->GetDescription().c_str());
+		printf("\tTest : %s : ... ", (*iter)->GetDescription().c_str());
 		bool result = (*iter)->Test();
 		suiteResult &= result;
 

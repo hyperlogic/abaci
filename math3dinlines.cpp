@@ -111,13 +111,6 @@ inline void Vector2::Set(float xIn, float yIn)
 	Y() = yIn;
 }
 
-inline Vector2& Vector2::operator+=(const Vector2& v)
-{
-	X() += v.X();
-	Y() += v.Y();
-	return *this;
-}
-
 inline Vector2 operator-(const Vector2& v)
 {
 	return Vector2(-v.X(), -v.Y());
@@ -138,6 +131,16 @@ inline Vector2 operator*(const Vector2& v, float factor)
 	return Vector2(factor * v.X(), factor * v.Y());
 }
 
+inline Vector2 operator/(const Vector2& v, float denominator)
+{
+	return Vector2(v.X() / denominator, v.Y() / denominator);
+}
+
+inline Vector2 operator/(float numerator, const Vector2& v)
+{
+	return Vector2(numerator / v.X(), numerator / v.Y());
+}
+
 inline Vector2 operator*(float factor, const Vector2& v)
 {
 	return Vector2(factor * v.X(), factor * v.Y());
@@ -148,6 +151,16 @@ inline float operator*(const Vector2& a, const Vector2& b)
 	return Dot2(a, b);
 }
 
+inline Vector2 CompMul(const Vector2& a, const Vector2& b)
+{
+	return Vector2(a.X() * b.X(), a.Y() * b.Y());
+}
+
+inline Vector2 CompDiv(const Vector2& a, const Vector2& b)
+{
+	return Vector2(a.X() / b.X(), a.Y() / b.Y());
+}
+
 inline float Len(const Vector2& v)
 {
 	return sqrt(v * v);
@@ -156,7 +169,7 @@ inline float Len(const Vector2& v)
 inline Vector2 UnitVec(const Vector2& v)
 {
 	float len = Len(v);
-	return v * (1.0f / len);
+	return v / len;
 }
 
 inline Vector3::Vector3(const Vector2& v, float zIn) 
