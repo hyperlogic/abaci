@@ -32,7 +32,7 @@ LFLAGS = -lstdc++ -lm -framework CoreServices
 OBJ = math3d.o mathunittest.o unittest.o
 
 # TODO: fix dependencies
-DEPENDS = math3d.h unittest.h
+DEPENDS = math3d.h math3dinlines.cpp unittest.h
 
 mathunittest : $(OBJ)
 	$(GCC) $(OBJ) -o mathunittest $(LFLAGS)
