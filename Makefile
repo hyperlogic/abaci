@@ -29,19 +29,22 @@ CFLAGS = $(CONFIG_CFLAGS) -Wall -DDARWIN -msse3
 # linker flags
 LFLAGS = -lstdc++ -lm -framework CoreServices
 
-OBJ = math3d.o mathtest.o
+OBJ = math3d.o mathunittest.o unittest.o
 
 # TODO: fix dependencies
-DEPENDS = math3d.h
+DEPENDS = math3d.h unittest.h
 
-mathtest : $(OBJ)
-	$(GCC) $(OBJ) -o mathtest $(LFLAGS)
+mathunittest : $(OBJ)
+	$(GCC) $(OBJ) -o mathunittest $(LFLAGS)
 
-mathtest.o: mathtest.cpp $(DEPENDS)
+mathunittest.o: mathunittest.cpp $(DEPENDS)
+	$(GCC) $(CFLAGS) -c $<
+
+unittest.o: unittest.cpp $(DEPENDS)
 	$(GCC) $(CFLAGS) -c $<
 
 math3d.o: math3d.cpp $(DEPENDS)
 	$(GCC) $(CFLAGS) -c $<
 
 clean:
-	rm $(OBJ) mathtest
+	rm $(OBJ) mathunittest

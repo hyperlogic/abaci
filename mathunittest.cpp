@@ -1,6 +1,7 @@
 #include "math3d.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include "unittest.h"
 
 #include <CoreServices/CoreServices.h>
 #include <mach/mach.h>
@@ -107,6 +108,33 @@ void TimeMul4x4()
 	s_vector4Result = a;
 }
 
+class Vector2AddTest : public TestCase
+{
+public:
+	Vector2AddTest() : TestCase("Add") {}
+	~Vector2AddTest() {}
+
+	bool Test() const;
+};
+
+bool FuzzyEqual(float rhs, float lhs)
+{
+	const float epsilon = 0.0001f;
+	return fabs(rhs - lhs) <= epsilon;
+}
+
+bool Vector2AddTest::Test() const
+{
+	Vector2 a(1, 1);
+	Vector2 b(2, 2);
+	Vector2 c = a + b;
+
+	if (FuzzyEqual(c.X(), 3.0f) && FuzzyEqual(c.Y(), 3.0f))
+		return true;
+	else
+		return false;
+}
+
 int main(int argc, char* argv[])
 {
 	InitRandomData();
@@ -114,6 +142,10 @@ int main(int argc, char* argv[])
 	TimeVector4Add();
 	TimeVector4DotProduct();
 	TimeMul4x4();
+
+	TestSuite vector2Suite("Vector2");
+	vector2Suite.AddTest(new Vector2AddTest());
+	vector2Suite.RunTests();
 
 	return 0;
 }
