@@ -568,6 +568,24 @@ public:
 	}
 };
 
+class Vector3CrossProduct
+{
+public:
+	static const char* GetName() { return "Cross Product"; }
+	bool operator()(const Vector3& a, const Vector3& b) const
+	{
+		float ax = a.X(), ay = a.Y(), az = a.Z();
+		float bx = b.X(), by = b.Y(), bz = b.Z();
+
+		float rx = (ay * bz) - (az * by);
+		float ry = (az * bx) - (ax * bz);
+		float rz = (ax * by) - (ay * bx);
+
+		Vector3 r = a % b;
+		return FloatTest(rx, r.X()) && FloatTest(ry, r.Y()) && FloatTest(rz, r.Z());
+	}
+};
+
 
 int main(int argc, char* argv[])
 {
@@ -597,6 +615,7 @@ int main(int argc, char* argv[])
 	vector3Suite.AddTest(new Vector3BinaryOpTest<Vector3DotProduct>());
 	vector3Suite.AddTest(new Vector3BinaryOpTest<Vector3CompMul>());
 	vector3Suite.AddTest(new Vector3BinaryOpTest<Vector3CompDiv>());
+	vector3Suite.AddTest(new Vector3BinaryOpTest<Vector3CrossProduct>());
 	vector3Suite.RunTests();
 
 	return 0;

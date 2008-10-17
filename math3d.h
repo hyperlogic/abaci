@@ -74,8 +74,6 @@ struct Vector3 : public VectorBase
 	Vector3(const Vector2& v, float zIn);
 	Vector3(float xIn, float yIn, float zIn);
 	void Set(float xIn, float yIn, float zIn);
-	void Normalize();
-	void Mul3x4(const Matrix& m);
 };
 
 Vector3 operator-(const Vector3& v);

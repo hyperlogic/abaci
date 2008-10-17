@@ -193,22 +193,6 @@ inline void Vector3::Set(float xIn, float yIn, float zIn)
 	Z() = zIn;
 }
 
-inline void Vector3::Normalize()
-{
-	float invLen = 1.0f / sqrt((X() * X()) + (Y() * Y()) + (Z() * Z()));
- 	X() *= invLen;
-	Y() *= invLen;
-	Z() *= invLen;
-}
-
-inline void Vector3::Mul3x4(const Matrix& m)
-{
-	Vector3 v(*this);
-	X() = Dot3(m.row0, v) + m.row0.W();
-	Y() = Dot3(m.row1, v) + m.row1.W();
-	Z() = Dot3(m.row2, v) + m.row2.W();
-}
-
 inline Vector3 operator-(const Vector3& v)
 {
 	return Vector3(-v.X(), -v.Y(), -v.Z());
