@@ -1,7 +1,7 @@
 # build mathtest for Mac OS 10.5.2 (leopard)
 
 GCC = g++
-SYMBOLS = true
+SYMBOLS = false
 OPT = true
 
 # symbol flag
@@ -24,7 +24,7 @@ endif
 CONFIG_CFLAGS = $(OPT_CFLAGS) $(SYMBOL_CFLAGS)
 
 # compile flags
-CFLAGS = $(CONFIG_CFLAGS) -Wall -DDARWIN
+CFLAGS = $(CONFIG_CFLAGS) -Wall -DDARWIN -msse3
 
 # linker flags
 LFLAGS = -lstdc++ -lm -framework CoreServices

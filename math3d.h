@@ -3,10 +3,11 @@
 
 #include <math.h>
 
-//#define USE_SSE
+#define USE_SSE
 
 #ifdef USE_SSE
-#include <xmmintrin.h>
+#include <xmmintrin.h>  // sse
+#include <pmmintrin.h>  // sse3
 #endif
 
 #define PI 3.14159265f

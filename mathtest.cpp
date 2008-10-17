@@ -1,15 +1,41 @@
 #include "math3d.h"
 #include <stdio.h>
 #include <stdlib.h>
+
 #include <CoreServices/CoreServices.h>
 #include <mach/mach.h>
 #include <mach/mach_time.h>
 
-float u[4];
-float v[4];
-Vector4 x;
-Vector4 y;
-Vector4 r;
+static const int RANDOM_DATA_SIZE = 1024 * 1024;
+
+Vector3 s_randomVector3[RANDOM_DATA_SIZE];
+Vector4 s_randomVector4[RANDOM_DATA_SIZE];
+Matrix s_randomMatrix[RANDOM_DATA_SIZE];
+
+float s_floatResult;
+Vector4 s_vector4Result;
+
+// 0..1
+float RandomFloat()
+{
+	return (float)rand() / RAND_MAX;
+}
+
+void InitRandomData()
+{
+	srand((unsigned int)mach_absolute_time());
+	for (int i = 0; i < RANDOM_DATA_SIZE; ++i)
+	{
+		s_randomVector3[i].Set(RandomFloat(), RandomFloat(), RandomFloat());
+		s_randomVector4[i].Set(RandomFloat(), RandomFloat(), RandomFloat(), RandomFloat());
+
+		Vector4 row0(RandomFloat(), RandomFloat(), RandomFloat(), RandomFloat());
+		Vector4 row1(RandomFloat(), RandomFloat(), RandomFloat(), RandomFloat());
+		Vector4 row2(RandomFloat(), RandomFloat(), RandomFloat(), RandomFloat());
+		Vector4 row3(RandomFloat(), RandomFloat(), RandomFloat(), RandomFloat());
+		s_randomMatrix[i] = Matrix(row0, row1, row2, row3);
+	}
+}
 
 // returns microseconds
 float TimeDiff(uint64_t start, uint64_t end)
@@ -19,34 +45,75 @@ float TimeDiff(uint64_t start, uint64_t end)
     return (float) UnsignedWideToUInt64(nanosec) / 1000.0;
 }
 
-int main(int argc, char* argv[])
+class BlockTimer
 {
-	u[0] = atof(argv[1]);
-	u[1] = atof(argv[2]);
-	u[2] = atof(argv[3]);
-	u[3] = atof(argv[4]);
-
-	v[0] = atof(argv[4]);
-	v[1] = atof(argv[5]);
-	v[2] = atof(argv[6]);
-	v[3] = atof(argv[7]);
-
-	x.Set(u[0], u[1], u[2], u[3]);
-	y.Set(v[0], v[1], v[2], v[3]);
-
-	uint64_t start = mach_absolute_time();
-	
-	r = x;
-	for (int i = 0; i < 100000; ++i)
+public:
+	BlockTimer(const char* descIn) 
 	{
-		r = y + x + x + y + r;
+		desc = descIn; 
+		start = mach_absolute_time();
 	}
 
-	uint64_t end = mach_absolute_time();
+	~BlockTimer()
+	{
+		uint64_t end = mach_absolute_time();
+		printf("%s took %.1f usec\n", desc, TimeDiff(start, end));
+	}
 
-	printf("r = %.5f, %.5f, %.5f, %.5f\n", r.X(), r.Y(), r.Z(), r.W());
+	uint64_t start;
+	const char* desc;
+};
 
-	printf("took %.5f usec\n", TimeDiff(start, end));
+void TimeVector4Add()
+{
+	Vector4 r;
+	{
+		BlockTimer timer("Vector4 addition");
+
+		r = s_randomVector4[0];
+		for (int i = 0; i < RANDOM_DATA_SIZE - 3; ++i)
+		{
+			r = s_randomVector4[i] + s_randomVector4[i+1] + s_randomVector4[i+2] + s_randomVector4[i+3] + r;
+		}
+	}
+	s_vector4Result = r;
+}
+
+void TimeVector4DotProduct()
+{
+	float a = 1.0f;
+	{
+		BlockTimer timer("Vector4 dot");
+
+		for (int i = 0; i < RANDOM_DATA_SIZE - 1; ++i)
+		{
+			a += s_randomVector4[i] * s_randomVector4[i+1];
+		}
+	}
+	s_floatResult = a;
+}
+
+void TimeMul4x4()
+{
+	Vector4 a;
+	{
+		BlockTimer timer("Mul4x4");
+		
+		for (int i = 0; i < RANDOM_DATA_SIZE; ++i)
+		{
+			a = a + Mul4x4(s_randomMatrix[i], s_randomVector4[i]);
+		}
+	}
+	s_vector4Result = a;
+}
+
+int main(int argc, char* argv[])
+{
+	InitRandomData();
+
+	TimeVector4Add();
+	TimeVector4DotProduct();
+	TimeMul4x4();
 
 	return 0;
 }

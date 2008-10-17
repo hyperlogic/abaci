@@ -89,7 +89,14 @@ inline float Dot3(const VectorBase& a, const VectorBase& b)
 
 inline float Dot4(const VectorBase& a, const VectorBase& b)
 {
+#ifdef USE_SSE
+	__m128 r = _mm_mul_ps(a.data, b.data);
+	r = _mm_hadd_ps(r, r);
+	r = _mm_hadd_ps(r, r);
+	return *reinterpret_cast<float*>(&r); 
+#else
 	return (a.X() * b.X()) + (a.Y() * b.Y()) + (a.Z() * b.Z()) + (a.W() * b.W());
+#endif
 }
 
 inline Vector2::Vector2(float xIn, float yIn) 
