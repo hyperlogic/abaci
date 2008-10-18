@@ -877,6 +877,19 @@ public:
 	}
 };
 
+class QuatConjugate
+{
+public:
+	static const char* GetName() { return "Conjugate"; }
+	bool operator() (const Quat& a)
+	{
+		float ax = a.X(), ay = a.Y(), az = a.Z(), aw = a.W();
+		float rx = -ax, ry = -ay, rz = -az, rw = aw;
+		Quat r = ~a;
+		return FloatTest(rx, r.X()) && FloatTest(ry, r.Y()) && FloatTest(rz, r.Z()) && FloatTest(rw, r.W());
+	}
+};
+
 
 int main(int argc, char* argv[])
 {
@@ -924,6 +937,7 @@ int main(int argc, char* argv[])
 
 	TestSuite quatSuite("Quat");
 	quatSuite.AddTest(new QuatUnaryOpTest<QuatRotate>());
+	quatSuite.AddTest(new QuatUnaryOpTest<QuatConjugate>());
 	quatSuite.RunTests();
 
 	return 0;
