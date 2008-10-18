@@ -890,6 +890,75 @@ public:
 	}
 };
 
+class QuatNegation
+{
+public:
+	static const char* GetName() { return "Negation"; }
+	bool operator() (const Quat& a)
+	{
+		float ax = a.X(), ay = a.Y(), az = a.Z(), aw = a.W();
+		float rx = -ax, ry = -ay, rz = -az, rw = -aw;
+		Quat r = -a;
+		return FloatTest(rx, r.X()) && FloatTest(ry, r.Y()) && FloatTest(rz, r.Z()) && FloatTest(rw, r.W());
+	}
+};
+
+template <class BinaryOp>
+class QuatBinaryOpTest : public TestCase
+{
+public:
+	QuatBinaryOpTest() : TestCase(BinaryOp::GetName()) {}
+	~QuatBinaryOpTest() {}
+
+	bool Test() const
+	{
+		BinaryOp op;
+		for (unsigned int i = 0; i < s_quatVec.size(); ++i)
+		{
+			for (unsigned int j = 0; j < s_quatVec.size(); ++j)
+			{
+				Quat a = s_quatVec[i];
+				Quat b = s_quatVec[j];
+				if (!op(a, b))
+				{
+					printf("a = (%.5f, %.5f, %.5f, %.5f), b = (%.5f, %.5f, %.5f, %.5f)", a.X(), a.Y(), a.Z(), a.W(), b.X(), b.Y(), b.Z(), b.W());
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+};
+
+
+class QuatAddition
+{
+public:
+	static const char* GetName() { return "Addition"; }
+	bool operator()(const Quat& a, const Quat& b) const
+	{
+		float ax = a.X(), ay = a.Y(), az = a.Z(), aw = a.W();
+		float bx = b.X(), by = b.Y(), bz = b.Z(), bw = b.W();
+		float rx = ax + bx, ry = ay + by, rz = az + bz, rw = aw + bw;
+		Quat r = a + b;
+		return FloatTest(rx, r.X()) && FloatTest(ry, r.Y()) && FloatTest(rz, r.Z()) && FloatTest(rw, r.W());
+	}
+};
+
+class QuatSubtraction
+{
+public:
+	static const char* GetName() { return "Subtraction"; }
+	bool operator()(const Quat& a, const Quat& b) const
+	{
+		float ax = a.X(), ay = a.Y(), az = a.Z(), aw = a.W();
+		float bx = b.X(), by = b.Y(), bz = b.Z(), bw = b.W();
+		float rx = ax - bx, ry = ay - by, rz = az - bz, rw = aw - bw;
+		Quat r = a - b;
+		return FloatTest(rx, r.X()) && FloatTest(ry, r.Y()) && FloatTest(rz, r.Z()) && FloatTest(rw, r.W());
+	}
+};
+
 
 int main(int argc, char* argv[])
 {
@@ -938,6 +1007,9 @@ int main(int argc, char* argv[])
 	TestSuite quatSuite("Quat");
 	quatSuite.AddTest(new QuatUnaryOpTest<QuatRotate>());
 	quatSuite.AddTest(new QuatUnaryOpTest<QuatConjugate>());
+	quatSuite.AddTest(new QuatUnaryOpTest<QuatNegation>());
+	quatSuite.AddTest(new QuatBinaryOpTest<QuatAddition>());
+	quatSuite.AddTest(new QuatBinaryOpTest<QuatSubtraction>());
 	quatSuite.RunTests();
 
 	return 0;

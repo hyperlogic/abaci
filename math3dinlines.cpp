@@ -401,7 +401,7 @@ inline Quat operator-(const Quat& a, const Quat& b)
 
 inline Quat operator+(const Quat& a, const Quat& b)
 {
-	return Quat(a.X() + a.X(), a.Y() + b.Y(), a.Z() + b.Z(), a.W() + b.W());
+	return Quat(a.X() + b.X(), a.Y() + b.Y(), a.Z() + b.Z(), a.W() + b.W());
 }
 
 inline Quat operator*(const Quat& v, float factor)
