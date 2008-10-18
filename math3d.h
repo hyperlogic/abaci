@@ -3,7 +3,7 @@
 
 #include <math.h>
 
-#define USE_SSE
+//#define USE_SSE
 
 #ifdef USE_SSE
 #include <xmmintrin.h>  // sse
@@ -106,7 +106,11 @@ Vector4 operator-(const Vector4& a, const Vector4& b);
 Vector4 operator+(const Vector4& a, const Vector4& b);
 Vector4 operator*(const Vector4& v, float factor);
 Vector4 operator*(float factor, const Vector4& v);
-float operator*(const Vector4& a, const Vector4& b);
+float operator*(const Vector4& a, const Vector4& b); // dot product
+Vector4 CompMul(const Vector4& a, const Vector4& b);
+Vector4 operator/(const Vector4& v, float denominator);
+Vector4 operator/(float numerator, const Vector4& v);
+Vector4 CompDiv(const Vector4& a, const Vector4& b);
 float Len(const Vector4& v);
 Vector4 UnitVec(const Vector4& v);
 

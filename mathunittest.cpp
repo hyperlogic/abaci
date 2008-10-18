@@ -171,7 +171,7 @@ public:
 		float ax = a.X(), ay = a.Y();
 		float rx = -ax, ry = -ay;
 		Vector2 r = -a;
-		return FloatTest(r.X(), rx) && FloatTest(r.Y(), ry);
+		return FloatTest(rx, r.X()) && FloatTest(ry, r.Y());
 	}
 };
 
@@ -290,7 +290,7 @@ public:
 		float bx = b.X(), by = b.Y();
 		float rx = ax + bx, ry = ay + by;
 		Vector2 r = a + b;
-		return FloatTest(r.X(), rx) && FloatTest(r.Y(), ry);
+		return FloatTest(rx, r.X()) && FloatTest(ry, r.Y());
 	}
 };
 
@@ -304,7 +304,7 @@ public:
 		float bx = b.X(), by = b.Y();
 		float rx = ax - bx, ry = ay - by;
 		Vector2 r = a - b;
-		return FloatTest(r.X(), rx) && FloatTest(r.Y(), ry);
+		return FloatTest(rx, r.X()) && FloatTest(ry, r.Y());
 	}
 };
 
@@ -386,7 +386,7 @@ public:
 		float ax = a.X(), ay = a.Y(), az = a.Z();
 		float rx = -ax, ry = -ay, rz = -az;
 		Vector3 r = -a;
-		return FloatTest(r.X(), rx) && FloatTest(r.Y(), ry) && FloatTest(r.Z(), rz);
+		return FloatTest(rx, r.X()) && FloatTest(ry, r.Y()) && FloatTest(rz, r.Z());
 	}
 };
 
@@ -489,7 +489,7 @@ public:
 				Vector3 b = s_vector3Vec[j];
 				if (!op(a, b))
 				{
-					printf("a = (%.5f, %.5f), b = (%.5f, %.5f)", a.X(), a.Y(), b.X(), b.Y());
+					printf("a = (%.5f, %.5f, %.5f), b = (%.5f, %.5f, %.5f)", a.X(), a.Y(), a.Z(), b.X(), b.Y(), b.Z());
 					return false;
 				}
 			}
@@ -586,6 +586,223 @@ public:
 	}
 };
 
+//
+// Vector4 tests
+//
+
+template <class UnaryOp>
+class Vector4UnaryOpTest : public TestCase
+{
+public:
+	Vector4UnaryOpTest() : TestCase(UnaryOp::GetName()) {}
+	~Vector4UnaryOpTest() {}
+
+	bool Test() const
+	{
+		UnaryOp op;
+		for (unsigned int i = 0; i < s_vector4Vec.size(); ++i)
+		{
+			Vector4 a = s_vector4Vec[i];
+			if (!op(a))
+			{
+				printf("a = (%.5f, %.5f, %.5f, %.5f)", a.X(), a.Y(), a.Z(), a.W());
+				return false;
+			}
+		}
+		return true;
+	}
+};
+
+class Vector4Negation
+{
+public:
+	static const char* GetName() { return "Negation"; }
+	bool operator() (const Vector4& a)
+	{
+		float ax = a.X(), ay = a.Y(), az = a.Z(), aw = a.W();
+		float rx = -ax, ry = -ay, rz = -az, rw = -aw;
+		Vector4 r = -a;
+		return FloatTest(rx, r.X()) && FloatTest(ry, r.Y()) && FloatTest(rz, r.Z()) && FloatTest(rw, r.W());
+	}
+};
+
+class Vector4Length
+{
+public:
+	static const char* GetName() { return "Length"; }
+	bool operator() (const Vector4& a)
+	{
+		float ax = a.X(), ay = a.Y(), az = a.Z(), aw = a.W();
+		float r = sqrt((ax * ax) + (ay * ay) + (az * az) + (aw * aw));
+		float len = Len(a);
+		return FloatTest(r, len);
+	}
+};
+
+class Vector4UnitVec
+{
+public:
+	static const char* GetName() { return "UnitVec"; }
+	bool operator() (const Vector4& a)
+	{
+		float ax = a.X(), ay = a.Y(), az = a.Z(), aw = a.W();
+		float len = sqrt((ax * ax) + (ay * ay) + (az * az) + (aw * aw));
+		float rx = ax / len, ry = ay / len, rz = az / len, rw = aw / len;
+		Vector4 r = UnitVec(a);
+		return FloatTest(rx, r.X()) && FloatTest(ry, r.Y()) && FloatTest(rz, r.Z()) && FloatTest(rw, r.W());
+	}
+};
+
+class Vector4ScalarMultiplication
+{
+public:
+	static const char* GetName() { return "Scalar Multiplication"; }
+	bool operator() (const Vector4& a)
+	{
+		float ax = a.X(), ay = a.Y(), az = a.Z(), aw = a.W();
+		for (unsigned int i = 0; i < s_floatVec.size(); ++i)
+		{
+			// test (vector * scalar) and (scalar * vector)
+			float s = s_floatVec[i];
+			float r1x = ax * s, r1y = ay * s, r1z = az * s, r1w = aw * s;
+			float r2x = s * ax, r2y = s * ay, r2z = s * az, r2w = s * aw;
+			Vector4 r1 = a * s;
+			Vector4 r2 = s * a;
+			if (!(FloatTest(r1x, r1.X()) && FloatTest(r1y, r1.Y()) && FloatTest(r1z, r1.Z()) && FloatTest(r1w, r1.W()) &&
+				  FloatTest(r2x, r2.X()) && FloatTest(r2y, r2.Y()) && FloatTest(r2z, r2.Z()) && FloatTest(r2w, r2.W()) &&
+				  FloatTest(r1.X(), r2.X()) && FloatTest(r1.Y(), r2.Y()) && FloatTest(r1.Z(), r2.Z()) && FloatTest(r1.W(), r2.W())))
+			{
+				printf("s = %.5f", s);
+				return false;
+			}
+		}
+		return true;
+	}
+};
+
+class Vector4ScalarDivision
+{
+public:
+	static const char* GetName() { return "Scalar Division"; }
+	bool operator() (const Vector4& a)
+	{
+		float ax = a.X(), ay = a.Y(), az = a.Z(), aw = a.W();
+		for (unsigned int i = 0; i < s_floatVec.size(); ++i)
+		{
+			// test (vector / scalar) and (scalar / vector)
+			float s = s_floatVec[i];
+			float r1x = ax / s, r1y = ay / s, r1z = az / s, r1w = aw / s;
+			float r2x = s / ax, r2y = s / ay, r2z = s / az, r2w = s / aw;
+			Vector4 r1 = a / s;
+			Vector4 r2 = s / a;
+
+			if (!(FloatTest(r1x, r1.X()) && FloatTest(r1y, r1.Y()) && FloatTest(r1z, r1.Z()) && FloatTest(r1w, r1.W()) &&
+				  FloatTest(r2x, r2.X()) && FloatTest(r2y, r2.Y()) && FloatTest(r2z, r2.Z()) && FloatTest(r2w, r2.W())))
+			{
+				printf("s = %.5f\n", s);
+				return false;
+			}
+		}
+		return true;
+	}
+};
+
+template <class BinaryOp>
+class Vector4BinaryOpTest : public TestCase
+{
+public:
+	Vector4BinaryOpTest() : TestCase(BinaryOp::GetName()) {}
+	~Vector4BinaryOpTest() {}
+
+	bool Test() const
+	{
+		BinaryOp op;
+		for (unsigned int i = 0; i < s_vector4Vec.size(); ++i)
+		{
+			for (unsigned int j = 0; j < s_vector4Vec.size(); ++j)
+			{
+				Vector4 a = s_vector4Vec[i];
+				Vector4 b = s_vector4Vec[j];
+				if (!op(a, b))
+				{
+					printf("a = (%.5f, %.5f, %.5f, %.5f), b = (%.5f, %.5f, %.5f, %.5f)", a.X(), a.Y(), a.Z(), a.W(), b.X(), b.Y(), b.Z(), b.W());
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+};
+
+class Vector4Addition
+{
+public:
+	static const char* GetName() { return "Addition"; }
+	bool operator()(const Vector4& a, const Vector4& b) const
+	{
+		float ax = a.X(), ay = a.Y(), az = a.Z(), aw = a.W();
+		float bx = b.X(), by = b.Y(), bz = b.Z(), bw = b.W();
+		float rx = ax + bx, ry = ay + by, rz = az + bz, rw = aw + bw;
+		Vector4 r = a + b;
+		return FloatTest(rx, r.X()) && FloatTest(ry, r.Y()) && FloatTest(rz, r.Z()) && FloatTest(rw, r.W());
+	}
+};
+
+class Vector4Subtraction
+{
+public:
+	static const char* GetName() { return "Subtraction"; }
+	bool operator()(const Vector4& a, const Vector4& b) const
+	{
+		float ax = a.X(), ay = a.Y(), az = a.Z(), aw = a.W();
+		float bx = b.X(), by = b.Y(), bz = b.Z(), bw = b.W();
+		float rx = ax - bx, ry = ay - by, rz = az - bz, rw = aw - bw;
+		Vector4 r = a - b;
+		return FloatTest(rx, r.X()) && FloatTest(ry, r.Y()) && FloatTest(rz, r.Z()) && FloatTest(rw, r.W());
+	}
+};
+
+class Vector4DotProduct
+{
+public:
+	static const char* GetName() { return "Dot Product"; }
+	bool operator()(const Vector4& a, const Vector4& b) const
+	{
+		float ax = a.X(), ay = a.Y(), az = a.Z(), aw = a.W();
+		float bx = b.X(), by = b.Y(), bz = b.Z(), bw = b.W();
+		float r = (ax * bx) + (ay * by) + (az * bz) + (aw * bw);
+		float dot = a * b;
+		return FloatTest(dot, r);
+	}
+};
+
+class Vector4CompMul
+{
+public:
+	static const char* GetName() { return "Comp Mul"; }
+	bool operator()(const Vector4& a, const Vector4& b) const
+	{
+		float ax = a.X(), ay = a.Y(), az = a.Z(), aw = a.W();
+		float bx = b.X(), by = b.Y(), bz = b.Z(), bw = b.W();
+		float rx = (ax * bx), ry = (ay * by), rz = (az * bz), rw = (aw * bw);
+		Vector4 r = CompMul(a, b);
+		return FloatTest(rx, r.X()) && FloatTest(ry, r.Y()) && FloatTest(rz, r.Z()) && FloatTest(rw, r.W());
+	}
+};
+
+class Vector4CompDiv
+{
+public:
+	static const char* GetName() { return "Comp Div"; }
+	bool operator()(const Vector4& a, const Vector4& b) const
+	{
+		float ax = a.X(), ay = a.Y(), az = a.Z(), aw = a.W();
+		float bx = b.X(), by = b.Y(), bz = b.Z(), bw = b.W();
+		float rx = (ax / bx), ry = (ay / by), rz = (az / bz), rw = (aw / bw);
+		Vector4 r = CompDiv(a, b);
+		return FloatTest(rx, r.X()) && FloatTest(ry, r.Y()) && FloatTest(rz, r.Z()) && FloatTest(rw, r.W());
+	}
+};
 
 int main(int argc, char* argv[])
 {
@@ -617,6 +834,19 @@ int main(int argc, char* argv[])
 	vector3Suite.AddTest(new Vector3BinaryOpTest<Vector3CompDiv>());
 	vector3Suite.AddTest(new Vector3BinaryOpTest<Vector3CrossProduct>());
 	vector3Suite.RunTests();
+
+	TestSuite vector4Suite("Vector4");
+	vector4Suite.AddTest(new Vector4UnaryOpTest<Vector4Negation>());
+	vector4Suite.AddTest(new Vector4UnaryOpTest<Vector4Length>());
+	vector4Suite.AddTest(new Vector4UnaryOpTest<Vector4UnitVec>());
+	vector4Suite.AddTest(new Vector4UnaryOpTest<Vector4ScalarMultiplication>());
+	vector4Suite.AddTest(new Vector4UnaryOpTest<Vector4ScalarDivision>());
+	vector4Suite.AddTest(new Vector4BinaryOpTest<Vector4Addition>());
+	vector4Suite.AddTest(new Vector4BinaryOpTest<Vector4Subtraction>());
+	vector4Suite.AddTest(new Vector4BinaryOpTest<Vector4DotProduct>());
+	vector4Suite.AddTest(new Vector4BinaryOpTest<Vector4CompMul>());
+	vector4Suite.AddTest(new Vector4BinaryOpTest<Vector4CompDiv>());
+	vector4Suite.RunTests();
 
 	return 0;
 }

@@ -93,6 +93,13 @@ inline float Dot4(const VectorBase& a, const VectorBase& b)
 	__m128 r = _mm_mul_ps(a.data, b.data);
 	r = _mm_hadd_ps(r, r);
 	r = _mm_hadd_ps(r, r);
+
+	printf("a = (%f, %f, %f, %f)\n", a.X(), a.Y(), a.Z(), a.W());
+	printf("b = (%f, %f, %f, %f)\n", b.X(), b.Y(), b.Z(), b.W());
+	float dot = (a.X() * b.X()) + (a.Y() * b.Y()) + (a.Z() * b.Z()) + (a.W() * b.W());
+	printf("a * b = %f\n", dot);
+	Vector4 result(r);
+	printf("sse result = %f\n", result.X());
 	return *reinterpret_cast<float*>(&r); 
 #else
 	return (a.X() * b.X()) + (a.Y() * b.Y()) + (a.Z() * b.Z()) + (a.W() * b.W());
@@ -323,6 +330,26 @@ inline float operator*(const Vector4& a, const Vector4& b)
 	return Dot4(a, b);
 }
 
+inline Vector4 CompMul(const Vector4& a, const Vector4& b)
+{
+	return Vector4(a.X() * b.X(), a.Y() * b.Y(), a.Z() * b.Z(), a.W() * b.W());
+}
+
+inline Vector4 operator/(const Vector4& v, float denominator)
+{
+	return Vector4(v.X() / denominator, v.Y() / denominator, v.Z() / denominator, v.W() / denominator);
+}
+
+inline Vector4 operator/(float numerator, const Vector4& v)
+{
+	return Vector4(numerator / v.X(), numerator / v.Y(), numerator / v.Z(), numerator / v.W());
+}
+
+inline Vector4 CompDiv(const Vector4& a, const Vector4& b)
+{
+	return Vector4(a.X() / b.X(), a.Y() / b.Y(), a.Z() / b.Z(), a.W() / b.W());
+}
+
 inline float Len(const Vector4& v)
 {
 	return sqrt(v * v);
@@ -331,7 +358,7 @@ inline float Len(const Vector4& v)
 inline Vector4 UnitVec(const Vector4& v)
 {
 	float len = Len(v);
-	return v * (1.0f / len);
+	return v / len;
 }
 
 inline Quat::Quat(float xIn, float yIn, float zIn, float wIn) 
