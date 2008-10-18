@@ -422,6 +422,26 @@ inline Quat operator*(const Quat& q1, const Quat& q2)
 				-q1.X() * q2.X() - q1.Y() * q2.Y() - q1.Z() * q2.Z() + q1.W() * q2.W());
 }
 
+inline Quat CompMul(const Quat& a, const Quat& b)
+{
+	return Quat(a.X() * b.X(), a.Y() * b.Y(), a.Z() * b.Z(), a.W() * b.W());
+}
+
+inline Quat operator/(const Quat& v, float denominator)
+{
+	return Quat(v.X() / denominator, v.Y() / denominator, v.Z() / denominator, v.W() / denominator);
+}
+
+inline Quat operator/(float numerator, const Quat& v)
+{
+	return Quat(numerator / v.X(), numerator / v.Y(), numerator / v.Z(), numerator / v.W());
+}
+
+inline Quat CompDiv(const Quat& a, const Quat& b)
+{
+	return Quat(a.X() / b.X(), a.Y() / b.Y(), a.Z() / b.Z(), a.W() / b.W());
+}
+
 inline float Len(const Quat& v)
 {
 	return sqrt(Dot4(v, v));	
@@ -430,7 +450,7 @@ inline float Len(const Quat& v)
 inline Quat UnitVec(const Quat& v)
 {
 	float len = Len(v);
-	return v * (1.0f / len);	
+	return v / len;	
 }
 
 inline Matrix::Matrix(const Vector3& xAxis, const Vector3& yAxis, const Vector3& zAxis, const Vector3& trans)

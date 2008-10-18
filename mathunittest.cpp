@@ -903,6 +903,150 @@ public:
 	}
 };
 
+class QuatScalarMultiplication
+{
+public:
+	static const char* GetName() { return "Scalar Multiplication"; }
+	bool operator() (const Quat& a)
+	{
+		float ax = a.X(), ay = a.Y(), az = a.Z(), aw = a.W();
+		for (unsigned int i = 0; i < s_floatVec.size(); ++i)
+		{
+			// test (vector * scalar) and (scalar * vector)
+			float s = s_floatVec[i];
+			float r1x = ax * s, r1y = ay * s, r1z = az * s, r1w = aw * s;
+			float r2x = s * ax, r2y = s * ay, r2z = s * az, r2w = s * aw;
+			Quat r1 = a * s;
+			Quat r2 = s * a;
+			if (!(FloatTest(r1x, r1.X()) && FloatTest(r1y, r1.Y()) && FloatTest(r1z, r1.Z()) && FloatTest(r1w, r1.W()) &&
+				  FloatTest(r2x, r2.X()) && FloatTest(r2y, r2.Y()) && FloatTest(r2z, r2.Z()) && FloatTest(r2w, r2.W()) &&
+				  FloatTest(r1.X(), r2.X()) && FloatTest(r1.Y(), r2.Y()) && FloatTest(r1.Z(), r2.Z()) && FloatTest(r1.W(), r2.W())))
+			{
+				printf("s = %.5f", s);
+				return false;
+			}
+		}
+		return true;
+	}
+};
+
+class QuatScalarDivision
+{
+public:
+	static const char* GetName() { return "Scalar Division"; }
+	bool operator() (const Quat& a)
+	{
+		float ax = a.X(), ay = a.Y(), az = a.Z(), aw = a.W();
+		for (unsigned int i = 0; i < s_floatVec.size(); ++i)
+		{
+			// test (vector / scalar) and (scalar / vector)
+			float s = s_floatVec[i];
+			float r1x = ax / s, r1y = ay / s, r1z = az / s, r1w = aw / s;
+			float r2x = s / ax, r2y = s / ay, r2z = s / az, r2w = s / aw;
+			Quat r1 = a / s;
+			Quat r2 = s / a;
+
+			if (!(FloatTest(r1x, r1.X()) && FloatTest(r1y, r1.Y()) && FloatTest(r1z, r1.Z()) && FloatTest(r1w, r1.W()) &&
+				  FloatTest(r2x, r2.X()) && FloatTest(r2y, r2.Y()) && FloatTest(r2z, r2.Z()) && FloatTest(r2w, r2.W())))
+			{
+				printf("s = %.5f\n", s);
+				return false;
+			}
+		}
+		return true;
+	}
+};
+
+class QuatLength
+{
+public:
+	static const char* GetName() { return "Length"; }
+	bool operator() (const Quat& a)
+	{
+		float ax = a.X(), ay = a.Y(), az = a.Z(), aw = a.W();
+		float r = sqrt((ax * ax) + (ay * ay) + (az * az) + (aw * aw));
+		float len = Len(a);
+		return FloatTest(r, len);
+	}
+};
+
+class QuatUnitVec
+{
+public:
+	static const char* GetName() { return "UnitVec"; }
+	bool operator() (const Quat& a)
+	{
+		float ax = a.X(), ay = a.Y(), az = a.Z(), aw = a.W();
+		float len = sqrt((ax * ax) + (ay * ay) + (az * az) + (aw * aw));
+		float rx = ax / len, ry = ay / len, rz = az / len, rw = aw / len;
+		Quat r = UnitVec(a);
+		return FloatTest(rx, r.X()) && FloatTest(ry, r.Y()) && FloatTest(rz, r.Z()) && FloatTest(rw, r.W());
+	}
+};
+
+
+void QuatExp(float* rx, float* ry, float* rz, float* rw, float qx, float qy, float qz, float qw)
+{
+	// TODO: convert to float operations...
+
+	float angle = Len(Quat(qx, qy, qz, qw));
+	Vector3 n = UnitVec(Vector3(qx, qy, qz)) * sin(angle/2.0f);
+	*rx = n.X();
+	*ry = n.Y();
+	*rz = n.Z();
+	*rw = cos(angle/2.0f);
+}
+
+class QuatExponential
+{
+public:
+	static const char* GetName() { return "Quat Exponential"; }
+	bool operator() (const Quat& a)
+	{
+		float ax = a.X(), ay = a.Y(), az = a.Z(), aw = a.W();
+		float rx, ry, rz, rw;
+		QuatExp(&rx, &ry, &rz, &rw, ax, ay, az, aw);
+		Quat r = QuatExp(a);
+		return FloatTest(rx, r.X()) && FloatTest(ry, r.Y()) && FloatTest(rz, r.Z()) && FloatTest(rw, r.W());
+	}
+};
+
+
+void QuatLog(float* rx, float* ry, float* rz, float* rw, float qx, float qy, float qz, float qw)
+{
+	float cos_a = qw;
+	if (cos_a > 1.0f) cos_a = 1.0f;
+	if (cos_a < -1.0f) cos_a = -1.0f;
+
+    float sin_a = (float)sqrt(1.0f - cos_a * cos_a);
+
+    if (fabs(sin_a) < 0.0005f)
+		sin_a = 1.0f;
+	else
+		sin_a = 1.f/sin_a;
+
+    float angle = 2.0f * (float)acos(cos_a);
+
+    *rx = qx * sin_a * angle;
+    *ry = qy * sin_a * angle;
+    *rz = qz * sin_a * angle;
+	*rw = 0.0f;
+}
+
+class QuatLogarithm
+{
+public:
+	static const char* GetName() { return "Quat Logarithm"; }
+	bool operator() (const Quat& a)
+	{
+		float ax = a.X(), ay = a.Y(), az = a.Z(), aw = a.W();
+		float rx, ry, rz, rw;
+		QuatLog(&rx, &ry, &rz, &rw, ax, ay, az, aw);
+		Quat r = QuatLog(a);
+		return FloatTest(rx, r.X()) && FloatTest(ry, r.Y()) && FloatTest(rz, r.Z()) && FloatTest(rw, r.W());
+	}
+};
+
 template <class BinaryOp>
 class QuatBinaryOpTest : public TestCase
 {
@@ -929,7 +1073,6 @@ public:
 		return true;
 	}
 };
-
 
 class QuatAddition
 {
@@ -959,6 +1102,33 @@ public:
 	}
 };
 
+class QuatCompMul
+{
+public:
+	static const char* GetName() { return "Comp Mul"; }
+	bool operator()(const Quat& a, const Quat& b) const
+	{
+		float ax = a.X(), ay = a.Y(), az = a.Z(), aw = a.W();
+		float bx = b.X(), by = b.Y(), bz = b.Z(), bw = b.W();
+		float rx = (ax * bx), ry = (ay * by), rz = (az * bz), rw = (aw * bw);
+		Quat r = CompMul(a, b);
+		return FloatTest(rx, r.X()) && FloatTest(ry, r.Y()) && FloatTest(rz, r.Z()) && FloatTest(rw, r.W());
+	}
+};
+
+class QuatCompDiv
+{
+public:
+	static const char* GetName() { return "Comp Div"; }
+	bool operator()(const Quat& a, const Quat& b) const
+	{
+		float ax = a.X(), ay = a.Y(), az = a.Z(), aw = a.W();
+		float bx = b.X(), by = b.Y(), bz = b.Z(), bw = b.W();
+		float rx = (ax / bx), ry = (ay / by), rz = (az / bz), rw = (aw / bw);
+		Quat r = CompDiv(a, b);
+		return FloatTest(rx, r.X()) && FloatTest(ry, r.Y()) && FloatTest(rz, r.Z()) && FloatTest(rw, r.W());
+	}
+};
 
 int main(int argc, char* argv[])
 {
@@ -1008,8 +1178,16 @@ int main(int argc, char* argv[])
 	quatSuite.AddTest(new QuatUnaryOpTest<QuatRotate>());
 	quatSuite.AddTest(new QuatUnaryOpTest<QuatConjugate>());
 	quatSuite.AddTest(new QuatUnaryOpTest<QuatNegation>());
+	quatSuite.AddTest(new QuatUnaryOpTest<QuatScalarMultiplication>());
+	quatSuite.AddTest(new QuatUnaryOpTest<QuatScalarDivision>());
+	quatSuite.AddTest(new QuatUnaryOpTest<QuatLength>());
+	quatSuite.AddTest(new QuatUnaryOpTest<QuatUnitVec>());
+	quatSuite.AddTest(new QuatUnaryOpTest<QuatExponential>());
+	quatSuite.AddTest(new QuatUnaryOpTest<QuatLogarithm>());
 	quatSuite.AddTest(new QuatBinaryOpTest<QuatAddition>());
 	quatSuite.AddTest(new QuatBinaryOpTest<QuatSubtraction>());
+	quatSuite.AddTest(new QuatBinaryOpTest<QuatCompMul>());
+	quatSuite.AddTest(new QuatBinaryOpTest<QuatCompDiv>());
 	quatSuite.RunTests();
 
 	return 0;

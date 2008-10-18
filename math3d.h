@@ -128,10 +128,15 @@ Quat operator-(const Quat& a, const Quat& b);
 Quat operator+(const Quat& a, const Quat& b);
 Quat operator*(const Quat& v, float factor);
 Quat operator*(float factor, const Quat& v);
-Quat operator*(const Quat& a, const Quat& b);
+Quat operator*(const Quat& a, const Quat& b);  // quat multiply
+Quat CompMul(const Quat& a, const Quat& b);
+Quat operator/(const Quat& v, float denominator);
+Quat operator/(float numerator, const Quat& v);
+Quat CompDiv(const Quat& a, const Quat& b);
 float Len(const Quat& v);
 Quat UnitVec(const Quat& v);
 Quat QuatExp(const Quat& q);
+Quat QuatLog(const Quat& q);
 
 // column major
 struct Matrix
