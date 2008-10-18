@@ -37,7 +37,7 @@ float RandomNormalizedFloat()
 }
 
 // -range to range
-float RandomFloat(float range = 10000.0f)
+float RandomFloat(float range = 100.0f)
 {
 	return (((float)rand() / (RAND_MAX / 2)) - 1.0f) * range;
 }
