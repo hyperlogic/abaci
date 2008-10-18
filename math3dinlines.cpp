@@ -378,10 +378,10 @@ inline Quat::Quat(const Vector3& axis, float angle)
 	W() = cos(angle/2.0f);
 }
 
-inline Vector3 Quat::Rotate(const Vector3& v) const
+inline Vector3 Rotate(const Quat& q, const Vector3& v)
 {
-	Quat q = *this * Quat(v.X(), v.Y(), v.Z(), 0.0f) * ~*this;
-	return Vector3(q.X(), q.Y(), q.Z());
+	Quat r = q * Quat(v.X(), v.Y(), v.Z(), 0.0f) * ~q;
+	return Vector3(r.X(), r.Y(), r.Z());
 }
 
 inline Quat operator~(const Quat& v)

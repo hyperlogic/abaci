@@ -13,6 +13,7 @@ std::vector<float> s_floatVec;
 std::vector<Vector2> s_vector2Vec;
 std::vector<Vector3> s_vector3Vec;
 std::vector<Vector4> s_vector4Vec;
+std::vector<Quat> s_quatVec;
 std::vector<Matrix> s_matrixVec;
 
 bool FuzzyEqual(float rhs, float lhs)
@@ -131,6 +132,14 @@ void InitTestData()
 								 Vector4(inf, inf, inf, inf), 
 								 Vector4(inf, inf, inf, inf), 
 								 Vector4(inf, inf, inf, inf)));
+
+	// Generate the quats from the vec4s
+	for(unsigned int i = 0; i < s_vector4Vec.size(); ++i)
+	{
+		Vector4 v = s_vector4Vec[i];
+		v = UnitVec(v);
+		s_quatVec.push_back(Quat(v.X(), v.Y(), v.Z(), v.W()));
+	}
 
 	// TODO: nans, q-nans & denormalized...
 }
@@ -804,6 +813,71 @@ public:
 	}
 };
 
+
+//
+// Quat tests
+//
+
+template <class UnaryOp>
+class QuatUnaryOpTest : public TestCase
+{
+public:
+	QuatUnaryOpTest() : TestCase(UnaryOp::GetName()) {}
+	~QuatUnaryOpTest() {}
+
+	bool Test() const
+	{
+		UnaryOp op;
+		for (unsigned int i = 0; i < s_quatVec.size(); ++i)
+		{
+			Quat a = s_quatVec[i];
+			if (!op(a))
+			{
+				printf("a = (%.5f, %.5f, %.5f, %.5f)", a.X(), a.Y(), a.Z(), a.W());
+				return false;
+			}
+		}
+		return true;
+	}
+};
+
+void QuatMul(float* rx, float* ry, float* rz, float* rw, float ax, float ay, float az, float aw, float bx, float by, float bz, float bw)
+{
+    *rx =  ax * bw + ay * bz - az * by + aw * bx;
+    *ry = -ax * bz + ay * bw + az * bx + aw * by;
+    *rz =  ax * by - ay * bx + az * bw + aw * bz;
+    *rw = -ax * bx - ay * by - az * bz + aw * bw;
+}
+
+class QuatRotate
+{
+public:
+	static const char* GetName() { return "Rotate"; }
+	bool operator() (const Quat& a)
+	{
+		float ax = a.X(), ay = a.Y(), az = a.Z(), aw = a.W();
+		float rx, ry, rz, rw;
+
+		for (unsigned int i = 0; i < s_vector3Vec.size(); ++i)
+		{
+			Vector3 v = s_vector3Vec[i];
+			float bx = v.X(), by = v.Y(), bz = v.Z(), bw = 0.0f;
+
+			QuatMul(&rx, &ry, &rz, &rw, ax, ay, az, aw, bx, by, bz, bw);
+			QuatMul(&rx, &ry, &rz, &rw, rx, ry, rz, rw, -ax, -ay, -az, aw);
+
+			Vector3 r = Rotate(a, v);
+			if (!(FloatTest(rx, r.X()) && FloatTest(ry, r.Y()) && FloatTest(rz, r.Z())))
+			{
+				printf("v = (%.5f, %.5f, %.5f)", v.X(), v.Y(), v.Z());
+				return false;
+			}
+		}
+		return true;
+	}
+};
+
+
 int main(int argc, char* argv[])
 {
 	InitTestData();
@@ -847,6 +921,10 @@ int main(int argc, char* argv[])
 	vector4Suite.AddTest(new Vector4BinaryOpTest<Vector4CompMul>());
 	vector4Suite.AddTest(new Vector4BinaryOpTest<Vector4CompDiv>());
 	vector4Suite.RunTests();
+
+	TestSuite quatSuite("Quat");
+	quatSuite.AddTest(new QuatUnaryOpTest<QuatRotate>());
+	quatSuite.RunTests();
 
 	return 0;
 }

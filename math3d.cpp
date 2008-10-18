@@ -32,34 +32,34 @@ Quat QuatLog(const Quat& q)
 
 Matrix::Matrix(const Quat& q)
 {
-	SetXAxis(q.Rotate(Vector3(1.0f,0.0f,0.0f)));
-	SetYAxis(q.Rotate(Vector3(0.0f,1.0f,0.0f)));
-	SetZAxis(q.Rotate(Vector3(0.0f,0.0f,1.0f)));
+	SetXAxis(Rotate(q, Vector3(1.0f,0.0f,0.0f)));
+	SetYAxis(Rotate(q, Vector3(0.0f,1.0f,0.0f)));
+	SetZAxis(Rotate(q, Vector3(0.0f,0.0f,1.0f)));
 	SetTrans(Vector3(0.0f,0.0f,0.0f));
 }
 
 Matrix::Matrix(const Quat& q, const Vector3& trans)
 {
-	SetXAxis(q.Rotate(Vector3(1.0f,0.0f,0.0f)));
-	SetYAxis(q.Rotate(Vector3(0.0f,1.0f,0.0f)));
-	SetZAxis(q.Rotate(Vector3(0.0f,0.0f,1.0f)));
-	SetTrans(trans);	
+	SetXAxis(Rotate(q, Vector3(1.0f,0.0f,0.0f)));
+	SetYAxis(Rotate(q, Vector3(0.0f,1.0f,0.0f)));
+	SetZAxis(Rotate(q, Vector3(0.0f,0.0f,1.0f)));
+	SetTrans(trans);
 }
 
 Matrix::Matrix(const Vector3& scale, const Quat& q, const Vector3& trans)
 {
-	SetXAxis(q.Rotate(Vector3(scale.X(),0.0f,0.0f)));
-	SetYAxis(q.Rotate(Vector3(0.0f,scale.Y(),0.0f)));
-	SetZAxis(q.Rotate(Vector3(0.0f,0.0f,scale.Z())));
+	SetXAxis(Rotate(q, Vector3(scale.X(),0.0f,0.0f)));
+	SetYAxis(Rotate(q, Vector3(0.0f,scale.Y(),0.0f)));
+	SetZAxis(Rotate(q, Vector3(0.0f,0.0f,scale.Z())));
 	SetTrans(trans);
 }
 
 Matrix::Matrix(const Vector3 axis, float angle)
 {
 	Quat q(axis, angle);
-	SetXAxis(q.Rotate(Vector3(1.0f,0.0f,0.0f)));
-	SetYAxis(q.Rotate(Vector3(0.0f,1.0f,0.0f)));
-	SetZAxis(q.Rotate(Vector3(0.0f,0.0f,1.0f)));
+	SetXAxis(Rotate(q, Vector3(1.0f,0.0f,0.0f)));
+	SetYAxis(Rotate(q, Vector3(0.0f,1.0f,0.0f)));
+	SetZAxis(Rotate(q, Vector3(0.0f,0.0f,1.0f)));
 	SetTrans(Vector3(0.0f,0.0f,0.0f));	
 }
 

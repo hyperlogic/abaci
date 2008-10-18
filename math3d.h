@@ -119,10 +119,9 @@ struct Quat : public Vector4
 	Quat() {}
 	Quat(float xIn, float yIn, float zIn, float wIn);
 	Quat(const Vector3& axis, float angle);
-	
-	Vector3 Rotate(const Vector3& v) const;
 };
 
+Vector3 Rotate(const Quat& q, const Vector3& v);
 Quat operator~(const Quat& v);	// conjugate
 Quat operator-(const Quat& v);
 Quat operator-(const Quat& a, const Quat& b);
