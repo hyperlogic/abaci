@@ -3,7 +3,7 @@
 
 Quat QuatExp(const Quat& q)
 {
-	float angle = Len(q);
+	float angle = Len(Vector3(q.X(), q.Y(), q.Z()));
 	Vector3 n = UnitVec(Vector3(q.X(), q.Y(), q.Z())) * sin(angle/2.0f);
 	return Quat(n.X(), n.Y(), n.Z(), cos(angle/2.0f));
 }

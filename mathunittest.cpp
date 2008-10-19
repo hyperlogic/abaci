@@ -984,17 +984,15 @@ public:
 	}
 };
 
-
 void QuatExp(float* rx, float* ry, float* rz, float* rw, float qx, float qy, float qz, float qw)
 {
-	// TODO: convert to float operations...
+	float angle = sqrt((qx * qx) + (qy * qy) + (qz * qz));
+	float sin_a = sin(angle / 2.0f);
 
-	float angle = Len(Quat(qx, qy, qz, qw));
-	Vector3 n = UnitVec(Vector3(qx, qy, qz)) * sin(angle/2.0f);
-	*rx = n.X();
-	*ry = n.Y();
-	*rz = n.Z();
-	*rw = cos(angle/2.0f);
+	*rx = (qx / angle) * sin_a;
+	*ry = (qy / angle) * sin_a;
+	*rz = (qz / angle) * sin_a;
+	*rw = cos(angle / 2.0f);
 }
 
 class QuatExponential
@@ -1010,7 +1008,6 @@ public:
 		return FloatTest(rx, r.X()) && FloatTest(ry, r.Y()) && FloatTest(rz, r.Z()) && FloatTest(rw, r.W());
 	}
 };
-
 
 void QuatLog(float* rx, float* ry, float* rz, float* rw, float qx, float qy, float qz, float qw)
 {
