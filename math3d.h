@@ -177,9 +177,9 @@ struct Matrix
 };
 
 Matrix operator*(const Matrix& a, const Matrix& b);
-Vector3 Mul3x3(const Matrix& m, const Vector3& v);
-Vector3 Mul3x4(const Matrix& m, const Vector3& v);
-Vector4 Mul4x4(const Matrix& m, const Vector4& v);
+Vector3 Transform3x3(const Matrix& m, const Vector3& v);
+Vector3 Transform3x4(const Matrix& m, const Vector3& v);
+Vector4 Transform4x4(const Matrix& m, const Vector4& v);
 Matrix Transpose(const Matrix& m);
 Matrix OrthonormalInverse(const Matrix& m);
 

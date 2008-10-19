@@ -77,6 +77,6 @@ Matrix OrthonormalInverse(const Matrix& m)
 	Matrix r(m);
 	r.SetTrans(Vector3(0, 0, 0));
 	r = Transpose(r);
-	r.SetTrans(-Mul3x4(r, m.GetTrans()));
+	r.SetTrans(-Transform3x4(r, m.GetTrans()));
 	return r;
 }

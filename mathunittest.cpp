@@ -813,7 +813,6 @@ public:
 	}
 };
 
-
 //
 // Quat tests
 //
@@ -1127,6 +1126,141 @@ public:
 	}
 };
 
+//
+// Matrix tests
+//
+
+template <class UnaryOp>
+class MatrixUnaryOpTest : public TestCase
+{
+public:
+	MatrixUnaryOpTest() : TestCase(UnaryOp::GetName()) {}
+	~MatrixUnaryOpTest() {}
+
+	bool Test() const
+	{
+		UnaryOp op;
+		for (unsigned int i = 0; i < s_matrixVec.size(); ++i)
+		{
+			Matrix m = s_matrixVec[i];
+			if (!op(m))
+			{
+				Vector4 row0 = m.row0;
+				Vector4 row1 = m.row1;
+				Vector4 row2 = m.row2;
+				Vector4 row3 = m.row3;
+				printf("m = (%.5f, %.5f, %.5f, %.5f)", row0.X(), row0.Y(), row0.Z(), row0.W());
+				printf(", (%.5f, %.5f, %.5f, %.5f)", row1.X(), row1.Y(), row1.Z(), row1.W());
+				printf(", (%.5f, %.5f, %.5f, %.5f)", row2.X(), row2.Y(), row2.Z(), row2.W());
+				printf(", (%.5f, %.5f, %.5f, %.5f)", row3.X(), row3.Y(), row3.Z(), row3.W());
+				return false;
+			}
+		}
+		return true;
+	}
+};
+
+void MatrixToFloatVec(float *fv, const Matrix& m)
+{
+	for(int r = 0; r < 4; ++r)
+	{
+		for(int c = 0; c < 4; ++c)
+		{
+			fv[4 * r + c] = m.GetElem(r,c);
+		}
+	}
+}
+
+class MatrixTransform3x3
+{
+public:
+	static const char* GetName() { return "Transform3x3"; }
+	bool operator() (const Matrix& a)
+	{
+		float fv[16];
+		MatrixToFloatVec(fv, a);
+
+		for (unsigned int i = 0; i < s_vector3Vec.size(); ++i)
+		{
+			Vector3 v = s_vector3Vec[i];
+			float bx = v.X(), by = v.Y(), bz = v.Z();
+
+			float rx = fv[0] * bx + fv[1] * by + fv[2] * bz;
+			float ry = fv[4] * bx + fv[5] * by + fv[6] * bz;
+			float rz = fv[8] * bx + fv[9] * by + fv[10] * bz;
+
+			Vector3 r = Transform3x3(a, v);
+			if (!(FloatTest(rx, r.X()) && FloatTest(ry, r.Y()) && FloatTest(rz, r.Z())))
+			{
+				printf("v = (%.5f, %.5f, %.5f)", v.X(), v.Y(), v.Z());
+				return false;
+			}
+		}
+		return true;
+	}
+};
+
+
+class MatrixTransform3x4
+{
+public:
+	static const char* GetName() { return "Transform3x4"; }
+	bool operator() (const Matrix& a)
+	{
+		float fv[16];
+		MatrixToFloatVec(fv, a);
+
+		for (unsigned int i = 0; i < s_vector3Vec.size(); ++i)
+		{
+			Vector3 v = s_vector3Vec[i];
+			float bx = v.X(), by = v.Y(), bz = v.Z();
+
+			float rx = fv[0] * bx + fv[1] * by + fv[2] * bz + fv[3];
+			float ry = fv[4] * bx + fv[5] * by + fv[6] * bz + fv[7];
+			float rz = fv[8] * bx + fv[9] * by + fv[10] * bz + fv[11];
+
+			Vector3 r = Transform3x4(a, v);
+			if (!(FloatTest(rx, r.X()) && FloatTest(ry, r.Y()) && FloatTest(rz, r.Z())))
+			{
+				printf("v = (%.5f, %.5f, %.5f)", v.X(), v.Y(), v.Z());
+				return false;
+			}
+		}
+		return true;
+	}
+};
+
+
+class MatrixTransform4x4
+{
+public:
+	static const char* GetName() { return "Transform4x4"; }
+	bool operator() (const Matrix& a)
+	{
+		float fv[16];
+		MatrixToFloatVec(fv, a);
+
+		for (unsigned int i = 0; i < s_vector4Vec.size(); ++i)
+		{
+			Vector4 v = s_vector4Vec[i];
+			float bx = v.X(), by = v.Y(), bz = v.Z(), bw = v.W();
+
+			float rx = fv[0] * bx + fv[1] * by + fv[2] * bz + fv[3] * bw;
+			float ry = fv[4] * bx + fv[5] * by + fv[6] * bz + fv[7] * bw;
+			float rz = fv[8] * bx + fv[9] * by + fv[10] * bz + fv[11] * bw;
+			float rw = fv[12] * bx + fv[13] * by + fv[14] * bz + fv[15] * bw;
+
+			Vector4 r = Transform4x4(a, v);
+			if (!(FloatTest(rx, r.X()) && FloatTest(ry, r.Y()) && FloatTest(rz, r.Z()) && FloatTest(rw, r.W())))
+			{
+				printf("v = (%.5f, %.5f, %.5f, %.5f)", v.X(), v.Y(), v.Z(), v.W());
+				return false;
+			}
+		}
+		return true;
+	}
+};
+
 int main(int argc, char* argv[])
 {
 	InitTestData();
@@ -1186,6 +1320,12 @@ int main(int argc, char* argv[])
 	quatSuite.AddTest(new QuatBinaryOpTest<QuatCompMul>());
 	quatSuite.AddTest(new QuatBinaryOpTest<QuatCompDiv>());
 	quatSuite.RunTests();
+
+	TestSuite matrixSuite("Matrix");
+	matrixSuite.AddTest(new MatrixUnaryOpTest<MatrixTransform3x3>());
+	matrixSuite.AddTest(new MatrixUnaryOpTest<MatrixTransform3x4>());
+	matrixSuite.AddTest(new MatrixUnaryOpTest<MatrixTransform4x4>());
+	matrixSuite.RunTests();
 
 	return 0;
 }

@@ -574,17 +574,17 @@ inline Vector4 Matrix::GetCol(int c) const
 	return Vector4(row0[c], row1[c], row2[c], row3[c]);
 }
 
-inline Vector3 Mul3x3(const Matrix& m, const Vector3& v)
+inline Vector3 Transform3x3(const Matrix& m, const Vector3& v)
 {
 	return Vector3(Dot3(m.row0, v), Dot3(m.row1, v), Dot3(m.row2, v));
 }
 
-inline Vector3 Mul3x4(const Matrix& m, const Vector3& v)
+inline Vector3 Transform3x4(const Matrix& m, const Vector3& v)
 {
 	return Vector3(Dot3(m.row0, v) + m.row0.W(), Dot3(m.row1, v) + m.row1.W(), Dot3(m.row2, v) + m.row2.W());
 }
 
-inline Vector4 Mul4x4(const Matrix& m, const Vector4& v)
+inline Vector4 Transform4x4(const Matrix& m, const Vector4& v)
 {
 	return Vector4(m.row0 * v, m.row1 * v, m.row2 * v, m.row3 * v);
 }
