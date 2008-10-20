@@ -3,13 +3,6 @@
 
 #include <math.h>
 
-//#define USE_SSE
-
-#ifdef USE_SSE
-#include <xmmintrin.h>  // sse
-#include <pmmintrin.h>  // sse3
-#endif
-
 #define PI 3.14159265f
 
 struct Matrix;
@@ -34,11 +27,7 @@ struct VectorBase
 	float& Z();
 	float& W();
 
-#ifdef USE_SSE
-	__m128 data;
-#else
 	float data[4];
-#endif
 };
 
 float Dot2(const VectorBase& a, const VectorBase& b);
@@ -68,9 +57,6 @@ Vector2 UnitVec(const Vector2& v);
 struct Vector3 : public VectorBase
 {
 	Vector3() {}
-#ifdef USE_SSE
-	Vector3(__m128 dataIn) { data = dataIn; }
-#endif
 	Vector3(const Vector2& v, float zIn);
 	Vector3(float xIn, float yIn, float zIn);
 	void Set(float xIn, float yIn, float zIn);
@@ -93,9 +79,6 @@ Vector3 operator%(const Vector3& a, const Vector3& b);	// cross product
 struct Vector4 : public VectorBase
 {
 	Vector4() {}
-#ifdef USE_SSE
-	Vector4(__m128 dataIn) { data = dataIn; }
-#endif
 	Vector4(const Vector3& v, float wIn);
 	Vector4(float xIn, float yIn, float zIn, float wIn);
 	void Set(float xIn, float yIn, float zIn, float wIn);

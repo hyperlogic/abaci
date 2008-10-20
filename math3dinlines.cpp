@@ -1,20 +1,6 @@
 #include "math3d.h"
 #include <stdio.h>
 
-#ifdef USE_SSE
-
-inline const float& VectorBase::operator[](int i) const 
-{ 
-	return reinterpret_cast<const float*>(&data)[i]; 
-}
-
-inline float& VectorBase::operator[](int i) 
-{ 
-	return reinterpret_cast<float*>(&data)[i]; 
-}
-
-#else
-
 inline const float& VectorBase::operator[](int i) const 
 { 
 	return data[i]; 
@@ -24,8 +10,6 @@ inline float& VectorBase::operator[](int i)
 { 
 	return data[i]; 
 }
-
-#endif
 
 inline const float& VectorBase::X() const 
 { 
@@ -89,21 +73,7 @@ inline float Dot3(const VectorBase& a, const VectorBase& b)
 
 inline float Dot4(const VectorBase& a, const VectorBase& b)
 {
-#ifdef USE_SSE
-	__m128 r = _mm_mul_ps(a.data, b.data);
-	r = _mm_hadd_ps(r, r);
-	r = _mm_hadd_ps(r, r);
-
-	printf("a = (%f, %f, %f, %f)\n", a.X(), a.Y(), a.Z(), a.W());
-	printf("b = (%f, %f, %f, %f)\n", b.X(), b.Y(), b.Z(), b.W());
-	float dot = (a.X() * b.X()) + (a.Y() * b.Y()) + (a.Z() * b.Z()) + (a.W() * b.W());
-	printf("a * b = %f\n", dot);
-	Vector4 result(r);
-	printf("sse result = %f\n", result.X());
-	return *reinterpret_cast<float*>(&r); 
-#else
 	return (a.X() * b.X()) + (a.Y() * b.Y()) + (a.Z() * b.Z()) + (a.W() * b.W());
-#endif
 }
 
 inline Vector2::Vector2(float xIn, float yIn) 
@@ -212,11 +182,7 @@ inline Vector3 operator-(const Vector3& a, const Vector3& b)
 
 inline Vector3 operator+(const Vector3& a, const Vector3& b)
 {
-#ifdef USE_SSE
-	return Vector3(_mm_add_ps(a.data, b.data));
-#else
 	return Vector3(a.X() + b.X(), a.Y() + b.Y(), a.Z() + b.Z());
-#endif
 }
 
 inline Vector3 operator*(const Vector3& v, float factor)
@@ -308,11 +274,7 @@ inline Vector4 operator-(const Vector4& a, const Vector4& b)
 
 inline Vector4 operator+(const Vector4& a, const Vector4& b)
 {
-#ifdef USE_SSE
-	return Vector4(_mm_add_ps(a.data, b.data));
-#else
 	return Vector4(a.X() + b.X(), a.Y() + b.Y(), a.Z() + b.Z(), a.W() + b.W());
-#endif
 }
 
 inline Vector4 operator*(const Vector4& v, float factor)
