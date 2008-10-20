@@ -1200,7 +1200,6 @@ public:
 	}
 };
 
-
 class MatrixTransform3x4
 {
 public:
@@ -1230,7 +1229,6 @@ public:
 	}
 };
 
-
 class MatrixTransform4x4
 {
 public:
@@ -1258,6 +1256,84 @@ public:
 			}
 		}
 		return true;
+	}
+};
+
+template <class BinaryOp>
+class MatrixBinaryOpTest : public TestCase
+{
+public:
+	MatrixBinaryOpTest() : TestCase(BinaryOp::GetName()) {}
+	~MatrixBinaryOpTest() {}
+
+	bool Test() const
+	{
+		BinaryOp op;
+		for (unsigned int i = 0; i < s_matrixVec.size(); ++i)
+		{
+			for (unsigned int j = 0; j < s_matrixVec.size(); ++j)
+			{
+				Matrix a = s_matrixVec[i];
+				Matrix b = s_matrixVec[j];
+				if (!op(a, b))
+				{
+					Vector4 row0 = a.row0;
+					Vector4 row1 = a.row1;
+					Vector4 row2 = a.row2;
+					Vector4 row3 = a.row3;
+					printf("a = (%.5f, %.5f, %.5f, %.5f)", row0.X(), row0.Y(), row0.Z(), row0.W());
+					printf(", (%.5f, %.5f, %.5f, %.5f)", row1.X(), row1.Y(), row1.Z(), row1.W());
+					printf(", (%.5f, %.5f, %.5f, %.5f)", row2.X(), row2.Y(), row2.Z(), row2.W());
+					printf(", (%.5f, %.5f, %.5f, %.5f)", row3.X(), row3.Y(), row3.Z(), row3.W());
+
+					row0 = b.row0;
+					row1 = b.row1;
+					row2 = b.row2;
+					row3 = b.row3;
+					printf(" b = (%.5f, %.5f, %.5f, %.5f)", row0.X(), row0.Y(), row0.Z(), row0.W());
+					printf(", (%.5f, %.5f, %.5f, %.5f)", row1.X(), row1.Y(), row1.Z(), row1.W());
+					printf(", (%.5f, %.5f, %.5f, %.5f)", row2.X(), row2.Y(), row2.Z(), row2.W());
+					printf(", (%.5f, %.5f, %.5f, %.5f)", row3.X(), row3.Y(), row3.Z(), row3.W());
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+};
+
+
+
+class MatrixMultiplication
+{
+public:
+	static const char* GetName() { return "Multiplication"; }
+	bool operator()(const Matrix& a, const Matrix& b) const
+	{
+		float afv[16], bfv[16];
+		MatrixToFloatVec(afv, a);
+		MatrixToFloatVec(bfv, b);
+
+		float rfv[16];
+		static int ri[4][4] = {{0, 1, 2, 3}, {4, 5, 6, 7}, {8, 9, 10, 11}, {12, 13, 14, 15}};
+		static int ci[4][4] = {{0, 4, 8, 12}, {1, 5, 9, 13}, {2, 6, 10, 14}, {3, 7, 11, 15}};
+		for (int r = 0; r < 4; ++r)
+		{
+			for (int c = 0; c < 4; ++c)
+			{
+				float terms[4];				
+				for (int i = 0; i < 4; ++i)
+					terms[i] = afv[ri[r][i]] * bfv[ci[c][i]];
+				rfv[r * 4 + c] = terms[0] + terms[1] + terms[2] + terms[3];
+			}
+		}
+
+		Matrix r = a * b;
+
+		return FloatTest(rfv[0], r.GetElem(0,0)) && FloatTest(rfv[1], r.GetElem(0,1)) && FloatTest(rfv[2], r.GetElem(0,2)) && FloatTest(rfv[3], r.GetElem(0,3)) &&
+		    FloatTest(rfv[4], r.GetElem(1,0)) && FloatTest(rfv[5], r.GetElem(1,1)) && FloatTest(rfv[6], r.GetElem(1,2)) && FloatTest(rfv[7], r.GetElem(1,3)) &&
+			FloatTest(rfv[8], r.GetElem(2,0)) && FloatTest(rfv[9], r.GetElem(2,1)) && FloatTest(rfv[10], r.GetElem(2,2)) && FloatTest(rfv[11], r.GetElem(2,3)) &&
+			FloatTest(rfv[12], r.GetElem(3,0)) && FloatTest(rfv[13], r.GetElem(3,1)) && FloatTest(rfv[14], r.GetElem(3,2)) && FloatTest(rfv[15], r.GetElem(3,3));
 	}
 };
 
@@ -1325,7 +1401,21 @@ int main(int argc, char* argv[])
 	matrixSuite.AddTest(new MatrixUnaryOpTest<MatrixTransform3x3>());
 	matrixSuite.AddTest(new MatrixUnaryOpTest<MatrixTransform3x4>());
 	matrixSuite.AddTest(new MatrixUnaryOpTest<MatrixTransform4x4>());
+	matrixSuite.AddTest(new MatrixBinaryOpTest<MatrixMultiplication>());
+	
+	// TODO: matrix from quat
+	// TODO: matrix from quat & trans
+	// TODO: matrix from quat, trans & scale
+	// TODO: matrix from axis angle.
+	// TODO: matrix set scale.
+	// TODO: make projection
+	// TODO: make look-at
+	// TODO: make ident
 	matrixSuite.RunTests();
+
+	// TODO: Rad2Deg
+	// TODO: Deg2Rad
+
 
 	return 0;
 }
