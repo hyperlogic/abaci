@@ -2,7 +2,7 @@
 
 GCC = g++
 SYMBOLS = false
-OPT = false
+OPT = true
 
 # symbol flag
 ifeq ($(SYMBOLS),true)

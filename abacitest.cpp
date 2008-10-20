@@ -2,11 +2,8 @@
 #include <vector>
 #include <stdio.h>
 #include <stdlib.h>
+#include <float.h>
 #include "unittest.h"
-
-#include <CoreServices/CoreServices.h>
-#include <mach/mach.h>
-#include <mach/mach_time.h>
 
 using namespace abaci;
 
@@ -47,7 +44,7 @@ float RandomFloat(float range = 100.0f)
 
 void InitTestData()
 {
-	srand((unsigned int)mach_absolute_time());
+	srand((unsigned int)666);
 
 	// add random values
 	const int RANDOM_DATA_SIZE = 64;
@@ -1417,7 +1414,6 @@ int main(int argc, char* argv[])
 
 	// TODO: Rad2Deg
 	// TODO: Deg2Rad
-
 
 	return 0;
 }
