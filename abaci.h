@@ -1,5 +1,5 @@
-#ifndef MATH3D_H
-#define MATH3D_H
+#ifndef ABACI_H
+#define ABACI_H
 
 #include <math.h>
 
@@ -167,6 +167,6 @@ Matrix Transpose(const Matrix& m);
 Matrix OrthonormalInverse(const Matrix& m);
 
 // inlines
-#include "math3dinlines.cpp"
+#include "abaciinlines.cpp"
 
 #endif

@@ -1,6 +1,3 @@
-#include "math3d.h"
-#include <stdio.h>
-
 inline const float& VectorBase::operator[](int i) const 
 { 
 	return data[i]; 
