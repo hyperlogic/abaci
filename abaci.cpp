@@ -1,6 +1,9 @@
 #include "abaci.h"
 #include <stdio.h>
 
+namespace abaci
+{
+
 Quat QuatExp(const Quat& q)
 {
 	float angle = Len(Vector3(q.X(), q.Y(), q.Z()));
@@ -79,4 +82,6 @@ Matrix OrthonormalInverse(const Matrix& m)
 	r = Transpose(r);
 	r.SetTrans(-Transform3x4(r, m.GetTrans()));
 	return r;
+}
+
 }

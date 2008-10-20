@@ -8,6 +8,8 @@
 #include <mach/mach.h>
 #include <mach/mach_time.h>
 
+using namespace abaci;
+
 // static test containers
 std::vector<float> s_floatVec;
 std::vector<Vector2> s_vector2Vec;

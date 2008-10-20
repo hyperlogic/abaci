@@ -3,6 +3,9 @@
 
 #include <math.h>
 
+namespace abaci
+{
+
 #define PI 3.14159265f
 
 struct Matrix;
@@ -168,5 +171,7 @@ Matrix OrthonormalInverse(const Matrix& m);
 
 // inlines
 #include "abaciinlines.cpp"
+
+} // namespace abaci
 
 #endif
