@@ -7,7 +7,12 @@ namespace abaci
 Quat QuatExp(const Quat& q)
 {
 	float angle = Len(Vector3(q.X(), q.Y(), q.Z()));
-	Vector3 n = UnitVec(Vector3(q.X(), q.Y(), q.Z())) * sin(angle/2.0f);
+	Vector3 n;
+	if (angle > 0.0001f)
+		n = UnitVec(Vector3(q.X(), q.Y(), q.Z())) * sin(angle/2.0f);
+	else
+		n.Set(0,0,0);
+
 	return Quat(n.X(), n.Y(), n.Z(), cos(angle/2.0f));
 }
 
