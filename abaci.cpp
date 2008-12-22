@@ -25,8 +25,10 @@ THE SOFTWARE.
 #include "abaci.h"
 #include <stdio.h>
 
-namespace abaci
+#ifdef ABACI_NAMESPACE
+namespace ABACI_NAMESPACE
 {
+#endif
 
 Quat QuatExp(const Quat& q)
 {
@@ -108,4 +110,6 @@ Matrix OrthonormalInverse(const Matrix& m)
 	return r;
 }
 
-}
+#ifdef ABACI_NAMESPACE
+}  // namespace
+#endif

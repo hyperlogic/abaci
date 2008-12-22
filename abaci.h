@@ -27,8 +27,10 @@ THE SOFTWARE.
 
 #include <math.h>
 
-namespace abaci
+#ifdef ABACI_NAMESPACE
+namespace ABACI_NAMESPACE
 {
+#endif
 
 #define PI 3.14159265f
 
@@ -196,6 +198,8 @@ Matrix OrthonormalInverse(const Matrix& m);
 // inlines
 #include "abaciinlines.cpp"
 
-} // namespace abaci
+#ifdef ABACI_NAMESPACE
+} // namespace
+#endif
 
 #endif

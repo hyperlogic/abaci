@@ -29,7 +29,9 @@ THE SOFTWARE.
 #include <float.h>
 #include "unittest.h"
 
-using namespace abaci;
+#ifdef ABACI_NAMESPACE
+using namespace ABACI_NAMESPACE;
+#endif
 
 // static test containers
 std::vector<float> s_floatVec;
