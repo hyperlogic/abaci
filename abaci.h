@@ -162,7 +162,8 @@ struct Matrix
 	Matrix(const Vector3 axis, float angle);
 	
 	void MakeIdent();
-	void MakeProjection(float fovy, float aspect, float near, float far);
+	void MakeFrustum(float fovy, float aspect, float near, float far);
+	void MakeOrtho(float left, float right, float bottom, float top, float near, float far);
 	void MakeLookAt(const Vector3& eye, const Vector3& target, const Vector3& up);
 	
 	Vector3 GetXAxis() const;
@@ -178,9 +179,12 @@ struct Matrix
 	void SetScale(float scale);
 	void SetScale(const Vector3 scale);
 	
-	float GetElem(int r, int c) const;
+	const float& Elem(int r, int c) const;
+	float& Elem(int r, int c);
 	
 	Vector4 GetCol(int c) const;
+
+	Quat GetQuat() const;
 	
 	Vector4 row0;
 	Vector4 row1;

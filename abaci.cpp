@@ -115,6 +115,36 @@ Matrix OrthonormalInverse(const Matrix& m)
 	return r;
 }
 
+Quat Matrix::GetQuat() const
+{
+	// TODO: add to unit test!
+
+	int x = 0, y = 1, z = 2;
+	// create a matrix with no scale
+	Matrix m(UnitVec(GetXAxis()), UnitVec(GetYAxis()), UnitVec(GetZAxis()), Vector3(0,0,0));
+	float trace = m.Elem(0,0) + m.Elem(1,1) + m.Elem(2,2);
+	Quat q;
+	if (trace > -1.0f)
+	{
+		int i = x, j = y, k = z;
+		if (m.Elem(y,y) > m.Elem(x,x)) { i = y; j = z; k = x; }
+		if (m.Elem(z,z) > m.Elem(i,i)) { i = z; j = x; k = y; }
+		float r = sqrt(m.Elem(i,i) - m.Elem(j,j) - m.Elem(k,k) + 1.0f);
+		q[i] = r / 2.0f;
+		q[j] = (m.Elem(i,j) + m.Elem(j,i)) / (2.0f * r);
+		q[k] = (m.Elem(k,i) + m.Elem(i,k)) / (2.0f * r);
+		q[3] = (m.Elem(k,j) + m.Elem(j,k)) / (2.0f * r);
+	}
+    else
+	{
+		q.W() = sqrt(1.0f + trace) / 2.0f;
+		q.X() = (row2[1] - row1[2]) / (4.0f * q.W());
+		q.Y() = (row0[2] - row2[0]) / (4.0f * q.W());
+		q.Z() = (row1[0] - row0[1]) / (4.0f * q.W());
+	}
+	return q;
+}
+
 #ifdef ABACI_NAMESPACE
 }  // namespace
 #endif
