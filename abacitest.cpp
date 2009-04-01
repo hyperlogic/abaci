@@ -1191,7 +1191,7 @@ void MatrixToFloatVec(float *fv, const Matrix& m)
 	{
 		for(int c = 0; c < 4; ++c)
 		{
-			fv[4 * r + c] = m.GetElem(r,c);
+			fv[4 * r + c] = m.Elem(r,c);
 		}
 	}
 }
@@ -1355,10 +1355,10 @@ public:
 
 		Matrix r = a * b;
 
-		return FloatTest(rfv[0], r.GetElem(0,0)) && FloatTest(rfv[1], r.GetElem(0,1)) && FloatTest(rfv[2], r.GetElem(0,2)) && FloatTest(rfv[3], r.GetElem(0,3)) &&
-		    FloatTest(rfv[4], r.GetElem(1,0)) && FloatTest(rfv[5], r.GetElem(1,1)) && FloatTest(rfv[6], r.GetElem(1,2)) && FloatTest(rfv[7], r.GetElem(1,3)) &&
-			FloatTest(rfv[8], r.GetElem(2,0)) && FloatTest(rfv[9], r.GetElem(2,1)) && FloatTest(rfv[10], r.GetElem(2,2)) && FloatTest(rfv[11], r.GetElem(2,3)) &&
-			FloatTest(rfv[12], r.GetElem(3,0)) && FloatTest(rfv[13], r.GetElem(3,1)) && FloatTest(rfv[14], r.GetElem(3,2)) && FloatTest(rfv[15], r.GetElem(3,3));
+		return FloatTest(rfv[0], r.Elem(0,0)) && FloatTest(rfv[1], r.Elem(0,1)) && FloatTest(rfv[2], r.Elem(0,2)) && FloatTest(rfv[3], r.Elem(0,3)) &&
+		    FloatTest(rfv[4], r.Elem(1,0)) && FloatTest(rfv[5], r.Elem(1,1)) && FloatTest(rfv[6], r.Elem(1,2)) && FloatTest(rfv[7], r.Elem(1,3)) &&
+			FloatTest(rfv[8], r.Elem(2,0)) && FloatTest(rfv[9], r.Elem(2,1)) && FloatTest(rfv[10], r.Elem(2,2)) && FloatTest(rfv[11], r.Elem(2,3)) &&
+			FloatTest(rfv[12], r.Elem(3,0)) && FloatTest(rfv[13], r.Elem(3,1)) && FloatTest(rfv[14], r.Elem(3,2)) && FloatTest(rfv[15], r.Elem(3,3));
 	}
 };
 

@@ -460,23 +460,23 @@ inline void Matrix::MakeIdent()
 	row3.Set(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
-inline void Matrix::MakeFrustum(float fovy, float aspect, float near, float far)
+inline void Matrix::MakeFrustum(float fovy, float aspect, float nearVal, float farVal)
 {
 	float f = 1.0f / tan(fovy / 2.0f);
 	row0.Set(f / aspect, 0, 0, 0);
 	row1.Set(0, f, 0, 0);
-	row2.Set(0, 0, (far + near) / (near - far), (2.0f * far * near) / (near - far));
+	row2.Set(0, 0, (farVal + nearVal) / (nearVal - farVal), (2.0f * farVal * nearVal) / (nearVal - farVal));
 	row3.Set(0, 0, -1, 0);
 }
 
-inline void Matrix::MakeOrtho(float left, float right, float bottom, float top, float near, float far)
+inline void Matrix::MakeOrtho(float left, float right, float bottom, float top, float nearVal, float farVal)
 {
 	float tx = -(right + left / right - left);
 	float ty = -(top + bottom / top - bottom);
-	float tz = -(far + near / far - near);
+	float tz = -(farVal + nearVal / farVal - nearVal);
 	row0.Set(2.0f / right - left, 0, 0, tx);
 	row1.Set(0, 2.0f / top - bottom, 0, ty);
-	row2.Set(0, 0, -2.0f / far - near, tz);
+	row2.Set(0, 0, -2.0f / farVal - nearVal, tz);
 	row3.Set(0, 0, 0, 1);
 }
 

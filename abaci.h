@@ -162,8 +162,8 @@ struct Matrix
 	Matrix(const Vector3 axis, float angle);
 	
 	void MakeIdent();
-	void MakeFrustum(float fovy, float aspect, float near, float far);
-	void MakeOrtho(float left, float right, float bottom, float top, float near, float far);
+	void MakeFrustum(float fovy, float aspect, float nearVal, float farVal);
+	void MakeOrtho(float left, float right, float bottom, float top, float nearVal, float farVal);
 	void MakeLookAt(const Vector3& eye, const Vector3& target, const Vector3& up);
 	
 	Vector3 GetXAxis() const;
