@@ -199,6 +199,19 @@ Vector4 Transform4x4(const Matrix& m, const Vector4& v);
 Matrix Transpose(const Matrix& m);
 Matrix OrthonormalInverse(const Matrix& m);
 
+struct Complex
+{
+	Complex() {}
+	Complex(double realIn, double imagIn);
+	Complex conj() const;
+
+	double real;
+	double imag;
+};
+
+Complex operator+(const Complex& a, const Complex& b);
+Complex operator*(const Complex& a, const Complex& b);
+
 // inlines
 #include "abaciinlines.cpp"
 
