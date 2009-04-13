@@ -592,3 +592,31 @@ inline Matrix Transpose(const Matrix& m)
 {
 	return Matrix(m.GetCol(0), m.GetCol(1), m.GetCol(2), m.GetCol(3));
 }
+
+inline Complex::Complex(double realIn, double imagIn) : real(realIn), imag(imagIn)
+{
+
+}
+
+inline Complex Complex::conj() const
+{
+	return Complex(real, -imag);
+}
+
+inline Complex operator+(const Complex& a, const Complex& b)
+{
+	return Complex(a.real + b.real, a.imag + b.imag);
+}
+
+inline Complex operator*(const Complex& a, const Complex& b)
+{
+	double aa = a.real;
+	double bb = a.imag;
+	double cc = b.real;
+	double dd = b.imag;
+
+	return Complex(aa * cc - (bb * dd), aa * dd + bb * cc);
+}
+
+
+	
