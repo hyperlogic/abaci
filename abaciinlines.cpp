@@ -22,6 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+#ifdef ABACI_H
+
 inline const float& VectorBase::operator[](int i) const 
 { 
 	return data[i]; 
@@ -593,7 +595,7 @@ inline Matrix Transpose(const Matrix& m)
 	return Matrix(m.GetCol(0), m.GetCol(1), m.GetCol(2), m.GetCol(3));
 }
 
-inline Complex::Complex(double realIn, double imagIn) : real(realIn), imag(imagIn)
+inline Complex::Complex(float realIn, float imagIn) : real(realIn), imag(imagIn)
 {
 
 }
@@ -610,13 +612,30 @@ inline Complex operator+(const Complex& a, const Complex& b)
 
 inline Complex operator*(const Complex& a, const Complex& b)
 {
-	double aa = a.real;
-	double bb = a.imag;
-	double cc = b.real;
-	double dd = b.imag;
+	float aa = a.real;
+	float bb = a.imag;
+	float cc = b.real;
+	float dd = b.imag;
 
 	return Complex(aa * cc - (bb * dd), aa * dd + bb * cc);
 }
+
+inline Complex operator*(float f, const Complex& c)
+{
+	return Complex(f,0) * c;
+}
+
+inline Complex operator*(Complex& c, float f)
+{
+	return c * Complex(f,0);
+}
+
+inline Complex expi(float imag)
+{
+	return Complex(cos(imag), sin(imag));
+}
+
+#endif
 
 
 	

@@ -202,15 +202,18 @@ Matrix OrthonormalInverse(const Matrix& m);
 struct Complex
 {
 	Complex() {}
-	Complex(double realIn, double imagIn);
+	Complex(float realIn, float imagIn);
 	Complex conj() const;
 
-	double real;
-	double imag;
+	float real;
+	float imag;
 };
 
 Complex operator+(const Complex& a, const Complex& b);
 Complex operator*(const Complex& a, const Complex& b);
+Complex operator*(float f, const Complex& c);
+Complex operator*(Complex& c, float f);
+Complex expi(float imag);
 
 // inlines
 #include "abaciinlines.cpp"
