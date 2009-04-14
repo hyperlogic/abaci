@@ -24,6 +24,42 @@ THE SOFTWARE.
 
 #ifdef ABACI_H
 
+inline float DegToRad(float deg)
+{ 
+	return deg * ((2 * PI) / 180.0f);
+}
+
+inline float RadToDeg(float rad)
+{
+	return rad * (180.0f / (2 * PI));
+}
+
+inline float Clamp(float value, float min, float max)
+{
+	float result = value;
+	if (value > max)
+		result = max;
+	if (value < min)
+		result = min;
+	return result; 
+}
+
+// Limits angle between -PI & PI using modulus arithmetic
+inline float LimitPi(float theta)
+{
+	float phi = Mod2Pi(theta);
+	if (phi > PI)
+		return phi - 2 * PI;
+	else
+		return phi;
+}
+
+// Limits angle between zero & PI using modulus arithmetic
+inline float Mod2Pi(float theta)
+{
+	return fmod(theta, 2.0f * PI);
+}
+
 inline const float& VectorBase::operator[](int i) const 
 { 
 	return data[i]; 
@@ -72,16 +108,6 @@ inline float& VectorBase::Z()
 inline float& VectorBase::W()
 { 
 	return (*this)[3]; 
-}
-
-inline float DegToRad(float deg)
-{ 
-	return deg * ((2 * PI) / 180.0f);
-}
-
-inline float RadToDeg(float rad)
-{
-	return rad * (180.0f / (2 * PI));
 }
 
 inline float Dot2(const VectorBase& a, const VectorBase& b)
@@ -605,9 +631,29 @@ inline Complex Complex::conj() const
 	return Complex(real, -imag);
 }
 
+inline float Complex::len() const
+{
+	return sqrt(dot(*this, *this));
+}
+
 inline Complex operator+(const Complex& a, const Complex& b)
 {
 	return Complex(a.real + b.real, a.imag + b.imag);
+}
+
+inline Complex operator-(const Complex& a, const Complex& b)
+{
+	return Complex(a.real - b.real, a.imag - b.imag);
+}
+
+inline Complex operator-(const Complex& a)
+{
+	return Complex(-a.real, -a.imag);
+}
+
+inline Complex operator+(const Complex& a)
+{
+	return Complex(a.real, a.imag);
 }
 
 inline Complex operator*(const Complex& a, const Complex& b)
@@ -633,6 +679,11 @@ inline Complex operator*(Complex& c, float f)
 inline Complex expi(float imag)
 {
 	return Complex(cos(imag), sin(imag));
+}
+
+inline float dot(const Complex& a, const Complex& b)
+{
+	return (a.real * b.real) + (b.imag * b.imag);
 }
 
 #endif

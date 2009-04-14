@@ -38,6 +38,11 @@ struct Matrix;
 
 float DegToRad(float deg);
 float RadToDeg(float rad);
+float Clamp(float value, float min, float max);
+// Limits angle between -PI & PI using modulus arithmetic
+float LimitPi(float theta);
+// Limits angle between zero & PI using modulus arithmetic
+float Mod2Pi(float theta);
 
 struct VectorBase
 {
@@ -204,16 +209,21 @@ struct Complex
 	Complex() {}
 	Complex(float realIn, float imagIn);
 	Complex conj() const;
+	float len() const;
 
 	float real;
 	float imag;
 };
 
 Complex operator+(const Complex& a, const Complex& b);
+Complex operator-(const Complex& a, const Complex& b);
+Complex operator-(const Complex& a);
+Complex operator+(const Complex& a);
 Complex operator*(const Complex& a, const Complex& b);
 Complex operator*(float f, const Complex& c);
 Complex operator*(Complex& c, float f);
 Complex expi(float imag);
+float dot(const Complex& a, const Complex& b);
 
 // inlines
 #include "abaciinlines.cpp"
