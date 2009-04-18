@@ -676,6 +676,17 @@ inline Complex operator*(Complex& c, float f)
 	return c * Complex(f,0);
 }
 
+inline Complex operator/(const Complex& a, const Complex& b)
+{
+	float aa = a.real;
+	float bb = a.imag;
+	float cc = b.real;
+	float dd = b.imag;
+	float denom = cc * cc + dd * dd;
+
+	return Complex((aa * cc + bb * dd) / denom, (bb * cc - aa * dd) / denom);
+}
+
 inline Complex expi(float imag)
 {
 	return Complex(cos(imag), sin(imag));

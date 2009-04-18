@@ -220,6 +220,7 @@ Complex operator-(const Complex& a, const Complex& b);
 Complex operator-(const Complex& a);
 Complex operator+(const Complex& a);
 Complex operator*(const Complex& a, const Complex& b);
+Complex operator/(const Complex& a, const Complex& b);
 Complex operator*(float f, const Complex& c);
 Complex operator*(Complex& c, float f);
 Complex expi(float imag);
