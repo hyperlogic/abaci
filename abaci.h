@@ -73,6 +73,7 @@ struct Vector2 : public VectorBase
 	Vector2() {}
 	Vector2(float xIn, float yIn);
 	void Set(float xIn, float yIn);
+	void SetZero();
 };
 
 Vector2 operator-(const Vector2& v);
@@ -94,6 +95,7 @@ struct Vector3 : public VectorBase
 	Vector3(const Vector2& v, float zIn);
 	Vector3(float xIn, float yIn, float zIn);
 	void Set(float xIn, float yIn, float zIn);
+	void SetZero();
 };
 
 Vector3 operator-(const Vector3& v);
@@ -116,6 +118,7 @@ struct Vector4 : public VectorBase
 	Vector4(const Vector3& v, float wIn);
 	Vector4(float xIn, float yIn, float zIn, float wIn);
 	void Set(float xIn, float yIn, float zIn, float wIn);
+	void SetZero();
 };
 
 Vector4 operator-(const Vector4& v);

@@ -137,6 +137,12 @@ inline void Vector2::Set(float xIn, float yIn)
 	Y() = yIn;
 }
 
+inline void Vector2::SetZero()
+{
+	X() = 0;
+	Y() = 0;
+}
+
 inline Vector2 operator-(const Vector2& v)
 {
 	return Vector2(-v.X(), -v.Y());
@@ -217,6 +223,13 @@ inline void Vector3::Set(float xIn, float yIn, float zIn)
 	X() = xIn;
 	Y() = yIn;
 	Z() = zIn;
+}
+
+inline void Vector3::SetZero()
+{
+	X() = 0;
+	Y() = 0;
+	Z() = 0;
 }
 
 inline Vector3 operator-(const Vector3& v)
@@ -309,6 +322,14 @@ inline void Vector4::Set(float xIn, float yIn, float zIn, float wIn)
 	Y() = yIn;
 	Z() = zIn;
 	W() = wIn;
+}
+
+inline void Vector4::SetZero()
+{
+	X() = 0;
+	Y() = 0;
+	Z() = 0;
+	W() = 0;
 }
 
 inline Vector4 operator-(const Vector4& v)
