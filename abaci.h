@@ -43,6 +43,7 @@ float Clamp(float value, float min, float max);
 float LimitPi(float theta);
 // Limits angle between zero & PI using modulus arithmetic
 float Mod2Pi(float theta);
+bool FuzzyEqual(float rhs, float lhs, float epsilon = 0.0001f);
 
 struct VectorBase
 {

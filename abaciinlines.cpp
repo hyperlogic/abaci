@@ -60,6 +60,12 @@ inline float Mod2Pi(float theta)
 	return fmod(theta, 2.0f * PI);
 }
 
+inline bool FuzzyEqual(float rhs, float lhs, float epsilon)
+{
+	return fabs(rhs - lhs) <= epsilon;
+}
+
+
 inline const float& VectorBase::operator[](int i) const 
 { 
 	return data[i]; 

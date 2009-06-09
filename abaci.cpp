@@ -125,12 +125,16 @@ void Swap(T& a, T& b)
 }
 
 /*
-static void DumpMatrix(float* row0, float* row1, float* row2, float* row3)
+static void DumpAugMatrix(float* row0, float* row1, float* row2, float* row3)
 {
-	printf("| %15.3f, %15.3f, %15.3f, %15.3f |\n", row0[0], row0[1], row0[2], row0[3]);
-	printf("| %15.3f, %15.3f, %15.3f, %15.3f |\n", row1[0], row1[1], row1[2], row1[3]);
-	printf("| %15.3f, %15.3f, %15.3f, %15.3f |\n", row2[0], row2[1], row2[2], row2[3]);
-	printf("| %15.3f, %15.3f, %15.3f, %15.3f |\n", row3[0], row3[1], row3[2], row3[3]);
+	printf("| %15.3f, %15.3f, %15.3f, %15.3f | %15.3f, %15.3f, %15.3f, %15.3f |\n", 
+		   row0[0], row0[1], row0[2], row0[3], row0[4], row0[5], row0[6], row0[7]);
+	printf("| %15.3f, %15.3f, %15.3f, %15.3f | %15.3f, %15.3f, %15.3f, %15.3f |\n", 
+		   row1[0], row1[1], row1[2], row1[3], row1[4], row1[5], row1[6], row1[7]);
+	printf("| %15.3f, %15.3f, %15.3f, %15.3f | %15.3f, %15.3f, %15.3f, %15.3f |\n", 
+		   row2[0], row2[1], row2[2], row2[3], row2[4], row2[5], row2[6], row2[7]);
+	printf("| %15.3f, %15.3f, %15.3f, %15.3f | %15.3f, %15.3f, %15.3f, %15.3f |\n", 
+		   row3[0], row3[1], row3[2], row3[3], row3[4], row3[5], row3[6], row3[7]);
 }
 */
 
@@ -157,7 +161,7 @@ bool Inverse(Matrix& result, const Matrix& m)
 	temp[3][4] = 0.0f; temp[3][5] = 0.0f; temp[3][6] = 0.0f; temp[3][7] = 1.0f;
 
 //	printf("\ninitial matrix =\n");
-//	DumpMatrix(row[0], row[1], row[2], row[3]);
+//	DumpAugMatrix(row[0], row[1], row[2], row[3]);
 //	printf("\n");
 
 	// bubble up row with largest leading number (partial pivot)
@@ -220,10 +224,14 @@ bool Inverse(Matrix& result, const Matrix& m)
 		for (int c = 0; c < 8; ++c) row[r][c] -= s * row[2][c];
 	}
 
+	// mult row[3] by 1/row[3][3]. To introduce a leading 1.
+	s = 1.0f / row[3][3];
+	for (int c = 0; c < 8; ++c)	row[3][c] *= s;
+
 	// at this point row matrix should be in row-echelon form.
 
 //	printf("\nrow-eschelon form:\n");
-//	DumpMatrix(row[0], row[1], row[2], row[3]);
+//	DumpAugMatrix(row[0], row[1], row[2], row[3]);
 //	printf("\n");
 
 	// add multiples of row[3] to above rows, to zero out that column
@@ -247,12 +255,8 @@ bool Inverse(Matrix& result, const Matrix& m)
 		for (int c = 0; c < 8; ++c) row[r][c] -= s * row[1][c];
 	}
 
-//	printf("\nIdentity!!\n");
-//	DumpMatrix(row[0], row[1], row[2], row[3]);
-//	printf("\n");
-
-//	printf("\nInverse!!\n");
-//	DumpMatrix(row[0] + 4, row[1] + 4, row[2] + 4, row[3] + 4);
+//	printf("\nIdentity | Inverse\n");
+//	DumpAugMatrix(row[0], row[1], row[2], row[3]);
 //	printf("\n");
 
 	// init result

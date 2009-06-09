@@ -41,10 +41,12 @@ std::vector<Vector4> s_vector4Vec;
 std::vector<Quat> s_quatVec;
 std::vector<Matrix> s_matrixVec;
 
-bool FuzzyEqual(float rhs, float lhs)
+bool FuzzyFloatTest(float rhs, float lhs, float epsilon)
 {
-	const float epsilon = 0.0001f;
-	return fabs(rhs - lhs) <= epsilon;
+	if (isnan(rhs) && isnan(lhs))
+		return true;
+	else
+		return FuzzyEqual(rhs, lhs, epsilon);
 }
 
 bool FloatTest(float rhs, float lhs)
@@ -1012,10 +1014,16 @@ void QuatExp(float* rx, float* ry, float* rz, float* rw, float qx, float qy, flo
 {
 	float angle = sqrt((qx * qx) + (qy * qy) + (qz * qz));
 	float sin_a = sin(angle / 2.0f);
+	// prevent div by zero
+	if (angle > 0.0001f)
+	{
+		*rx = (qx / angle) * sin_a;
+		*ry = (qy / angle) * sin_a;
+		*rz = (qz / angle) * sin_a;
+	}
+	else
+		*rx = *ry = *rz = 0.0f;
 
-	*rx = (qx / angle) * sin_a;
-	*ry = (qy / angle) * sin_a;
-	*rz = (qz / angle) * sin_a;
 	*rw = cos(angle / 2.0f);
 }
 
@@ -1029,7 +1037,13 @@ public:
 		float rx, ry, rz, rw;
 		QuatExp(&rx, &ry, &rz, &rw, ax, ay, az, aw);
 		Quat r = QuatExp(a);
-		return FloatTest(rx, r.X()) && FloatTest(ry, r.Y()) && FloatTest(rz, r.Z()) && FloatTest(rw, r.W());
+		bool rval = FloatTest(rx, r.X()) && FloatTest(ry, r.Y()) && FloatTest(rz, r.Z()) && FloatTest(rw, r.W());
+		if (!rval)
+		{
+			printf("rx = %.5f, ry = %.5f, rz = %.5f, rw = %.5f\n", rx, ry, rz, rw);
+			printf("r = %.5f, %.5f, %.5f, %.5f\n", r.X(), r.Y(), r.Z(), r.W());
+		}
+		return rval;
 	}
 };
 
@@ -1155,6 +1169,14 @@ public:
 // Matrix tests
 //
 
+static void DumpMatrix(const Matrix& m)
+{
+	printf("| %10.5f, %10.5f, %10.5f, %10.5f |\n", m.row0.X(), m.row0.Y(), m.row0.Z(), m.row0.W());
+	printf("| %10.5f, %10.5f, %10.5f, %10.5f |\n", m.row1.X(), m.row1.Y(), m.row1.Z(), m.row1.W());
+	printf("| %10.5f, %10.5f, %10.5f, %10.5f |\n", m.row2.X(), m.row2.Y(), m.row2.Z(), m.row2.W());
+	printf("| %10.5f, %10.5f, %10.5f, %10.5f |\n", m.row3.X(), m.row3.Y(), m.row3.Z(), m.row3.W());
+}
+
 template <class UnaryOp>
 class MatrixUnaryOpTest : public TestCase
 {
@@ -1170,14 +1192,8 @@ public:
 			Matrix m = s_matrixVec[i];
 			if (!op(m))
 			{
-				Vector4 row0 = m.row0;
-				Vector4 row1 = m.row1;
-				Vector4 row2 = m.row2;
-				Vector4 row3 = m.row3;
-				printf("m = (%.5f, %.5f, %.5f, %.5f)", row0.X(), row0.Y(), row0.Z(), row0.W());
-				printf(", (%.5f, %.5f, %.5f, %.5f)", row1.X(), row1.Y(), row1.Z(), row1.W());
-				printf(", (%.5f, %.5f, %.5f, %.5f)", row2.X(), row2.Y(), row2.Z(), row2.W());
-				printf(", (%.5f, %.5f, %.5f, %.5f)", row3.X(), row3.Y(), row3.Z(), row3.W());
+				printf("m = \n");
+				DumpMatrix(m);
 				return false;
 			}
 		}
@@ -1302,23 +1318,11 @@ public:
 				Matrix b = s_matrixVec[j];
 				if (!op(a, b))
 				{
-					Vector4 row0 = a.row0;
-					Vector4 row1 = a.row1;
-					Vector4 row2 = a.row2;
-					Vector4 row3 = a.row3;
-					printf("a = (%.5f, %.5f, %.5f, %.5f)", row0.X(), row0.Y(), row0.Z(), row0.W());
-					printf(", (%.5f, %.5f, %.5f, %.5f)", row1.X(), row1.Y(), row1.Z(), row1.W());
-					printf(", (%.5f, %.5f, %.5f, %.5f)", row2.X(), row2.Y(), row2.Z(), row2.W());
-					printf(", (%.5f, %.5f, %.5f, %.5f)", row3.X(), row3.Y(), row3.Z(), row3.W());
+					printf("a = \n");
+					DumpMatrix(a);
 
-					row0 = b.row0;
-					row1 = b.row1;
-					row2 = b.row2;
-					row3 = b.row3;
-					printf(" b = (%.5f, %.5f, %.5f, %.5f)", row0.X(), row0.Y(), row0.Z(), row0.W());
-					printf(", (%.5f, %.5f, %.5f, %.5f)", row1.X(), row1.Y(), row1.Z(), row1.W());
-					printf(", (%.5f, %.5f, %.5f, %.5f)", row2.X(), row2.Y(), row2.Z(), row2.W());
-					printf(", (%.5f, %.5f, %.5f, %.5f)", row3.X(), row3.Y(), row3.Z(), row3.W());
+					printf("b = \n");
+					DumpMatrix(b);
 					return false;
 				}
 			}
@@ -1359,6 +1363,375 @@ public:
 		    FloatTest(rfv[4], r.Elem(1,0)) && FloatTest(rfv[5], r.Elem(1,1)) && FloatTest(rfv[6], r.Elem(1,2)) && FloatTest(rfv[7], r.Elem(1,3)) &&
 			FloatTest(rfv[8], r.Elem(2,0)) && FloatTest(rfv[9], r.Elem(2,1)) && FloatTest(rfv[10], r.Elem(2,2)) && FloatTest(rfv[11], r.Elem(2,3)) &&
 			FloatTest(rfv[12], r.Elem(3,0)) && FloatTest(rfv[13], r.Elem(3,1)) && FloatTest(rfv[14], r.Elem(3,2)) && FloatTest(rfv[15], r.Elem(3,3));
+	}
+};
+
+
+/*
+ * Compute inverse of 4x4 transformation matrix.
+ * Code contributed by Jacques Leroy jle@star.be
+ * Return GL_TRUE for success, GL_FALSE for failure (singular matrix)
+ */
+static bool
+invert_matrix(const float * m, float * out)
+{
+/* NB. OpenGL Matrices are COLUMN major. */
+#define SWAP_ROWS(a, b) { float *_tmp = a; (a)=(b); (b)=_tmp; }
+#define MAT(m,r,c) (m)[(c)*4+(r)]
+
+   float wtmp[4][8];
+   float m0, m1, m2, m3, s;
+   float *r0, *r1, *r2, *r3;
+
+   r0 = wtmp[0], r1 = wtmp[1], r2 = wtmp[2], r3 = wtmp[3];
+
+   r0[0] = MAT(m, 0, 0), r0[1] = MAT(m, 0, 1),
+      r0[2] = MAT(m, 0, 2), r0[3] = MAT(m, 0, 3),
+      r0[4] = 1.0, r0[5] = r0[6] = r0[7] = 0.0,
+      r1[0] = MAT(m, 1, 0), r1[1] = MAT(m, 1, 1),
+      r1[2] = MAT(m, 1, 2), r1[3] = MAT(m, 1, 3),
+      r1[5] = 1.0, r1[4] = r1[6] = r1[7] = 0.0,
+      r2[0] = MAT(m, 2, 0), r2[1] = MAT(m, 2, 1),
+      r2[2] = MAT(m, 2, 2), r2[3] = MAT(m, 2, 3),
+      r2[6] = 1.0, r2[4] = r2[5] = r2[7] = 0.0,
+      r3[0] = MAT(m, 3, 0), r3[1] = MAT(m, 3, 1),
+      r3[2] = MAT(m, 3, 2), r3[3] = MAT(m, 3, 3),
+      r3[7] = 1.0, r3[4] = r3[5] = r3[6] = 0.0;
+
+   /* choose pivot - or die */
+   if (fabs(r3[0]) > fabs(r2[0]))
+      SWAP_ROWS(r3, r2);
+   if (fabs(r2[0]) > fabs(r1[0]))
+      SWAP_ROWS(r2, r1);
+   if (fabs(r1[0]) > fabs(r0[0]))
+      SWAP_ROWS(r1, r0);
+   if (0.0 == r0[0])
+      return false;
+
+   /* eliminate first variable     */
+   m1 = r1[0] / r0[0];
+   m2 = r2[0] / r0[0];
+   m3 = r3[0] / r0[0];
+   s = r0[1];
+   r1[1] -= m1 * s;
+   r2[1] -= m2 * s;
+   r3[1] -= m3 * s;
+   s = r0[2];
+   r1[2] -= m1 * s;
+   r2[2] -= m2 * s;
+   r3[2] -= m3 * s;
+   s = r0[3];
+   r1[3] -= m1 * s;
+   r2[3] -= m2 * s;
+   r3[3] -= m3 * s;
+   s = r0[4];
+   if (s != 0.0) {
+      r1[4] -= m1 * s;
+      r2[4] -= m2 * s;
+      r3[4] -= m3 * s;
+   }
+   s = r0[5];
+   if (s != 0.0) {
+      r1[5] -= m1 * s;
+      r2[5] -= m2 * s;
+      r3[5] -= m3 * s;
+   }
+   s = r0[6];
+   if (s != 0.0) {
+      r1[6] -= m1 * s;
+      r2[6] -= m2 * s;
+      r3[6] -= m3 * s;
+   }
+   s = r0[7];
+   if (s != 0.0) {
+      r1[7] -= m1 * s;
+      r2[7] -= m2 * s;
+      r3[7] -= m3 * s;
+   }
+
+   /* choose pivot - or die */
+   if (fabs(r3[1]) > fabs(r2[1]))
+      SWAP_ROWS(r3, r2);
+   if (fabs(r2[1]) > fabs(r1[1]))
+      SWAP_ROWS(r2, r1);
+   if (0.0 == r1[1])
+	   return false;
+
+   /* eliminate second variable */
+   m2 = r2[1] / r1[1];
+   m3 = r3[1] / r1[1];
+   r2[2] -= m2 * r1[2];
+   r3[2] -= m3 * r1[2];
+   r2[3] -= m2 * r1[3];
+   r3[3] -= m3 * r1[3];
+   s = r1[4];
+   if (0.0 != s) {
+      r2[4] -= m2 * s;
+      r3[4] -= m3 * s;
+   }
+   s = r1[5];
+   if (0.0 != s) {
+      r2[5] -= m2 * s;
+      r3[5] -= m3 * s;
+   }
+   s = r1[6];
+   if (0.0 != s) {
+      r2[6] -= m2 * s;
+      r3[6] -= m3 * s;
+   }
+   s = r1[7];
+   if (0.0 != s) {
+      r2[7] -= m2 * s;
+      r3[7] -= m3 * s;
+   }
+
+   /* choose pivot - or die */
+   if (fabs(r3[2]) > fabs(r2[2]))
+      SWAP_ROWS(r3, r2);
+   if (0.0 == r2[2])
+      return false;
+
+   /* eliminate third variable */
+   m3 = r3[2] / r2[2];
+   r3[3] -= m3 * r2[3], r3[4] -= m3 * r2[4],
+      r3[5] -= m3 * r2[5], r3[6] -= m3 * r2[6], r3[7] -= m3 * r2[7];
+
+   /* last check */
+   if (0.0 == r3[3])
+      return false;
+
+   s = 1.0 / r3[3];		/* now back substitute row 3 */
+   r3[4] *= s;
+   r3[5] *= s;
+   r3[6] *= s;
+   r3[7] *= s;
+
+   m2 = r2[3];			/* now back substitute row 2 */
+   s = 1.0 / r2[2];
+   r2[4] = s * (r2[4] - r3[4] * m2), r2[5] = s * (r2[5] - r3[5] * m2),
+      r2[6] = s * (r2[6] - r3[6] * m2), r2[7] = s * (r2[7] - r3[7] * m2);
+   m1 = r1[3];
+   r1[4] -= r3[4] * m1, r1[5] -= r3[5] * m1,
+      r1[6] -= r3[6] * m1, r1[7] -= r3[7] * m1;
+   m0 = r0[3];
+   r0[4] -= r3[4] * m0, r0[5] -= r3[5] * m0,
+      r0[6] -= r3[6] * m0, r0[7] -= r3[7] * m0;
+
+   m1 = r1[2];			/* now back substitute row 1 */
+   s = 1.0 / r1[1];
+   r1[4] = s * (r1[4] - r2[4] * m1), r1[5] = s * (r1[5] - r2[5] * m1),
+      r1[6] = s * (r1[6] - r2[6] * m1), r1[7] = s * (r1[7] - r2[7] * m1);
+   m0 = r0[2];
+   r0[4] -= r2[4] * m0, r0[5] -= r2[5] * m0,
+      r0[6] -= r2[6] * m0, r0[7] -= r2[7] * m0;
+
+   m0 = r0[1];			/* now back substitute row 0 */
+   s = 1.0 / r0[0];
+   r0[4] = s * (r0[4] - r1[4] * m0), r0[5] = s * (r0[5] - r1[5] * m0),
+      r0[6] = s * (r0[6] - r1[6] * m0), r0[7] = s * (r0[7] - r1[7] * m0);
+
+   MAT(out, 0, 0) = r0[4];
+   MAT(out, 0, 1) = r0[5], MAT(out, 0, 2) = r0[6];
+   MAT(out, 0, 3) = r0[7], MAT(out, 1, 0) = r1[4];
+   MAT(out, 1, 1) = r1[5], MAT(out, 1, 2) = r1[6];
+   MAT(out, 1, 3) = r1[7], MAT(out, 2, 0) = r2[4];
+   MAT(out, 2, 1) = r2[5], MAT(out, 2, 2) = r2[6];
+   MAT(out, 2, 3) = r2[7], MAT(out, 3, 0) = r3[4];
+   MAT(out, 3, 1) = r3[5], MAT(out, 3, 2) = r3[6];
+   MAT(out, 3, 3) = r3[7];
+
+   return true;
+
+#undef MAT
+#undef SWAP_ROWS
+}
+
+/*
+ * Compute the inverse of a 4x4 matrix.
+ *
+ * From an algorithm by V. Strassen, 1969, _Numerishe Mathematik_, vol. 13,
+ * pp. 354-356.
+ * 60 multiplies, 24 additions, 10 subtractions, 8 negations, 2 divisions,
+ * 48 assignments, _0_ branches
+ *
+ * This implementation by Scott McCaskill
+ */
+
+typedef float Mat2[2][2];
+
+enum {
+    M00 = 0, M01 = 4, M02 = 8, M03 = 12,
+    M10 = 1, M11 = 5, M12 = 9, M13 = 13,
+    M20 = 2, M21 = 6, M22 = 10,M23 = 14,
+    M30 = 3, M31 = 7, M32 = 11,M33 = 15
+};
+
+static void invert_matrix_general( const float *m, float *out )
+{
+   Mat2 r1, r2, r3, r4, r5, r6, r7;
+   const float * A = m;
+   float *       C = out;
+   float one_over_det;
+
+   /*
+    * A is the 4x4 source matrix (to be inverted).
+    * C is the 4x4 destination matrix
+    * a11 is the 2x2 matrix in the upper left quadrant of A
+    * a12 is the 2x2 matrix in the upper right quadrant of A
+    * a21 is the 2x2 matrix in the lower left quadrant of A
+    * a22 is the 2x2 matrix in the lower right quadrant of A
+    * similarly, cXX are the 2x2 quadrants of the destination matrix
+    */
+
+   /* R1 = inverse( a11 ) */
+   one_over_det = 1.0f / ( ( A[M00] * A[M11] ) - ( A[M10] * A[M01] ) );
+   r1[0][0] = one_over_det * A[M11];
+   r1[0][1] = one_over_det * -A[M01];
+   r1[1][0] = one_over_det * -A[M10];
+   r1[1][1] = one_over_det * A[M00];
+
+   /* R2 = a21 x R1 */
+   r2[0][0] = A[M20] * r1[0][0] + A[M21] * r1[1][0];
+   r2[0][1] = A[M20] * r1[0][1] + A[M21] * r1[1][1];
+   r2[1][0] = A[M30] * r1[0][0] + A[M31] * r1[1][0];
+   r2[1][1] = A[M30] * r1[0][1] + A[M31] * r1[1][1];
+
+   /* R3 = R1 x a12 */
+   r3[0][0] = r1[0][0] * A[M02] + r1[0][1] * A[M12];
+   r3[0][1] = r1[0][0] * A[M03] + r1[0][1] * A[M13];
+   r3[1][0] = r1[1][0] * A[M02] + r1[1][1] * A[M12];
+   r3[1][1] = r1[1][0] * A[M03] + r1[1][1] * A[M13];
+
+   /* R4 = a21 x R3 */
+   r4[0][0] = A[M20] * r3[0][0] + A[M21] * r3[1][0];
+   r4[0][1] = A[M20] * r3[0][1] + A[M21] * r3[1][1];
+   r4[1][0] = A[M30] * r3[0][0] + A[M31] * r3[1][0];
+   r4[1][1] = A[M30] * r3[0][1] + A[M31] * r3[1][1];
+
+   /* R5 = R4 - a22 */
+   r5[0][0] = r4[0][0] - A[M22];
+   r5[0][1] = r4[0][1] - A[M23];
+   r5[1][0] = r4[1][0] - A[M32];
+   r5[1][1] = r4[1][1] - A[M33];
+
+   /* R6 = inverse( R5 ) */
+   one_over_det = 1.0f / ( ( r5[0][0] * r5[1][1] ) - ( r5[1][0] * r5[0][1] ) );
+   r6[0][0] = one_over_det * r5[1][1];
+   r6[0][1] = one_over_det * -r5[0][1];
+   r6[1][0] = one_over_det * -r5[1][0];
+   r6[1][1] = one_over_det * r5[0][0];
+
+   /* c12 = R3 x R6 */
+   C[M02] = r3[0][0] * r6[0][0] + r3[0][1] * r6[1][0];
+   C[M03] = r3[0][0] * r6[0][1] + r3[0][1] * r6[1][1];
+   C[M12] = r3[1][0] * r6[0][0] + r3[1][1] * r6[1][0];
+   C[M13] = r3[1][0] * r6[0][1] + r3[1][1] * r6[1][1];
+
+   /* c21 = R6 x R2 */
+   C[M20] = r6[0][0] * r2[0][0] + r6[0][1] * r2[1][0];
+   C[M21] = r6[0][0] * r2[0][1] + r6[0][1] * r2[1][1];
+   C[M30] = r6[1][0] * r2[0][0] + r6[1][1] * r2[1][0];
+   C[M31] = r6[1][0] * r2[0][1] + r6[1][1] * r2[1][1];
+
+   /* R7 = R3 x c21 */
+   r7[0][0] = r3[0][0] * C[M20] + r3[0][1] * C[M30];
+   r7[0][1] = r3[0][0] * C[M21] + r3[0][1] * C[M31];
+   r7[1][0] = r3[1][0] * C[M20] + r3[1][1] * C[M30];
+   r7[1][1] = r3[1][0] * C[M21] + r3[1][1] * C[M31];
+
+   /* c11 = R1 - R7 */
+   C[M00] = r1[0][0] - r7[0][0];
+   C[M01] = r1[0][1] - r7[0][1];
+   C[M10] = r1[1][0] - r7[1][0];
+   C[M11] = r1[1][1] - r7[1][1];
+
+   /* c22 = -R6 */
+   C[M22] = -r6[0][0];
+   C[M23] = -r6[0][1];
+   C[M32] = -r6[1][0];
+   C[M33] = -r6[1][1];
+}
+
+
+
+
+class MatrixInverse
+{
+public:
+	static const char* GetName() { return "Inverse"; }
+	bool operator()(const Matrix& a) const
+	{
+//		Matrix m(Quat(Vector3(0.3f,1.5f,0.7f), -PI/2.0f), Vector3(1.0, 2.0f, 3.0f));
+//		m.SetScale(Vector3(1,2,1));
+
+		float fv[16];
+		
+		// convert the transpose of a into a float vec. (why? because invert_matrix expects an opengl style matrix)
+		MatrixToFloatVec(fv, Transpose(a));
+		float rfv[16];
+		bool invertable = invert_matrix(fv, rfv);
+
+		float rfv2[16];
+		invert_matrix_general(fv, rfv2);
+		
+		Matrix r;
+		bool matrix_invertable = Inverse(r, a);
+
+		if (invertable != matrix_invertable)
+		{
+			printf("Failure because invertable mismatch\n");
+			return false;  // test failed
+		}
+
+		if (invertable)
+		{
+			bool rval;
+			// compare r with the transpose of rfv.  (why? becaaue invert_matrix returns an opengl style matrix)
+			const float epsilon = 0.05f;
+			rval = FuzzyFloatTest(rfv[0], r.Elem(0,0), epsilon) && 
+				FuzzyFloatTest(rfv[4], r.Elem(0,1), epsilon) && 
+				FuzzyFloatTest(rfv[8], r.Elem(0,2), epsilon) && 
+				FuzzyFloatTest(rfv[12], r.Elem(0,3), epsilon) &&
+				FuzzyFloatTest(rfv[1], r.Elem(1,0), epsilon) && 
+				FuzzyFloatTest(rfv[5], r.Elem(1,1), epsilon) && 
+				FuzzyFloatTest(rfv[9], r.Elem(1,2), epsilon) && 
+				FuzzyFloatTest(rfv[13], r.Elem(1,3), epsilon) &&
+				FuzzyFloatTest(rfv[2], r.Elem(2,0), epsilon) && 
+				FuzzyFloatTest(rfv[6], r.Elem(2,1), epsilon) && 
+				FuzzyFloatTest(rfv[10], r.Elem(2,2), epsilon) && 
+				FuzzyFloatTest(rfv[14], r.Elem(2,3), epsilon) &&
+				FuzzyFloatTest(rfv[3], r.Elem(3,0), epsilon) && 
+				FuzzyFloatTest(rfv[7], r.Elem(3,1), epsilon) && 
+				FuzzyFloatTest(rfv[11], r.Elem(3,2), epsilon) && 
+				FuzzyFloatTest(rfv[15], r.Elem(3,3), epsilon);
+
+			if (!rval)
+			{
+				printf("Failure because matrices are not equal\n");
+
+				printf("rfv = \n");
+				printf("| %10.5f, %10.5f, %10.5f, %10.5f |\n", rfv[0], rfv[4], rfv[8], rfv[12]);
+				printf("| %10.5f, %10.5f, %10.5f, %10.5f |\n", rfv[1], rfv[5], rfv[9], rfv[13]);
+				printf("| %10.5f, %10.5f, %10.5f, %10.5f |\n", rfv[2], rfv[6], rfv[10], rfv[14]);
+				printf("| %10.5f, %10.5f, %10.5f, %10.5f |\n", rfv[3], rfv[7], rfv[11], rfv[15]);
+
+				printf("rfv2 = \n");
+				printf("| %10.5f, %10.5f, %10.5f, %10.5f |\n", rfv2[0], rfv2[4], rfv2[8], rfv2[12]);
+				printf("| %10.5f, %10.5f, %10.5f, %10.5f |\n", rfv2[1], rfv2[5], rfv2[9], rfv2[13]);
+				printf("| %10.5f, %10.5f, %10.5f, %10.5f |\n", rfv2[2], rfv2[6], rfv2[10], rfv2[14]);
+				printf("| %10.5f, %10.5f, %10.5f, %10.5f |\n", rfv2[3], rfv2[7], rfv2[11], rfv2[15]);
+
+
+				printf("r = \n");
+				DumpMatrix(r);
+			}
+
+			return rval;
+		}
+		else
+		{
+			return true;  // both matrices were determined to be non-invertable.
+		}
 	}
 };
 
@@ -1427,6 +1800,7 @@ int main(int argc, char* argv[])
 	matrixSuite.AddTest(new MatrixUnaryOpTest<MatrixTransform3x4>());
 	matrixSuite.AddTest(new MatrixUnaryOpTest<MatrixTransform4x4>());
 	matrixSuite.AddTest(new MatrixBinaryOpTest<MatrixMultiplication>());
+	matrixSuite.AddTest(new MatrixUnaryOpTest<MatrixInverse>());
 	
 	// TODO: matrix from quat
 	// TODO: matrix from quat & trans
@@ -1440,29 +1814,10 @@ int main(int argc, char* argv[])
 	// TODO: matrix subtraction
 	// TODO: Inverse
 	// TODO: OrthonormalInverse
-//	matrixSuite.RunTests();
+	matrixSuite.RunTests();
 
 	// TODO: Rad2Deg
 	// TODO: Deg2Rad
-
-	// quick matrix test
-	Matrix m(Quat(Vector3(0.3f,1.5f,0.7f), -PI/3.0f), Vector3(1.0, 2.0f, 3.0f));	
-	Matrix m_inv;
-	if (!Inverse(m_inv, m))
-		printf("Could not find inverse!\n");
-	else
-		printf("Found inverse!\n");
-
-	// Check if product is identity.
-	Matrix i = m * m_inv;
-
-	if (FuzzyEqual(i.row0[0], 1.0f) && FuzzyEqual(i.row0[1], 0.0f) && FuzzyEqual(i.row0[2], 0.0f) && FuzzyEqual(i.row0[3], 0.0f) &&
-		FuzzyEqual(i.row1[0], 0.0f) && FuzzyEqual(i.row1[1], 1.0f) && FuzzyEqual(i.row1[2], 0.0f) && FuzzyEqual(i.row1[3], 0.0f) &&
-		FuzzyEqual(i.row2[0], 0.0f) && FuzzyEqual(i.row2[1], 0.0f) && FuzzyEqual(i.row2[2], 1.0f) && FuzzyEqual(i.row2[3], 0.0f) &&
-		FuzzyEqual(i.row3[0], 0.0f) && FuzzyEqual(i.row3[1], 0.0f) && FuzzyEqual(i.row3[2], 0.0f) && FuzzyEqual(i.row3[3], 1.0f))
-		printf("Product test passed!\n");
-	else
-		printf("Product test FAIL!\n");
 
 	return 0;
 }
