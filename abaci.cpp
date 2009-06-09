@@ -268,6 +268,14 @@ bool Inverse(const Matrix& m, Matrix& result)
 	return true;	
 }
 
+void PrintMatrix(const Matrix& m)
+{
+	printf("| %15.5f, %15.5f, %15.5f, %15.5f |\n", m.row0.X(), m.row0.Y(), m.row0.Z(), m.row0.W());
+	printf("| %15.5f, %15.5f, %15.5f, %15.5f |\n", m.row1.X(), m.row1.Y(), m.row1.Z(), m.row1.W());
+	printf("| %15.5f, %15.5f, %15.5f, %15.5f |\n", m.row2.X(), m.row2.Y(), m.row2.Z(), m.row2.W());
+	printf("| %15.5f, %15.5f, %15.5f, %15.5f |\n", m.row3.X(), m.row3.Y(), m.row3.Z(), m.row3.W());
+}
+
 Matrix OrthonormalInverse(const Matrix& m)
 {
 	Matrix r(m);

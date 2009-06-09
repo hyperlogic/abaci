@@ -1169,13 +1169,6 @@ public:
 // Matrix tests
 //
 
-static void DumpMatrix(const Matrix& m)
-{
-	printf("| %10.5f, %10.5f, %10.5f, %10.5f |\n", m.row0.X(), m.row0.Y(), m.row0.Z(), m.row0.W());
-	printf("| %10.5f, %10.5f, %10.5f, %10.5f |\n", m.row1.X(), m.row1.Y(), m.row1.Z(), m.row1.W());
-	printf("| %10.5f, %10.5f, %10.5f, %10.5f |\n", m.row2.X(), m.row2.Y(), m.row2.Z(), m.row2.W());
-	printf("| %10.5f, %10.5f, %10.5f, %10.5f |\n", m.row3.X(), m.row3.Y(), m.row3.Z(), m.row3.W());
-}
 
 template <class UnaryOp>
 class MatrixUnaryOpTest : public TestCase
@@ -1193,7 +1186,7 @@ public:
 			if (!op(m))
 			{
 				printf("m = \n");
-				DumpMatrix(m);
+				PrintMatrix(m);
 				return false;
 			}
 		}
@@ -1319,10 +1312,10 @@ public:
 				if (!op(a, b))
 				{
 					printf("a = \n");
-					DumpMatrix(a);
+					PrintMatrix(a);
 
 					printf("b = \n");
-					DumpMatrix(b);
+					PrintMatrix(b);
 					return false;
 				}
 			}
@@ -1723,7 +1716,7 @@ public:
 
 
 				printf("r = \n");
-				DumpMatrix(r);
+				PrintMatrix(r);
 			}
 
 			return rval;

@@ -210,6 +210,7 @@ Vector4 Transform4x4(const Matrix& m, const Vector4& v);
 Matrix Transpose(const Matrix& m);
 bool Inverse(const Matrix& m, Matrix& result);
 Matrix OrthonormalInverse(const Matrix& m);
+void PrintMatrix(const Matrix& m);
 
 struct Complex
 {
