@@ -139,7 +139,7 @@ static void DumpAugMatrix(float* row0, float* row1, float* row2, float* row3)
 */
 
 // Gaussian-Jordan Elimination
-bool Inverse(Matrix& result, const Matrix& m)
+bool Inverse(const Matrix& m, Matrix& result)
 {
 	float temp[4][8];
 	float* row[4];

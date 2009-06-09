@@ -1675,7 +1675,7 @@ public:
 		invert_matrix_general(fv, rfv2);
 		
 		Matrix r;
-		bool matrix_invertable = Inverse(r, a);
+		bool matrix_invertable = Inverse(a, r);
 
 		if (invertable != matrix_invertable)
 		{
