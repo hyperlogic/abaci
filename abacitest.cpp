@@ -1436,10 +1436,33 @@ int main(int argc, char* argv[])
 	// TODO: make projection
 	// TODO: make look-at
 	// TODO: make ident
-	matrixSuite.RunTests();
+	// TODO: matrix addition
+	// TODO: matrix subtraction
+	// TODO: Inverse
+	// TODO: OrthonormalInverse
+//	matrixSuite.RunTests();
 
 	// TODO: Rad2Deg
 	// TODO: Deg2Rad
+
+	// quick matrix test
+	Matrix m(Quat(Vector3(0.3f,1.5f,0.7f), -PI/3.0f), Vector3(1.0, 2.0f, 3.0f));	
+	Matrix m_inv;
+	if (!Inverse(m_inv, m))
+		printf("Could not find inverse!\n");
+	else
+		printf("Found inverse!\n");
+
+	// Check if product is identity.
+	Matrix i = m * m_inv;
+
+	if (FuzzyEqual(i.row0[0], 1.0f) && FuzzyEqual(i.row0[1], 0.0f) && FuzzyEqual(i.row0[2], 0.0f) && FuzzyEqual(i.row0[3], 0.0f) &&
+		FuzzyEqual(i.row1[0], 0.0f) && FuzzyEqual(i.row1[1], 1.0f) && FuzzyEqual(i.row1[2], 0.0f) && FuzzyEqual(i.row1[3], 0.0f) &&
+		FuzzyEqual(i.row2[0], 0.0f) && FuzzyEqual(i.row2[1], 0.0f) && FuzzyEqual(i.row2[2], 1.0f) && FuzzyEqual(i.row2[3], 0.0f) &&
+		FuzzyEqual(i.row3[0], 0.0f) && FuzzyEqual(i.row3[1], 0.0f) && FuzzyEqual(i.row3[2], 0.0f) && FuzzyEqual(i.row3[3], 1.0f))
+		printf("Product test passed!\n");
+	else
+		printf("Product test FAIL!\n");
 
 	return 0;
 }
