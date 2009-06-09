@@ -201,6 +201,8 @@ struct Matrix
 };
 
 Matrix operator*(const Matrix& a, const Matrix& b);
+Matrix operator+(const Matrix& a, const Matrix& b);
+Matrix operator-(const Matrix& a, const Matrix& b);
 Vector3 Transform3x3(const Matrix& m, const Vector3& v);
 Vector3 Transform3x4(const Matrix& m, const Vector3& v);
 Vector4 Transform4x4(const Matrix& m, const Vector4& v);

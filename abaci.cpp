@@ -97,8 +97,19 @@ Matrix::Matrix(const Vector3 axis, float angle)
 	SetTrans(Vector3(0.0f,0.0f,0.0f));	
 }
 
+Matrix operator+(const Matrix& a, const Matrix& b)
+{
+	return Matrix(a.row0 + b.row0, a.row1 + b.row1, a.row2 + b.row2, a.row3 + b.row2);
+}
+
+Matrix operator-(const Matrix& a, const Matrix& b)
+{
+	return Matrix(a.row0 - b.row0, a.row1 - b.row1, a.row2 - b.row2, a.row3 - b.row2);
+}
+
 Matrix operator*(const Matrix& a, const Matrix& b)
 {
+	// TODO: slow.
 	Matrix bt = Transpose(b);
 	return Matrix( Vector4(a.row0 * bt.row0, a.row0 * bt.row1, a.row0 * bt.row2, a.row0 * bt.row3), 
 				   Vector4(a.row1 * bt.row0, a.row1 * bt.row1, a.row1 * bt.row2, a.row1 * bt.row3),
