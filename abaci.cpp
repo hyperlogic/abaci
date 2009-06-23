@@ -32,10 +32,10 @@ namespace ABACI_NAMESPACE
 
 Quat QuatExp(const Quat& q)
 {
-	float angle = Len(Vector3(q.x, q.y, q.z));
+	float angle = Vector3(q.x, q.y, q.z).Len();
 	Vector3 n;
 	if (angle > 0.0001f)
-		n = UnitVec(Vector3(q.x, q.y, q.z)) * sin(angle/2.0f);
+		n = Vector3(q.x, q.y, q.z).Unit() * sin(angle/2.0f);
 	else
 		n.Set(0,0,0);
 
@@ -291,7 +291,7 @@ Quat Matrix::GetQuat() const
 
 	int x = 0, y = 1, z = 2;
 	// create a matrix with no scale
-	Matrix m(UnitVec(GetXAxis()), UnitVec(GetYAxis()), UnitVec(GetZAxis()), Vector3(0,0,0));
+	Matrix m(GetXAxis().Unit(), GetYAxis().Unit(), GetZAxis().Unit(), Vector3(0,0,0));
 	float trace = m.Elem(0,0) + m.Elem(1,1) + m.Elem(2,2);
 	Quat q;
 	if (trace > -1.0f)

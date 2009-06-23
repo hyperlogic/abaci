@@ -56,6 +56,9 @@ float Mod2Pi(float theta);
 // Fuzzy comparison between two float values.
 bool FuzzyEqual(float rhs, float lhs, float epsilon = 0.0001f);
 
+
+//////////////////////////////////////////////////////
+
 struct Vector2
 {
 	// Uninitialized by default.
@@ -73,7 +76,7 @@ struct Vector2
 	// Unary minus
 	Vector2 operator-() const;
 
-	// Returns a vector of unit length.
+	// Returns a vector with same direction but unit length.
 	Vector2 Unit() const;
 
 	// Returns vector length.
@@ -82,15 +85,15 @@ struct Vector2
 	// Returns length squared.
 	float LenSq() const;
 
-	// Linear interpolation between two vectors
-	Vector2 Lerp(const Vector2& rhs, float t) const;
-
 	float x;
 	float y;
 };
 
 // Dot product of two vectors.
-float Dot(const Vector2& lhs, const Vector2& rhs);
+float Dot(const Vector2& a, const Vector2& b);
+
+// Linear interpolation between two vectors
+Vector2 Lerp(const Vector2& a, const Vector2& b, float t);
 
 // Vector subtraction.
 Vector2 operator-(const Vector2& a, const Vector2& b);
@@ -104,7 +107,7 @@ Vector2 operator*(const Vector2& v, float scalar);
 // Multplies all elements of a vector by a scalar.
 Vector2 operator*(float factor, const Vector2& v);
 
-// Vector multiplication.
+// Vector multiplication
 Vector2 operator*(const Vector2& a, const Vector2& b);
 
 // Divides all elements of a vector by a scalar.
@@ -116,32 +119,78 @@ Vector2 operator/(float numerator, const Vector2& v);
 // Vector division.
 Vector2 operator/(const Vector2& a, const Vector2& b);
 
+
+//////////////////////////////////////////////////////
+
 struct Vector3
 {
+	// Uninitialized by default.
 	Vector3() {}
+
+	// Construct from a Vector2 and a float
 	Vector3(const Vector2& v, float zIn);
+
+	// Construct from three floats
 	Vector3(float xIn, float yIn, float zIn);
+
+	// Set from three floats
 	void Set(float xIn, float yIn, float zIn);
+
+	// Set all elements to zero
 	void SetZero();
+
+	// Unary minus
+	Vector3 operator-() const;
+
+	// Returns a vector with same direction but unit length.
+	Vector3 Unit() const;
+
+	// Returns vector length.
+	float Len() const;
+
+	// Returns length squared.
+	float LenSq() const;
 
 	float x;
 	float y;
 	float z;
 };
 
-Vector3 operator-(const Vector3& v);
+// Dot product of two vectors.
+float Dot(const Vector3& a, const Vector3& b);
+
+// Cross product of two vectors.
+Vector3 Cross(const Vector3& a, const Vector3& b);
+
+// Linear interpolation between two vectors
+Vector3 Lerp(const Vector3& lhs, const Vector3& rhs, float t);
+
+// Vector subtraction.
 Vector3 operator-(const Vector3& a, const Vector3& b);
+
+// Vector addition.
 Vector3 operator+(const Vector3& a, const Vector3& b);
+
+// Multplies all elements of a vector by a scalar.
 Vector3 operator*(const Vector3& v, float factor);
+
+// Multplies all elements of a vector by a scalar.
 Vector3 operator*(float factor, const Vector3& v);
-float operator*(const Vector3& a, const Vector3& b); // dot product
-Vector3 CompMul(const Vector3& a, const Vector3& b);
+
+// Vector multiplication
+Vector3 operator*(const Vector3& a, const Vector3& b);
+
+// Divides all elements of a vector by a scalar.
 Vector3 operator/(const Vector3& v, float denominator);
+
+// Multiplies a scalar to the reciprical of all elements in a vector.
 Vector3 operator/(float numerator, const Vector3& v);
-Vector3 CompDiv(const Vector3& a, const Vector3& b);
-float Len(const Vector3& v);
-Vector3 UnitVec(const Vector3& v);
-Vector3 operator%(const Vector3& a, const Vector3& b);	// cross product
+
+// Vector division.
+Vector3 operator/(const Vector3& a, const Vector3& b);
+
+
+//////////////////////////////////////////////////////
 
 struct Vector4
 {
@@ -173,6 +222,9 @@ Vector4 CompDiv(const Vector4& a, const Vector4& b);
 float Len(const Vector4& v);
 Vector4 UnitVec(const Vector4& v);
 
+
+//////////////////////////////////////////////////////
+
 struct Quat : public Vector4
 {
 	Quat() {}
@@ -196,6 +248,9 @@ float Len(const Quat& v);
 Quat UnitVec(const Quat& v);
 Quat QuatExp(const Quat& q);
 Quat QuatLog(const Quat& q);
+
+
+//////////////////////////////////////////////////////
 
 // column major
 struct Matrix
@@ -249,6 +304,9 @@ Matrix Transpose(const Matrix& m);
 bool Inverse(const Matrix& m, Matrix& result);
 Matrix OrthonormalInverse(const Matrix& m);
 void PrintMatrix(const Matrix& m);
+
+
+//////////////////////////////////////////////////////
 
 struct Complex
 {

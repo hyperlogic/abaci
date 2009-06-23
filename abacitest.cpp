@@ -607,7 +607,7 @@ public:
 	{
 		float ax = a.x, ay = a.y, az = a.z;
 		float r = sqrt((ax * ax) + (ay * ay) + (az * az));
-		float len = Len(a);
+		float len = a.Len();
 		return FloatTest(r, len);
 	}
 };
@@ -621,7 +621,7 @@ public:
 		float ax = a.x, ay = a.y, az = a.z;
 		float len = sqrt((ax * ax) + (ay * ay) + (az * az));
 		float rx = ax / len, ry = ay / len, rz = az / len;
-		Vector3 r = UnitVec(a);
+		Vector3 r = a.Unit();
 		return FloatTest(rx, r.x) && FloatTest(ry, r.y) && FloatTest(rz ,r.z);
 	}
 };
@@ -744,7 +744,7 @@ public:
 		float ax = a.x, ay = a.y, az = a.z;
 		float bx = b.x, by = b.y, bz = b.z;
 		float r = (ax * bx) + (ay * by) + (az * bz);
-		float dot = a * b;
+		float dot = Dot(a, b);
 		return FloatTest(dot, r);
 	}
 };
@@ -758,7 +758,7 @@ public:
 		float ax = a.x, ay = a.y, az = a.z;
 		float bx = b.x, by = b.y, bz = b.z;
 		float rx = (ax * bx), ry = (ay * by), rz = (az * bz);
-		Vector3 r = CompMul(a, b);
+		Vector3 r = a * b;
 		return FloatTest(rx, r.x) && FloatTest(ry, r.y) && FloatTest(rz, r.z);
 	}
 };
@@ -772,7 +772,7 @@ public:
 		float ax = a.x, ay = a.y, az = a.z;
 		float bx = b.x, by = b.y, bz = b.z;
 		float rx = (ax / bx), ry = (ay / by), rz = (az / bz);
-		Vector3 r = CompDiv(a, b);
+		Vector3 r = a / b;
 		return FloatTest(rx, r.x) && FloatTest(ry, r.y) && FloatTest(rz, r.z);
 	}
 };
@@ -790,7 +790,7 @@ public:
 		float ry = (az * bx) - (ax * bz);
 		float rz = (ax * by) - (ay * bx);
 
-		Vector3 r = a % b;
+		Vector3 r = Cross(a, b);
 		return FloatTest(rx, r.x) && FloatTest(ry, r.y) && FloatTest(rz, r.z);
 	}
 };

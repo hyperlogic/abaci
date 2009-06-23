@@ -92,7 +92,7 @@ inline Vector2 Vector2::operator-() const
 	return Vector2(-x, -y);
 }
 
-// Returns a vector of unit length.
+// Returns a vector with same direction but unit length.
 inline Vector2 Vector2::Unit() const
 {
 	return *this / Len();
@@ -110,16 +110,16 @@ inline float Vector2::LenSq() const
 	return Dot(*this, *this);
 }
 
-// Linear interpolation between two vectors
-inline Vector2 Vector2::Lerp(const Vector2& rhs, float t) const
+// Dot product of two vectors.
+inline float Dot(const Vector2& a, const Vector2& b)
 {
-    return (*this) + (rhs - (*this)) * t;
+	return a.x * b.x + a.y * b.y;
 }
 
-// Dot product of two vectors.
-inline float Dot(const Vector2& lhs, const Vector2& rhs)
+// Linear interpolation between two vectors
+inline Vector2 Lerp(const Vector2& a, const Vector2& b, float t)
 {
-	return lhs.x * rhs.x + lhs.y * rhs.y;
+    return a + (b - a) * t;
 }
 
 // Vector subtraction.
@@ -170,6 +170,7 @@ inline Vector2 operator/(const Vector2& a, const Vector2& b)
 	return Vector2(a.x / b.x, a.y / b.y);
 }
 
+// Construct from a Vector2 and a float
 inline Vector3::Vector3(const Vector2& v, float zIn) 
 { 
 	x = v.x; 
@@ -177,6 +178,7 @@ inline Vector3::Vector3(const Vector2& v, float zIn)
 	z = zIn; 
 }
 
+// Construct from three floats
 inline Vector3::Vector3(float xIn, float yIn, float zIn) 
 { 
 	x = xIn; 
@@ -184,6 +186,7 @@ inline Vector3::Vector3(float xIn, float yIn, float zIn)
 	z = zIn; 
 }
 
+// Set from three floats
 inline void Vector3::Set(float xIn, float yIn, float zIn)
 {
 	x = xIn;
@@ -191,6 +194,7 @@ inline void Vector3::Set(float xIn, float yIn, float zIn)
 	z = zIn;
 }
 
+// Set all elements to zero
 inline void Vector3::SetZero()
 {
 	x = 0;
@@ -198,72 +202,94 @@ inline void Vector3::SetZero()
 	z = 0;
 }
 
-inline Vector3 operator-(const Vector3& v)
+// Unary minus
+inline Vector3 Vector3::operator-() const
 {
-	return Vector3(-v.x, -v.y, -v.z);
+	return Vector3(-x, -y, -z);
 }
 
+// Returns a vector with same direction but unit length.
+inline Vector3 Vector3::Unit() const
+{
+	return (*this) / Len();
+}
+
+// Returns vector length.
+inline float Vector3::Len() const
+{
+	return sqrt(Dot(*this, *this));
+}
+
+// Returns vector length squared.
+inline float Vector3::LenSq() const
+{
+	return Dot(*this, *this);
+}
+
+// Dot product of two vectors.
+inline float Dot(const Vector3& a, const Vector3& b)
+{
+	return a.x * b.x + a.y * b.y + a.z * b.z;
+}
+
+// Cross product of two vectors.
+inline Vector3 Cross(const Vector3& a, const Vector3& b)
+{
+	return Vector3(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x);
+}
+
+// Linear interpolation between two vectors
+inline Vector3 Lerp(const Vector3& a, const Vector3& b, float t)
+{
+    return a + (b - a) * t;
+}
+
+// Vector subtraction.
 inline Vector3 operator-(const Vector3& a, const Vector3& b)
 {
 	return Vector3(a.x - b.x, a.y - b.y, a.z - b.z);
 }
 
+// Vector addition.
 inline Vector3 operator+(const Vector3& a, const Vector3& b)
 {
 	return Vector3(a.x + b.x, a.y + b.y, a.z + b.z);
 }
 
+// Multplies all elements of a vector by a scalar.
 inline Vector3 operator*(const Vector3& v, float factor)
 {
 	return Vector3(v.x * factor, v.y * factor, v.z * factor);
 }
 
+// Multplies all elements of a vector by a scalar.
 inline Vector3 operator*(float factor, const Vector3& v)
 {
 	return Vector3(v.x * factor, v.y * factor, v.z * factor);
 }
 
-inline float operator*(const Vector3& a, const Vector3& b)
-{
-	return a.x * b.x + a.y * b.y + a.z * b.z;
-}
-
-inline Vector3 CompMul(const Vector3& a, const Vector3& b)
+// Vector multiplication
+inline Vector3 operator*(const Vector3& a, const Vector3& b)
 {
 	return Vector3(a.x * b.x, a.y * b.y, a.z * b.z);
 }
 
+// Divides all elements of a vector by a scalar.
 inline Vector3 operator/(const Vector3& v, float denominator)
 {
 	return Vector3(v.x / denominator, v.y / denominator, v.z / denominator);
 }
 
+// Multiplies a scalar to the reciprical of all elements in a vector.
 inline Vector3 operator/(float numerator, const Vector3& v)
 {
 	return Vector3(numerator / v.x, numerator / v.y, numerator / v.z);
 }
 
-inline Vector3 CompDiv(const Vector3& a, const Vector3& b)
+// Vector division.
+inline Vector3 operator/(const Vector3& a, const Vector3& b)
 {
 	return Vector3(a.x / b.x, a.y / b.y, a.z / b.z);
-}
-
-inline float Len(const Vector3& v)
-{
-	return sqrt(v * v);
-}
-
-inline Vector3 UnitVec(const Vector3& v)
-{
-	float len = Len(v);
-	return v / len;
-}
-
-inline Vector3 operator%(const Vector3& a, const Vector3& b)
-{
-	return Vector3((a.y * b.z) - (a.z * b.y), 
-	               (a.z * b.x) - (a.x * b.z), 
-	               (a.x * b.y) - (a.y * b.x));
 }
 
 inline Vector4::Vector4(const Vector3& v, float wIn) 
@@ -379,7 +405,7 @@ inline Quat::Quat(float xIn, float yIn, float zIn, float wIn)
 
 inline Quat::Quat(const Vector3& axis, float angle)
 {
-	Vector3 n = UnitVec(axis) * sin(angle/2.0f);
+	Vector3 n = axis.Unit() * sin(angle/2.0f);
 	x = n.x;
 	y = n.y;
 	z = n.z;
@@ -527,10 +553,10 @@ inline void Matrix::MakeOrtho(float left, float right, float bottom, float top, 
 
 inline void Matrix::MakeLookAt(const Vector3& eye, const Vector3& target, const Vector3& up)
 {
-	Vector3 x = UnitVec(eye - target);
-	Vector3 u = UnitVec(up);
-	Vector3 z = x % u;
-	Vector3 y = z % x;
+	Vector3 x = (eye - target).Unit();
+	Vector3 u = up.Unit();
+	Vector3 z = Cross(x, u);
+	Vector3 y = Cross(z, x);
 	SetXAxis(x);
 	SetYAxis(y);
 	SetZAxis(z);
