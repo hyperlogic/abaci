@@ -532,62 +532,81 @@ inline float Dot3(const Vector4& a, const Vector4& b)
 	return (a.x * b.x) + (a.y * b.y) + (a.z * b.z);
 }
 
-inline Matrix::Matrix(const Vector3& xAxis, const Vector3& yAxis, const Vector3& zAxis, const Vector3& trans)
+// Create Matrix from three principle axes and a translation.
+inline Matrix Matrix::Axes(const Vector3& xAxis, const Vector3& yAxis, const Vector3& zAxis, const Vector3& trans)
 {
-	SetXAxis(xAxis);
-	SetYAxis(yAxis);
-	SetZAxis(zAxis);
-	SetTrans(trans);
+	Matrix m;
+	m.SetXAxis(xAxis);
+	m.SetYAxis(yAxis);
+	m.SetZAxis(zAxis);
+	m.SetTrans(trans);
+	return m;
 }
 
-inline Matrix::Matrix(const Vector4& row0In, const Vector4& row1In, const Vector4& row2In, const Vector4& row3In)
+// Create a Matrix from four row vectors.
+inline Matrix Matrix::Rows(const Vector4& row0In, const Vector4& row1In, const Vector4& row2In, const Vector4& row3In)
 {
-	row0 = row0In;
-	row1 = row1In;
-	row2 = row2In;
-	row3 = row3In;
+	Matrix m;
+	m.row0 = row0In;
+	m.row1 = row1In;
+	m.row2 = row2In;
+	m.row3 = row3In;
+	return m;
 }
 
-inline void Matrix::MakeIdent()
+// Create an identity Matrix.
+inline Matrix Matrix::Identity()
 {
-	row0.Set(1.0f, 0.0f, 0.0f, 0.0f);
-	row1.Set(0.0f, 1.0f, 0.0f, 0.0f);
-	row2.Set(0.0f, 0.0f, 1.0f, 0.0f);
-	row3.Set(0.0f, 0.0f, 0.0f, 1.0f);
+	Matrix m;
+	m.row0.Set(1.0f, 0.0f, 0.0f, 0.0f);
+	m.row1.Set(0.0f, 1.0f, 0.0f, 0.0f);
+	m.row2.Set(0.0f, 0.0f, 1.0f, 0.0f);
+	m.row3.Set(0.0f, 0.0f, 0.0f, 1.0f);
+	return m;
 }
 
-inline void Matrix::MakeFrustum(float fovy, float aspect, float nearVal, float farVal)
+// Create a persective transformation Matrix.
+inline Matrix Matrix::Frustum(float fovy, float aspect, float nearVal, float farVal)
 {
+	Matrix m;
 	float f = 1.0f / tan(fovy / 2.0f);
-	row0.Set(f / aspect, 0, 0, 0);
-	row1.Set(0, f, 0, 0);
-	row2.Set(0, 0, (farVal + nearVal) / (nearVal - farVal), (2.0f * farVal * nearVal) / (nearVal - farVal));
-	row3.Set(0, 0, -1, 0);
+	m.row0.Set(f / aspect, 0, 0, 0);
+	m.row1.Set(0, f, 0, 0);
+	m.row2.Set(0, 0, (farVal + nearVal) / (nearVal - farVal), (2.0f * farVal * nearVal) / (nearVal - farVal));
+	m.row3.Set(0, 0, -1, 0);
+	return m;
 }
 
-inline void Matrix::MakeOrtho(float left, float right, float bottom, float top, float nearVal, float farVal)
+// Create an orthograpic projection Matrix.
+inline Matrix Matrix::Ortho(float left, float right, float bottom, float top, float nearVal, float farVal)
 {
+	Matrix m;
 	float tx = -(right + left / right - left);
 	float ty = -(top + bottom / top - bottom);
 	float tz = -(farVal + nearVal / farVal - nearVal);
-	row0.Set(2.0f / right - left, 0, 0, tx);
-	row1.Set(0, 2.0f / top - bottom, 0, ty);
-	row2.Set(0, 0, -2.0f / farVal - nearVal, tz);
-	row3.Set(0, 0, 0, 1);
+	m.row0.Set(2.0f / right - left, 0, 0, tx);
+	m.row1.Set(0, 2.0f / top - bottom, 0, ty);
+	m.row2.Set(0, 0, -2.0f / farVal - nearVal, tz);
+	m.row3.Set(0, 0, 0, 1);
+	return m;
 }
 
-inline void Matrix::MakeLookAt(const Vector3& eye, const Vector3& target, const Vector3& up)
+// Create a look at matrix. (x is forward)
+inline Matrix Matrix::LookAt(const Vector3& eye, const Vector3& target, const Vector3& up)
 {
+	Matrix m;
 	Vector3 x = (eye - target).Unit();
 	Vector3 u = up.Unit();
 	Vector3 z = Cross(x, u);
 	Vector3 y = Cross(z, x);
-	SetXAxis(x);
-	SetYAxis(y);
-	SetZAxis(z);
-	SetTrans(eye);
+	m.SetXAxis(x);
+	m.SetYAxis(y);
+	m.SetZAxis(z);
+	m.SetTrans(eye);
+	return m;
 }
 
+// Axes accessors
 inline Vector3 Matrix::GetXAxis() const
 {
 	return Vector3(row0.x, row1.x, row2.x);
@@ -640,6 +659,7 @@ inline void Matrix::SetTrans(const Vector3 trans)
 	row3.w = 1.0f;
 }
 
+// Multiplies by uniform scale.
 inline void Matrix::SetScale(float scale)
 {
 	SetXAxis(GetXAxis() * scale);
@@ -647,6 +667,7 @@ inline void Matrix::SetScale(float scale)
 	SetZAxis(GetZAxis() * scale);	
 }
 
+// Multiplies by non-uniform scale.
 inline void Matrix::SetScale(const Vector3 scale)
 {
 	SetXAxis(GetXAxis() * scale.x);
@@ -654,6 +675,7 @@ inline void Matrix::SetScale(const Vector3 scale)
 	SetZAxis(GetZAxis() * scale.z);
 }
 
+// Element accessors
 inline const float& Matrix::Elem(int r, int c) const
 {
 	return ((float*)&row0)[r * 4 + c];
@@ -664,29 +686,34 @@ inline float& Matrix::Elem(int r, int c)
 	return ((float*)&row0)[r * 4 + c];
 }
 
+// Column accessor
 inline Vector4 Matrix::GetCol(int c) const
 {
 	return Vector4(row0[c], row1[c], row2[c], row3[c]);
 }
 
-inline Vector3 Transform3x3(const Matrix& m, const Vector3& v)
+// Multiply the 3x3 component of this Matrix with a column vector.
+inline Vector3 Matrix::Mul3x3(const Vector3& v) const
 {
-	return Vector3(Dot3(m.row0, v), Dot3(m.row1, v), Dot3(m.row2, v));
+	return Vector3(Dot3(row0, v), Dot3(row1, v), Dot3(row2, v));
 }
 
-inline Vector3 Transform3x4(const Matrix& m, const Vector3& v)
+// Multiply the 3x4 component of this Matrix with a column vector. (w component of vector is 1.0)
+inline Vector3 Matrix::Mul3x4(const Vector3& v) const
 {
-	return Vector3(Dot3(m.row0, v) + m.row0.w, Dot3(m.row1, v) + m.row1.w, Dot3(m.row2, v) + m.row2.w);
+	return Vector3(Dot3(row0, v) + row0.w, Dot3(row1, v) + row1.w, Dot3(row2, v) + row2.w);
 }
 
-inline Vector4 Transform4x4(const Matrix& m, const Vector4& v)
+// Multiply this Matrix with a column vector.
+inline Vector4 Matrix::Mul4x4(const Vector4& v) const
 {
-	return Vector4(Dot(m.row0, v), Dot(m.row1, v), Dot(m.row2, v), Dot(m.row3, v));
+	return Vector4(Dot(row0, v), Dot(row1, v), Dot(row2, v), Dot(row3, v));
 }
 
-inline Matrix Transpose(const Matrix& m)
+// Returns the transpose of this Matrix
+inline Matrix Matrix::Transpose() const
 {
-	return Matrix(m.GetCol(0), m.GetCol(1), m.GetCol(2), m.GetCol(3));
+	return Rows(GetCol(0), GetCol(1), GetCol(2), GetCol(3));
 }
 
 inline Complex::Complex(float realIn, float imagIn) : real(realIn), imag(imagIn)

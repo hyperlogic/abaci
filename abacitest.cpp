@@ -90,7 +90,7 @@ void InitTestData()
 		Vector4 row1(RandomFloat(), RandomFloat(), RandomFloat(), RandomFloat());
 		Vector4 row2(RandomFloat(), RandomFloat(), RandomFloat(), RandomFloat());
 		Vector4 row3(RandomFloat(), RandomFloat(), RandomFloat(), RandomFloat());
-		s_matrixVec.push_back(Matrix(row0, row1, row2, row3));
+		s_matrixVec.push_back(Matrix::Rows(row0, row1, row2, row3));
 	}
 
 	// zero
@@ -98,48 +98,48 @@ void InitTestData()
 	s_vector2Vec.push_back(Vector2(0, 0));
 	s_vector3Vec.push_back(Vector3(0, 0, 0));
 	s_vector4Vec.push_back(Vector4(0, 0, 0, 0));
-	s_matrixVec.push_back(Matrix(Vector4(0, 0, 0, 0), Vector4(0, 0, 0, 0), Vector4(0, 0, 0, 0), Vector4(0, 0, 0, 0)));
+	s_matrixVec.push_back(Matrix::Rows(Vector4(0, 0, 0, 0), Vector4(0, 0, 0, 0), Vector4(0, 0, 0, 0), Vector4(0, 0, 0, 0)));
 
 	// ident-matrix
-	s_matrixVec.push_back(Matrix(Vector4(1, 0, 0, 0), Vector4(0, 1, 0, 0), Vector4(0, 0, 1, 0), Vector4(0, 0, 0, 1)));
+	s_matrixVec.push_back(Matrix::Rows(Vector4(1, 0, 0, 0), Vector4(0, 1, 0, 0), Vector4(0, 0, 1, 0), Vector4(0, 0, 0, 1)));
 
 	// FLT_MAX
 	s_floatVec.push_back(FLT_MAX);
 	s_vector2Vec.push_back(Vector2(FLT_MAX, FLT_MAX));
 	s_vector3Vec.push_back(Vector3(FLT_MAX, FLT_MAX, FLT_MAX));
 	s_vector4Vec.push_back(Vector4(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX));
-	s_matrixVec.push_back(Matrix(Vector4(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX), 
-								 Vector4(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX), 
-								 Vector4(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX), 
-								 Vector4(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX)));
+	s_matrixVec.push_back(Matrix::Rows(Vector4(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX), 
+									   Vector4(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX), 
+									   Vector4(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX), 
+									   Vector4(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX)));
 
 	s_floatVec.push_back(-FLT_MAX);
 	s_vector2Vec.push_back(Vector2(-FLT_MAX, -FLT_MAX));
 	s_vector3Vec.push_back(Vector3(-FLT_MAX, -FLT_MAX, -FLT_MAX));
 	s_vector4Vec.push_back(Vector4(-FLT_MAX, -FLT_MAX, -FLT_MAX, -FLT_MAX));
-	s_matrixVec.push_back(Matrix(Vector4(-FLT_MAX, -FLT_MAX, -FLT_MAX, -FLT_MAX), 
-								 Vector4(-FLT_MAX, -FLT_MAX, -FLT_MAX, -FLT_MAX), 
-								 Vector4(-FLT_MAX, -FLT_MAX, -FLT_MAX, -FLT_MAX), 
-								 Vector4(-FLT_MAX, -FLT_MAX, -FLT_MAX, -FLT_MAX)));
+	s_matrixVec.push_back(Matrix::Rows(Vector4(-FLT_MAX, -FLT_MAX, -FLT_MAX, -FLT_MAX), 
+									   Vector4(-FLT_MAX, -FLT_MAX, -FLT_MAX, -FLT_MAX), 
+									   Vector4(-FLT_MAX, -FLT_MAX, -FLT_MAX, -FLT_MAX), 
+									   Vector4(-FLT_MAX, -FLT_MAX, -FLT_MAX, -FLT_MAX)));
 
 	// FLT_MIN
 	s_floatVec.push_back(FLT_MIN);
 	s_vector2Vec.push_back(Vector2(FLT_MIN, FLT_MIN));
 	s_vector3Vec.push_back(Vector3(FLT_MIN, FLT_MIN, FLT_MIN));
 	s_vector4Vec.push_back(Vector4(FLT_MIN, FLT_MIN, FLT_MIN, FLT_MIN));
-	s_matrixVec.push_back(Matrix(Vector4(FLT_MIN, FLT_MIN, FLT_MIN, FLT_MIN), 
-								 Vector4(FLT_MIN, FLT_MIN, FLT_MIN, FLT_MIN), 
-								 Vector4(FLT_MIN, FLT_MIN, FLT_MIN, FLT_MIN), 
-								 Vector4(FLT_MIN, FLT_MIN, FLT_MIN, FLT_MIN)));
+	s_matrixVec.push_back(Matrix::Rows(Vector4(FLT_MIN, FLT_MIN, FLT_MIN, FLT_MIN), 
+									   Vector4(FLT_MIN, FLT_MIN, FLT_MIN, FLT_MIN), 
+									   Vector4(FLT_MIN, FLT_MIN, FLT_MIN, FLT_MIN), 
+									   Vector4(FLT_MIN, FLT_MIN, FLT_MIN, FLT_MIN)));
 
 	s_floatVec.push_back(-FLT_MIN);
 	s_vector2Vec.push_back(Vector2(-FLT_MIN, -FLT_MIN));
 	s_vector3Vec.push_back(Vector3(-FLT_MIN, -FLT_MIN, -FLT_MIN));
 	s_vector4Vec.push_back(Vector4(-FLT_MIN, -FLT_MIN, -FLT_MIN, -FLT_MIN));
-	s_matrixVec.push_back(Matrix(Vector4(-FLT_MIN, -FLT_MIN, -FLT_MIN, -FLT_MIN), 
-								 Vector4(-FLT_MIN, -FLT_MIN, -FLT_MIN, -FLT_MIN), 
-								 Vector4(-FLT_MIN, -FLT_MIN, -FLT_MIN, -FLT_MIN), 
-								 Vector4(-FLT_MIN, -FLT_MIN, -FLT_MIN, -FLT_MIN)));
+	s_matrixVec.push_back(Matrix::Rows(Vector4(-FLT_MIN, -FLT_MIN, -FLT_MIN, -FLT_MIN), 
+									   Vector4(-FLT_MIN, -FLT_MIN, -FLT_MIN, -FLT_MIN), 
+									   Vector4(-FLT_MIN, -FLT_MIN, -FLT_MIN, -FLT_MIN), 
+									   Vector4(-FLT_MIN, -FLT_MIN, -FLT_MIN, -FLT_MIN)));
 
 	// inf
 	float inf = FLT_MAX * FLT_MAX;
@@ -147,10 +147,10 @@ void InitTestData()
 	s_vector2Vec.push_back(Vector2(inf, inf));
 	s_vector3Vec.push_back(Vector3(inf, inf, inf));
 	s_vector4Vec.push_back(Vector4(inf, inf, inf, inf));
-	s_matrixVec.push_back(Matrix(Vector4(inf, inf, inf, inf), 
-								 Vector4(inf, inf, inf, inf), 
-								 Vector4(inf, inf, inf, inf), 
-								 Vector4(inf, inf, inf, inf)));
+	s_matrixVec.push_back(Matrix::Rows(Vector4(inf, inf, inf, inf), 
+									   Vector4(inf, inf, inf, inf), 
+									   Vector4(inf, inf, inf, inf), 
+									   Vector4(inf, inf, inf, inf)));
 
 	// -inf
 	inf = -FLT_MAX * FLT_MAX;
@@ -158,10 +158,10 @@ void InitTestData()
 	s_vector2Vec.push_back(Vector2(inf, inf));
 	s_vector3Vec.push_back(Vector3(inf, inf, inf));
 	s_vector4Vec.push_back(Vector4(inf, inf, inf, inf));
-	s_matrixVec.push_back(Matrix(Vector4(inf, inf, inf, inf), 
-								 Vector4(inf, inf, inf, inf), 
-								 Vector4(inf, inf, inf, inf), 
-								 Vector4(inf, inf, inf, inf)));
+	s_matrixVec.push_back(Matrix::Rows(Vector4(inf, inf, inf, inf), 
+									   Vector4(inf, inf, inf, inf), 
+									   Vector4(inf, inf, inf, inf), 
+									   Vector4(inf, inf, inf, inf)));
 
 	// Generate the quats from the vec4s
 	for(unsigned int i = 0; i < s_vector4Vec.size(); ++i)
@@ -1403,7 +1403,7 @@ public:
 			float ry = fv[4] * bx + fv[5] * by + fv[6] * bz;
 			float rz = fv[8] * bx + fv[9] * by + fv[10] * bz;
 
-			Vector3 r = Transform3x3(a, v);
+			Vector3 r = a.Mul3x3(v);
 			if (!(FloatTest(rx, r.x) && FloatTest(ry, r.y) && FloatTest(rz, r.z)))
 			{
 				printf("v = (%.5f, %.5f, %.5f)", v.x, v.y, v.z);
@@ -1432,7 +1432,7 @@ public:
 			float ry = fv[4] * bx + fv[5] * by + fv[6] * bz + fv[7];
 			float rz = fv[8] * bx + fv[9] * by + fv[10] * bz + fv[11];
 
-			Vector3 r = Transform3x4(a, v);
+			Vector3 r = a.Mul3x4(v);
 			if (!(FloatTest(rx, r.x) && FloatTest(ry, r.y) && FloatTest(rz, r.z)))
 			{
 				printf("v = (%.5f, %.5f, %.5f)", v.x, v.y, v.z);
@@ -1462,7 +1462,7 @@ public:
 			float rz = fv[8] * bx + fv[9] * by + fv[10] * bz + fv[11] * bw;
 			float rw = fv[12] * bx + fv[13] * by + fv[14] * bz + fv[15] * bw;
 
-			Vector4 r = Transform4x4(a, v);
+			Vector4 r = a.Mul4x4(v);
 			if (!(FloatTest(rx, r.x) && FloatTest(ry, r.y) && FloatTest(rz, r.z) && FloatTest(rw, r.w)))
 			{
 				printf("v = (%.5f, %.5f, %.5f, %.5f)", v.x, v.y, v.z, v.w);
@@ -1840,7 +1840,7 @@ public:
 		float fv[16];
 		
 		// convert the transpose of a into a float vec. (why? because invert_matrix expects an opengl style matrix)
-		MatrixToFloatVec(fv, Transpose(a));
+		MatrixToFloatVec(fv, a.Transpose());
 		float rfv[16];
 		bool invertable = invert_matrix(fv, rfv);
 
@@ -1848,7 +1848,7 @@ public:
 		invert_matrix_general(fv, rfv2);
 		
 		Matrix r;
-		bool matrix_invertable = Inverse(a, r);
+		bool matrix_invertable = FullInverse(a, r);
 
 		if (invertable != matrix_invertable)
 		{

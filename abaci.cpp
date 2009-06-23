@@ -66,56 +66,112 @@ Quat Quat::Log() const
 	return log;
 }
 
-Matrix::Matrix(const Quat& q)
+// Create a Matrix from a Quat and a translation.
+Matrix Matrix::QuatTrans(const Quat& q, const Vector3& trans)
 {
-	SetXAxis(q.Rotate(Vector3(1.0f,0.0f,0.0f)));
-	SetYAxis(q.Rotate(Vector3(0.0f,1.0f,0.0f)));
-	SetZAxis(q.Rotate(Vector3(0.0f,0.0f,1.0f)));
-	SetTrans(Vector3(0.0f,0.0f,0.0f));
+	Matrix m;
+	m.SetXAxis(q.Rotate(Vector3(1.0f,0.0f,0.0f)));
+	m.SetYAxis(q.Rotate(Vector3(0.0f,1.0f,0.0f)));
+	m.SetZAxis(q.Rotate(Vector3(0.0f,0.0f,1.0f)));
+	m.SetTrans(Vector3(0.0f,0.0f,0.0f));
+	return m;
 }
 
-Matrix::Matrix(const Quat& q, const Vector3& trans)
+// Create a Matrix from a Scale vector, a Quat and a translation.
+Matrix Matrix::ScaleQuatTrans(const Vector3& scale, const Quat& q, const Vector3& trans)
 {
-	SetXAxis(q.Rotate(Vector3(1.0f,0.0f,0.0f)));
-	SetYAxis(q.Rotate(Vector3(0.0f,1.0f,0.0f)));
-	SetZAxis(q.Rotate(Vector3(0.0f,0.0f,1.0f)));
-	SetTrans(trans);
+	Matrix m;
+	m.SetXAxis(q.Rotate(Vector3(scale.x,0.0f,0.0f)));
+	m.SetYAxis(q.Rotate(Vector3(0.0f,scale.y,0.0f)));
+	m.SetZAxis(q.Rotate(Vector3(0.0f,0.0f,scale.z)));
+	m.SetTrans(trans);
+	return m;
 }
 
-Matrix::Matrix(const Vector3& scale, const Quat& q, const Vector3& trans)
+// Create a Matrix from a rotation represented by an axis and an angle.
+Matrix Matrix::AxisAngle(const Vector3 axis, float angle)
 {
-	SetXAxis(q.Rotate(Vector3(scale.x,0.0f,0.0f)));
-	SetYAxis(q.Rotate(Vector3(0.0f,scale.y,0.0f)));
-	SetZAxis(q.Rotate(Vector3(0.0f,0.0f,scale.z)));
-	SetTrans(trans);
-}
-
-Matrix::Matrix(const Vector3 axis, float angle)
-{
+	Matrix m;
 	Quat q = Quat::AxisAngle(axis, angle);
-	SetXAxis(q.Rotate(Vector3(1.0f,0.0f,0.0f)));
-	SetYAxis(q.Rotate(Vector3(0.0f,1.0f,0.0f)));
-	SetZAxis(q.Rotate(Vector3(0.0f,0.0f,1.0f)));
-	SetTrans(Vector3(0.0f,0.0f,0.0f));	
+	m.SetXAxis(q.Rotate(Vector3(1.0f,0.0f,0.0f)));
+	m.SetYAxis(q.Rotate(Vector3(0.0f,1.0f,0.0f)));
+	m.SetZAxis(q.Rotate(Vector3(0.0f,0.0f,1.0f)));
+	m.SetTrans(Vector3(0.0f,0.0f,0.0f));
+	return m;
 }
 
+// Returns the rotation component of this Matrix.
+Quat Matrix::GetQuat() const
+{
+	// TODO: add to unit test!
+
+	int x = 0, y = 1, z = 2;
+	// create a matrix with no scale
+	Matrix m = Axes(GetXAxis().Unit(), GetYAxis().Unit(), GetZAxis().Unit(), Vector3(0,0,0));
+	float trace = m.Elem(0,0) + m.Elem(1,1) + m.Elem(2,2);
+	Vector4 q;
+	if (trace > -1.0f)
+	{
+		int i = x, j = y, k = z;
+		if (m.Elem(y,y) > m.Elem(x,x)) { i = y; j = z; k = x; }
+		if (m.Elem(z,z) > m.Elem(i,i)) { i = z; j = x; k = y; }
+		float r = sqrt(m.Elem(i,i) - m.Elem(j,j) - m.Elem(k,k) + 1.0f);
+		q[i] = r / 2.0f;
+		q[j] = (m.Elem(i,j) + m.Elem(j,i)) / (2.0f * r);
+		q[k] = (m.Elem(k,i) + m.Elem(i,k)) / (2.0f * r);
+		q[3] = (m.Elem(k,j) + m.Elem(j,k)) / (2.0f * r);
+	}
+    else
+	{
+		q.w = sqrt(1.0f + trace) / 2.0f;
+		q.x = (row2[1] - row1[2]) / (4.0f * q.w);
+		q.y = (row0[2] - row2[0]) / (4.0f * q.w);
+		q.z = (row1[0] - row0[1]) / (4.0f * q.w);
+	}
+	return Quat(q.x, q.y, q.z, q.w);
+}
+
+// Matrix addition
 Matrix operator+(const Matrix& a, const Matrix& b)
 {
-	return Matrix(a.row0 + b.row0, a.row1 + b.row1, a.row2 + b.row2, a.row3 + b.row2);
+	return Matrix::Rows(a.row0 + b.row0, a.row1 + b.row1, a.row2 + b.row2, a.row3 + b.row2);
 }
 
+// Matrix subtraction
 Matrix operator-(const Matrix& a, const Matrix& b)
 {
-	return Matrix(a.row0 - b.row0, a.row1 - b.row1, a.row2 - b.row2, a.row3 - b.row2);
+	return Matrix::Rows(a.row0 - b.row0, a.row1 - b.row1, a.row2 - b.row2, a.row3 - b.row2);
 }
 
+// Matrix multiplication
 Matrix operator*(const Matrix& a, const Matrix& b)
 {
-	Matrix bt = Transpose(b);
-	return Matrix( Vector4(Dot(a.row0, bt.row0), Dot(a.row0, bt.row1), Dot(a.row0, bt.row2), Dot(a.row0, bt.row3)), 
-				   Vector4(Dot(a.row1, bt.row0), Dot(a.row1, bt.row1), Dot(a.row1, bt.row2), Dot(a.row1, bt.row3)),
-				   Vector4(Dot(a.row2, bt.row0), Dot(a.row2, bt.row1), Dot(a.row2, bt.row2), Dot(a.row2, bt.row3)),
-				   Vector4(Dot(a.row3, bt.row0), Dot(a.row3, bt.row1), Dot(a.row3, bt.row2), Dot(a.row3, bt.row3)));
+	Matrix bt = b.Transpose();
+	return Matrix::Rows( Vector4(Dot(a.row0, bt.row0), Dot(a.row0, bt.row1), Dot(a.row0, bt.row2), Dot(a.row0, bt.row3)), 
+						 Vector4(Dot(a.row1, bt.row0), Dot(a.row1, bt.row1), Dot(a.row1, bt.row2), Dot(a.row1, bt.row3)),
+						 Vector4(Dot(a.row2, bt.row0), Dot(a.row2, bt.row1), Dot(a.row2, bt.row2), Dot(a.row2, bt.row3)),
+						 Vector4(Dot(a.row3, bt.row0), Dot(a.row3, bt.row1), Dot(a.row3, bt.row2), Dot(a.row3, bt.row3)));
+}
+
+// If the 3x3 portion of this Matrix is Orthogonal (i.e. columns are orthogonal unit vectors)
+// this will return the Inverse of that matrix.
+Matrix Matrix::OrthoInverse() const
+{
+	Matrix r(*this);
+	r.SetTrans(Vector3(0, 0, 0));
+	r = r.Transpose();
+	r.SetTrans(-r.Mul3x4(GetTrans()));
+	return r;
+}
+
+// Full 4x4 Matrix Inverse, returns Identity if matrix has no inverse.
+Matrix Matrix::FullInverse() const
+{
+	Matrix m;
+	if (::FullInverse((*this), m))
+		return m;
+	else
+		return Identity();
 }
 
 template <typename T>
@@ -126,23 +182,11 @@ void Swap(T& a, T& b)
 	b = temp;
 }
 
-/*
-static void DumpAugMatrix(float* row0, float* row1, float* row2, float* row3)
+// Full 4x4 Matrix inverse, returns false if Matrix has no inverse.
+bool FullInverse(const Matrix& m, Matrix& result)
 {
-	printf("| %15.3f, %15.3f, %15.3f, %15.3f | %15.3f, %15.3f, %15.3f, %15.3f |\n", 
-		   row0[0], row0[1], row0[2], row0[3], row0[4], row0[5], row0[6], row0[7]);
-	printf("| %15.3f, %15.3f, %15.3f, %15.3f | %15.3f, %15.3f, %15.3f, %15.3f |\n", 
-		   row1[0], row1[1], row1[2], row1[3], row1[4], row1[5], row1[6], row1[7]);
-	printf("| %15.3f, %15.3f, %15.3f, %15.3f | %15.3f, %15.3f, %15.3f, %15.3f |\n", 
-		   row2[0], row2[1], row2[2], row2[3], row2[4], row2[5], row2[6], row2[7]);
-	printf("| %15.3f, %15.3f, %15.3f, %15.3f | %15.3f, %15.3f, %15.3f, %15.3f |\n", 
-		   row3[0], row3[1], row3[2], row3[3], row3[4], row3[5], row3[6], row3[7]);
-}
-*/
+    // Gaussian-Jordan Elimination, TODO: There are more numerically stable ways to do this...
 
-// Gaussian-Jordan Elimination
-bool Inverse(const Matrix& m, Matrix& result)
-{
 	float temp[4][8];
 	float* row[4];
 
@@ -161,10 +205,6 @@ bool Inverse(const Matrix& m, Matrix& result)
 	temp[1][4] = 0.0f; temp[1][5] = 1.0f; temp[1][6] = 0.0f; temp[1][7] = 0.0f;
 	temp[2][4] = 0.0f; temp[2][5] = 0.0f; temp[2][6] = 1.0f; temp[2][7] = 0.0f;
 	temp[3][4] = 0.0f; temp[3][5] = 0.0f; temp[3][6] = 0.0f; temp[3][7] = 1.0f;
-
-//	printf("\ninitial matrix =\n");
-//	DumpAugMatrix(row[0], row[1], row[2], row[3]);
-//	printf("\n");
 
 	// bubble up row with largest leading number (partial pivot)
 	if (fabs(row[0][0]) < fabs(row[1][0]))
@@ -232,10 +272,6 @@ bool Inverse(const Matrix& m, Matrix& result)
 
 	// at this point row matrix should be in row-echelon form.
 
-//	printf("\nrow-eschelon form:\n");
-//	DumpAugMatrix(row[0], row[1], row[2], row[3]);
-//	printf("\n");
-
 	// add multiples of row[3] to above rows, to zero out that column
 	for (int r = 0; r < 3; ++r)
 	{
@@ -257,10 +293,6 @@ bool Inverse(const Matrix& m, Matrix& result)
 		for (int c = 0; c < 8; ++c) row[r][c] -= s * row[1][c];
 	}
 
-//	printf("\nIdentity | Inverse\n");
-//	DumpAugMatrix(row[0], row[1], row[2], row[3]);
-//	printf("\n");
-
 	// init result
 	result.row0.x = row[0][4]; result.row0.y = row[0][5]; result.row0.z = row[0][6]; result.row0.w = row[0][7];
 	result.row1.x = row[1][4]; result.row1.y = row[1][5]; result.row1.z = row[1][6]; result.row1.w = row[1][7];
@@ -270,51 +302,13 @@ bool Inverse(const Matrix& m, Matrix& result)
 	return true;	
 }
 
+// Print to stdout.
 void PrintMatrix(const Matrix& m)
 {
 	printf("| %15.5f, %15.5f, %15.5f, %15.5f |\n", m.row0.x, m.row0.y, m.row0.z, m.row0.w);
 	printf("| %15.5f, %15.5f, %15.5f, %15.5f |\n", m.row1.x, m.row1.y, m.row1.z, m.row1.w);
 	printf("| %15.5f, %15.5f, %15.5f, %15.5f |\n", m.row2.x, m.row2.y, m.row2.z, m.row2.w);
 	printf("| %15.5f, %15.5f, %15.5f, %15.5f |\n", m.row3.x, m.row3.y, m.row3.z, m.row3.w);
-}
-
-Matrix OrthonormalInverse(const Matrix& m)
-{
-	Matrix r(m);
-	r.SetTrans(Vector3(0, 0, 0));
-	r = Transpose(r);
-	r.SetTrans(-Transform3x4(r, m.GetTrans()));
-	return r;
-}
-
-Quat Matrix::GetQuat() const
-{
-	// TODO: add to unit test!
-
-	int x = 0, y = 1, z = 2;
-	// create a matrix with no scale
-	Matrix m(GetXAxis().Unit(), GetYAxis().Unit(), GetZAxis().Unit(), Vector3(0,0,0));
-	float trace = m.Elem(0,0) + m.Elem(1,1) + m.Elem(2,2);
-	Vector4 q;
-	if (trace > -1.0f)
-	{
-		int i = x, j = y, k = z;
-		if (m.Elem(y,y) > m.Elem(x,x)) { i = y; j = z; k = x; }
-		if (m.Elem(z,z) > m.Elem(i,i)) { i = z; j = x; k = y; }
-		float r = sqrt(m.Elem(i,i) - m.Elem(j,j) - m.Elem(k,k) + 1.0f);
-		q[i] = r / 2.0f;
-		q[j] = (m.Elem(i,j) + m.Elem(j,i)) / (2.0f * r);
-		q[k] = (m.Elem(k,i) + m.Elem(i,k)) / (2.0f * r);
-		q[3] = (m.Elem(k,j) + m.Elem(j,k)) / (2.0f * r);
-	}
-    else
-	{
-		q.w = sqrt(1.0f + trace) / 2.0f;
-		q.x = (row2[1] - row1[2]) / (4.0f * q.w);
-		q.y = (row0[2] - row2[0]) / (4.0f * q.w);
-		q.z = (row1[0] - row0[1]) / (4.0f * q.w);
-	}
-	return Quat(q.x, q.y, q.z, q.w);
 }
 
 #ifdef ABACI_NAMESPACE

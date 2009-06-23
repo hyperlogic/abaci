@@ -328,19 +328,37 @@ Quat operator*(const Quat& a, const Quat& b);
 // column major
 struct Matrix
 {
+	// Create a Matrix from three principle axes and a translation.
+	static Matrix Axes(const Vector3& xAxis, const Vector3& yAxis, const Vector3& zAxis, const Vector3& trans = Vector3(0,0,0));
+
+	// Create a Matrix from four row vectors.
+	static Matrix Rows(const Vector4& row0In, const Vector4& row1In, const Vector4& row2In, const Vector4& row3In);
+
+	// Create a Matrix from a Quat and a translation.
+	static Matrix QuatTrans(const Quat& q, const Vector3& trans);
+
+	// Create a Matrix from a Scale vector, a Quat and a translation.
+	static Matrix ScaleQuatTrans(const Vector3& scale, const Quat& rot, const Vector3& trans);
+
+	// Create a Matrix from a rotation represented by an axis and an angle.
+	static Matrix AxisAngle(const Vector3 axis, float angle);
+
+	// Create an identity Matrix.
+	static Matrix Identity();
+
+	// Create a persective projection Matrix.
+	static Matrix Frustum(float fovy, float aspect, float nearVal, float farVal);
+
+	// Create an orthograpic projection Matrix.
+	static Matrix Ortho(float left, float right, float bottom, float top, float nearVal, float farVal);
+
+	// Create a look at matrix. (x is forward)
+	static Matrix LookAt(const Vector3& eye, const Vector3& target, const Vector3& up);
+	
+	// Uninitialized by default.
 	Matrix() {}
-	Matrix(const Vector3& xAxis, const Vector3& yAxis, const Vector3& zAxis, const Vector3& trans);
-	Matrix(const Vector4& row0In, const Vector4& row1In, const Vector4& row2In, const Vector4& row3In);
-	Matrix(const Quat& q);
-	Matrix(const Quat& q, const Vector3& trans);
-	Matrix(const Vector3& scale, const Quat& rot, const Vector3& trans);
-	Matrix(const Vector3 axis, float angle);
 	
-	void MakeIdent();
-	void MakeFrustum(float fovy, float aspect, float nearVal, float farVal);
-	void MakeOrtho(float left, float right, float bottom, float top, float nearVal, float farVal);
-	void MakeLookAt(const Vector3& eye, const Vector3& target, const Vector3& up);
-	
+	// Axes accessors
 	Vector3 GetXAxis() const;
 	Vector3 GetYAxis() const;
 	Vector3 GetZAxis() const;
@@ -351,31 +369,60 @@ struct Matrix
 	void SetZAxis(const Vector3 zAxis);
 	void SetTrans(const Vector3 trans);
 	
+	// Multiplies by uniform scale.
 	void SetScale(float scale);
+
+	// Multiplies by non-uniform scale.
 	void SetScale(const Vector3 scale);
 	
+	// Element accessors
 	const float& Elem(int r, int c) const;
 	float& Elem(int r, int c);
 	
+	// Column accessor
 	Vector4 GetCol(int c) const;
 
+	// Returns the rotation component of this Matrix.
 	Quat GetQuat() const;
-	
+
+	// Multiply the 3x3 component of this Matrix with a column vector.
+	Vector3 Mul3x3(const Vector3& v) const;
+
+	// Multiply the 3x4 component of this Matrix with a column vector. (w component of vector is 1.0)
+	Vector3 Mul3x4(const Vector3& v) const;
+
+	// Multiply this Matrix with a column vector.
+	Vector4 Mul4x4(const Vector4& v) const;
+
+	// Returns the transpose of this Matrix
+	Matrix Transpose() const;
+
+	// If the 3x3 portion of this Matrix is Orthogonal (i.e. columns are orthogonal unit vectors)
+	// this will return the Inverse of that matrix.
+	Matrix OrthoInverse() const;
+
+	// Full 4x4 Matrix Inverse, returns Identity if matrix has no inverse.
+	Matrix FullInverse() const;
+
 	Vector4 row0;
 	Vector4 row1;
 	Vector4 row2;
 	Vector4 row3;
 };
 
-Matrix operator*(const Matrix& a, const Matrix& b);
+// Matrix addition
 Matrix operator+(const Matrix& a, const Matrix& b);
+
+// Matrix subtraction
 Matrix operator-(const Matrix& a, const Matrix& b);
-Vector3 Transform3x3(const Matrix& m, const Vector3& v);
-Vector3 Transform3x4(const Matrix& m, const Vector3& v);
-Vector4 Transform4x4(const Matrix& m, const Vector4& v);
-Matrix Transpose(const Matrix& m);
-bool Inverse(const Matrix& m, Matrix& result);
-Matrix OrthonormalInverse(const Matrix& m);
+
+// Matrix multiplication
+Matrix operator*(const Matrix& a, const Matrix& b);
+
+// Full 4x4 Matrix inverse, returns false if Matrix has no inverse.
+bool FullInverse(const Matrix& m, Matrix& result);
+
+// Print to stdout.
 void PrintMatrix(const Matrix& m);
 
 
