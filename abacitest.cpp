@@ -1032,7 +1032,7 @@ public:
 			Quat a = s_quatVec[i];
 			if (!op(a))
 			{
-				printf("a = (%.5f, %.5f, %.5f, %.5f)", a.x, a.y, a.z, a.w);
+				printf("a = (%.5f, %.5f, %.5f, %.5f)", a.i, a.j, a.k, a.r);
 				return false;
 			}
 		}
@@ -1054,7 +1054,7 @@ public:
 	static const char* GetName() { return "Rotate"; }
 	bool operator() (const Quat& a)
 	{
-		float ax = a.x, ay = a.y, az = a.z, aw = a.w;
+		float ax = a.i, ay = a.j, az = a.k, aw = a.r;
 		float rx, ry, rz, rw;
 
 		for (unsigned int i = 0; i < s_vector3Vec.size(); ++i)
@@ -1065,7 +1065,7 @@ public:
 			QuatMul(&rx, &ry, &rz, &rw, ax, ay, az, aw, bx, by, bz, bw);
 			QuatMul(&rx, &ry, &rz, &rw, rx, ry, rz, rw, -ax, -ay, -az, aw);
 
-			Vector3 r = Rotate(a, v);
+			Vector3 r = a.Rotate(v);
 			if (!(FloatTest(rx, r.x) && FloatTest(ry, r.y) && FloatTest(rz, r.z)))
 			{
 				printf("v = (%.5f, %.5f, %.5f)", v.x, v.y, v.z);
@@ -1082,10 +1082,10 @@ public:
 	static const char* GetName() { return "Conjugate"; }
 	bool operator() (const Quat& a)
 	{
-		float ax = a.x, ay = a.y, az = a.z, aw = a.w;
+		float ax = a.i, ay = a.j, az = a.k, aw = a.r;
 		float rx = -ax, ry = -ay, rz = -az, rw = aw;
 		Quat r = ~a;
-		return FloatTest(rx, r.x) && FloatTest(ry, r.y) && FloatTest(rz, r.z) && FloatTest(rw, r.w);
+		return FloatTest(rx, r.i) && FloatTest(ry, r.j) && FloatTest(rz, r.k) && FloatTest(rw, r.r);
 	}
 };
 
@@ -1095,20 +1095,21 @@ public:
 	static const char* GetName() { return "Negation"; }
 	bool operator() (const Quat& a)
 	{
-		float ax = a.x, ay = a.y, az = a.z, aw = a.w;
+		float ax = a.i, ay = a.j, az = a.k, aw = a.r;
 		float rx = -ax, ry = -ay, rz = -az, rw = -aw;
 		Quat r = -a;
-		return FloatTest(rx, r.x) && FloatTest(ry, r.y) && FloatTest(rz, r.z) && FloatTest(rw, r.w);
+		return FloatTest(rx, r.i) && FloatTest(ry, r.j) && FloatTest(rz, r.k) && FloatTest(rw, r.r);
 	}
 };
 
+/*
 class QuatScalarMultiplication
 {
 public:
 	static const char* GetName() { return "Scalar Multiplication"; }
 	bool operator() (const Quat& a)
 	{
-		float ax = a.x, ay = a.y, az = a.z, aw = a.w;
+		float ax = a.i, ay = a.j, az = a.k, aw = a.r;
 		for (unsigned int i = 0; i < s_floatVec.size(); ++i)
 		{
 			// test (vector * scalar) and (scalar * vector)
@@ -1128,7 +1129,9 @@ public:
 		return true;
 	}
 };
+*/
 
+/*
 class QuatScalarDivision
 {
 public:
@@ -1155,6 +1158,7 @@ public:
 		return true;
 	}
 };
+*/
 
 class QuatLength
 {
@@ -1162,9 +1166,9 @@ public:
 	static const char* GetName() { return "Length"; }
 	bool operator() (const Quat& a)
 	{
-		float ax = a.x, ay = a.y, az = a.z, aw = a.w;
+		float ax = a.i, ay = a.j, az = a.k, aw = a.r;
 		float r = sqrt((ax * ax) + (ay * ay) + (az * az) + (aw * aw));
-		float len = Len(a);
+		float len = a.Len();
 		return FloatTest(r, len);
 	}
 };
@@ -1175,11 +1179,11 @@ public:
 	static const char* GetName() { return "UnitVec"; }
 	bool operator() (const Quat& a)
 	{
-		float ax = a.x, ay = a.y, az = a.z, aw = a.w;
+		float ax = a.i, ay = a.j, az = a.k, aw = a.r;
 		float len = sqrt((ax * ax) + (ay * ay) + (az * az) + (aw * aw));
 		float rx = ax / len, ry = ay / len, rz = az / len, rw = aw / len;
-		Quat r = UnitVec(a);
-		return FloatTest(rx, r.x) && FloatTest(ry, r.y) && FloatTest(rz, r.z) && FloatTest(rw, r.w);
+		Quat r = a.Unit();
+		return FloatTest(rx, r.i) && FloatTest(ry, r.j) && FloatTest(rz, r.k) && FloatTest(rw, r.r);
 	}
 };
 
@@ -1206,15 +1210,15 @@ public:
 	static const char* GetName() { return "Quat Exponential"; }
 	bool operator() (const Quat& a)
 	{
-		float ax = a.x, ay = a.y, az = a.z, aw = a.w;
+		float ax = a.i, ay = a.j, az = a.k, aw = a.r;
 		float rx, ry, rz, rw;
 		QuatExp(&rx, &ry, &rz, &rw, ax, ay, az, aw);
-		Quat r = QuatExp(a);
-		bool rval = FloatTest(rx, r.x) && FloatTest(ry, r.y) && FloatTest(rz, r.z) && FloatTest(rw, r.w);
+		Quat r = a.Exp();
+		bool rval = FloatTest(rx, r.i) && FloatTest(ry, r.j) && FloatTest(rz, r.k) && FloatTest(rw, r.r);
 		if (!rval)
 		{
 			printf("rx = %.5f, ry = %.5f, rz = %.5f, rw = %.5f\n", rx, ry, rz, rw);
-			printf("r = %.5f, %.5f, %.5f, %.5f\n", r.x, r.y, r.z, r.w);
+			printf("r = %.5f, %.5f, %.5f, %.5f\n", r.i, r.j, r.k, r.r);
 		}
 		return rval;
 	}
@@ -1247,11 +1251,11 @@ public:
 	static const char* GetName() { return "Quat Logarithm"; }
 	bool operator() (const Quat& a)
 	{
-		float ax = a.x, ay = a.y, az = a.z, aw = a.w;
+		float ax = a.i, ay = a.j, az = a.k, aw = a.r;
 		float rx, ry, rz, rw;
 		QuatLog(&rx, &ry, &rz, &rw, ax, ay, az, aw);
-		Quat r = QuatLog(a);
-		return FloatTest(rx, r.x) && FloatTest(ry, r.y) && FloatTest(rz, r.z) && FloatTest(rw, r.w);
+		Quat r = a.Log();
+		return FloatTest(rx, r.i) && FloatTest(ry, r.j) && FloatTest(rz, r.k) && FloatTest(rw, r.r);
 	}
 };
 
@@ -1273,7 +1277,7 @@ public:
 				Quat b = s_quatVec[j];
 				if (!op(a, b))
 				{
-					printf("a = (%.5f, %.5f, %.5f, %.5f), b = (%.5f, %.5f, %.5f, %.5f)", a.x, a.y, a.z, a.w, b.x, b.y, b.z, b.w);
+					printf("a = (%.5f, %.5f, %.5f, %.5f), b = (%.5f, %.5f, %.5f, %.5f)", a.i, a.j, a.k, a.r, b.i, b.j, b.k, b.r);
 					return false;
 				}
 			}
@@ -1288,11 +1292,11 @@ public:
 	static const char* GetName() { return "Addition"; }
 	bool operator()(const Quat& a, const Quat& b) const
 	{
-		float ax = a.x, ay = a.y, az = a.z, aw = a.w;
-		float bx = b.x, by = b.y, bz = b.z, bw = b.w;
+		float ax = a.i, ay = a.j, az = a.k, aw = a.r;
+		float bx = b.i, by = b.j, bz = b.k, bw = b.r;
 		float rx = ax + bx, ry = ay + by, rz = az + bz, rw = aw + bw;
 		Quat r = a + b;
-		return FloatTest(rx, r.x) && FloatTest(ry, r.y) && FloatTest(rz, r.z) && FloatTest(rw, r.w);
+		return FloatTest(rx, r.i) && FloatTest(ry, r.j) && FloatTest(rz, r.k) && FloatTest(rw, r.r);
 	}
 };
 
@@ -1302,14 +1306,15 @@ public:
 	static const char* GetName() { return "Subtraction"; }
 	bool operator()(const Quat& a, const Quat& b) const
 	{
-		float ax = a.x, ay = a.y, az = a.z, aw = a.w;
-		float bx = b.x, by = b.y, bz = b.z, bw = b.w;
+		float ax = a.i, ay = a.j, az = a.k, aw = a.r;
+		float bx = b.i, by = b.j, bz = b.k, bw = b.r;
 		float rx = ax - bx, ry = ay - by, rz = az - bz, rw = aw - bw;
 		Quat r = a - b;
-		return FloatTest(rx, r.x) && FloatTest(ry, r.y) && FloatTest(rz, r.z) && FloatTest(rw, r.w);
+		return FloatTest(rx, r.i) && FloatTest(ry, r.j) && FloatTest(rz, r.k) && FloatTest(rw, r.r);
 	}
 };
 
+/*
 class QuatCompMul
 {
 public:
@@ -1323,7 +1328,8 @@ public:
 		return FloatTest(rx, r.x) && FloatTest(ry, r.y) && FloatTest(rz, r.z) && FloatTest(rw, r.w);
 	}
 };
-
+*/
+/*
 class QuatCompDiv
 {
 public:
@@ -1337,6 +1343,7 @@ public:
 		return FloatTest(rx, r.x) && FloatTest(ry, r.y) && FloatTest(rz, r.z) && FloatTest(rw, r.w);
 	}
 };
+*/
 
 //
 // Matrix tests
@@ -1958,16 +1965,16 @@ int main(int argc, char* argv[])
 	quatSuite.AddTest(new QuatUnaryOpTest<QuatRotate>());
 	quatSuite.AddTest(new QuatUnaryOpTest<QuatConjugate>());
 	quatSuite.AddTest(new QuatUnaryOpTest<QuatNegation>());
-	quatSuite.AddTest(new QuatUnaryOpTest<QuatScalarMultiplication>());
-	quatSuite.AddTest(new QuatUnaryOpTest<QuatScalarDivision>());
+//	quatSuite.AddTest(new QuatUnaryOpTest<QuatScalarMultiplication>());
+//	quatSuite.AddTest(new QuatUnaryOpTest<QuatScalarDivision>());
 	quatSuite.AddTest(new QuatUnaryOpTest<QuatLength>());
 	quatSuite.AddTest(new QuatUnaryOpTest<QuatUnitVec>());
 	quatSuite.AddTest(new QuatUnaryOpTest<QuatExponential>());
 	quatSuite.AddTest(new QuatUnaryOpTest<QuatLogarithm>());
 	quatSuite.AddTest(new QuatBinaryOpTest<QuatAddition>());
 	quatSuite.AddTest(new QuatBinaryOpTest<QuatSubtraction>());
-	quatSuite.AddTest(new QuatBinaryOpTest<QuatCompMul>());
-	quatSuite.AddTest(new QuatBinaryOpTest<QuatCompDiv>());
+//	quatSuite.AddTest(new QuatBinaryOpTest<QuatCompMul>());
+//	quatSuite.AddTest(new QuatBinaryOpTest<QuatCompDiv>());
 	quatSuite.RunTests();
 
 	TestSuite matrixSuite("Matrix");

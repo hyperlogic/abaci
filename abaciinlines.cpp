@@ -424,96 +424,92 @@ inline Vector4 operator/(const Vector4& a, const Vector4& b)
 	return Vector4(a.x / b.x, a.y / b.y, a.z / b.z, a.w / b.w);
 }
 
-inline Quat::Quat(float xIn, float yIn, float zIn, float wIn) 
-{ 
-	x = xIn; 
-	y = yIn; 
-	z = zIn; 
-	w = wIn; 
-}
-
-inline Quat::Quat(const Vector3& axis, float angle)
+// Create from axis and angle
+inline Quat Quat::AxisAngle(const Vector3& axis, float angle)
 {
 	Vector3 n = axis.Unit() * sin(angle/2.0f);
-	x = n.x;
-	y = n.y;
-	z = n.z;
-	w = cos(angle/2.0f);
+	float w = cos(angle/2.0f);
+	return Quat(n.x, n.y, n.z, w);
 }
 
-inline Vector3 Rotate(const Quat& q, const Vector3& v)
+// Construct from four floats.
+inline Quat::Quat(float iIn, float jIn, float kIn, float rIn)
 {
-	Quat r = q * Quat(v.x, v.y, v.z, 0.0f) * ~q;
-	return Vector3(r.x, r.y, r.z);
+	i = iIn;
+	j = jIn;
+	k = kIn;
+	r = rIn;
 }
 
+// Set all elements to zero.
+inline void Quat::SetZero()
+{
+	i = j = k = r = 0.0f;
+}
+
+// Returns this quaternion normalized.
+inline Quat Quat::Unit() const
+{
+	float len = Len();
+	return Quat(i / len, j / len, k / len, r / len);
+}
+
+// Returns quat length.
+inline float Quat::Len() const
+{
+	return sqrt(Dot(*this, *this));
+}
+
+// Returns quat length squared.
+inline float Quat::LenSq() const
+{
+	return Dot(*this, *this);
+}
+
+// Rotate a vector.
+inline Vector3 Quat::Rotate(const Vector3& v) const
+{
+	Quat r = (*this) * Quat(v.x, v.y, v.z, 0.0f) * ~(*this);
+	return Vector3(r.i, r.j, r.k);
+}
+
+// Dot product
+inline float Dot(const Quat& a, const Quat& b)
+{
+	return a.i * b.i + a.j * b.j + a.k * b.k + a.r * b.r;
+}
+
+// Quaternion conjugate
 inline Quat operator~(const Quat& v)
 {
-	return Quat(-v.x, -v.y, -v.z, v.w);
+	return Quat(-v.i, -v.j, -v.k, v.r);
 }
 
+// Unary minus.
 inline Quat operator-(const Quat& v)
 {
-	return Quat(-v.x, -v.y, -v.z, -v.w);
+	return Quat(-v.i, -v.j, -v.k, -v.r);
 }
 
+// Quaternion subtraction.
 inline Quat operator-(const Quat& a, const Quat& b)
 {
-	return Quat(a.x - b.x, a.y - b.y, a.z - b.z, a.w - b.w);
+	return Quat(a.i - b.i, a.j - b.j, a.k - b.k, a.r - b.r);
 }
 
+// Quaternion addition.
 inline Quat operator+(const Quat& a, const Quat& b)
 {
-	return Quat(a.x + b.x, a.y + b.y, a.z + b.z, a.w + b.w);
+	return Quat(a.i + b.i, a.j + b.j, a.k + b.k, a.r + b.r);
 }
 
-inline Quat operator*(const Quat& v, float factor)
-{
-	return Quat(factor * v.x, factor * v.y, factor * v.z, factor * v.w);
-}
-
-inline Quat operator*(float factor, const Quat& v)
-{
-	return Quat(factor * v.x, factor * v.y, factor * v.z, factor * v.w);
-}
-
+// Quaternion multplication.
 inline Quat operator*(const Quat& q1, const Quat& q2)
 {
-	return Quat( q1.x * q2.w + q1.y * q2.z - q1.z * q2.y + q1.w * q2.x,
-				-q1.x * q2.z + q1.y * q2.w + q1.z * q2.x + q1.w * q2.y,
-				 q1.x * q2.y - q1.y * q2.x + q1.z * q2.w + q1.w * q2.z,
-				-q1.x * q2.x - q1.y * q2.y - q1.z * q2.z + q1.w * q2.w);
-}
-
-inline Quat CompMul(const Quat& a, const Quat& b)
-{
-	return Quat(a.x * b.x, a.y * b.y, a.z * b.z, a.w * b.w);
-}
-
-inline Quat operator/(const Quat& v, float denominator)
-{
-	return Quat(v.x / denominator, v.y / denominator, v.z / denominator, v.w / denominator);
-}
-
-inline Quat operator/(float numerator, const Quat& v)
-{
-	return Quat(numerator / v.x, numerator / v.y, numerator / v.z, numerator / v.w);
-}
-
-inline Quat CompDiv(const Quat& a, const Quat& b)
-{
-	return Quat(a.x / b.x, a.y / b.y, a.z / b.z, a.w / b.w);
-}
-
-inline float Len(const Quat& v)
-{
-	return sqrt(Dot(v,v));
-}
-
-inline Quat UnitVec(const Quat& v)
-{
-	float len = Len(v);
-	return v / len;	
+	return Quat( q1.i * q2.r + q1.j * q2.k - q1.k * q2.j + q1.r * q2.i,
+				-q1.i * q2.k + q1.j * q2.r + q1.k * q2.i + q1.r * q2.j,
+				 q1.i * q2.j - q1.j * q2.i + q1.k * q2.r + q1.r * q2.k,
+				-q1.i * q2.i - q1.j * q2.j - q1.k * q2.k + q1.r * q2.r);
 }
 
 inline float Dot3(const Vector3& a, const Vector3& b)

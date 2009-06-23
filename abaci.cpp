@@ -30,21 +30,23 @@ namespace ABACI_NAMESPACE
 {
 #endif
 
-Quat QuatExp(const Quat& q)
+// Quaternian exponential
+Quat Quat::Exp() const
 {
-	float angle = Vector3(q.x, q.y, q.z).Len();
+	float angle = Vector3(i, j, k).Len();
 	Vector3 n;
 	if (angle > 0.0001f)
-		n = Vector3(q.x, q.y, q.z).Unit() * sin(angle/2.0f);
+		n = Vector3(i, j, k).Unit() * sin(angle / 2.0f);
 	else
 		n.Set(0,0,0);
 
-	return Quat(n.x, n.y, n.z, cos(angle/2.0f));
+	return Quat(n.x, n.y, n.z, cos(angle / 2.0f));
 }
 
-Quat QuatLog(const Quat& q)
+// Quaternian logarithm
+Quat Quat::Log() const
 {
-	float cos_a = q.w;
+	float cos_a = r;
 	if (cos_a > 1.0f) cos_a = 1.0f;
 	if (cos_a < -1.0f) cos_a = -1.0f;
 
@@ -57,43 +59,43 @@ Quat QuatLog(const Quat& q)
 
     float angle = 2.0f * (float)acos(cos_a);
 	Quat log;
-    log.x = q.x * sin_a * angle;
-    log.y = q.y * sin_a * angle;
-    log.z = q.z * sin_a * angle;
-	log.w = 0.0f;
+    log.i = i * sin_a * angle;
+    log.j = j * sin_a * angle;
+    log.k = k * sin_a * angle;
+	log.r = 0.0f;
 	return log;
 }
 
 Matrix::Matrix(const Quat& q)
 {
-	SetXAxis(Rotate(q, Vector3(1.0f,0.0f,0.0f)));
-	SetYAxis(Rotate(q, Vector3(0.0f,1.0f,0.0f)));
-	SetZAxis(Rotate(q, Vector3(0.0f,0.0f,1.0f)));
+	SetXAxis(q.Rotate(Vector3(1.0f,0.0f,0.0f)));
+	SetYAxis(q.Rotate(Vector3(0.0f,1.0f,0.0f)));
+	SetZAxis(q.Rotate(Vector3(0.0f,0.0f,1.0f)));
 	SetTrans(Vector3(0.0f,0.0f,0.0f));
 }
 
 Matrix::Matrix(const Quat& q, const Vector3& trans)
 {
-	SetXAxis(Rotate(q, Vector3(1.0f,0.0f,0.0f)));
-	SetYAxis(Rotate(q, Vector3(0.0f,1.0f,0.0f)));
-	SetZAxis(Rotate(q, Vector3(0.0f,0.0f,1.0f)));
+	SetXAxis(q.Rotate(Vector3(1.0f,0.0f,0.0f)));
+	SetYAxis(q.Rotate(Vector3(0.0f,1.0f,0.0f)));
+	SetZAxis(q.Rotate(Vector3(0.0f,0.0f,1.0f)));
 	SetTrans(trans);
 }
 
 Matrix::Matrix(const Vector3& scale, const Quat& q, const Vector3& trans)
 {
-	SetXAxis(Rotate(q, Vector3(scale.x,0.0f,0.0f)));
-	SetYAxis(Rotate(q, Vector3(0.0f,scale.y,0.0f)));
-	SetZAxis(Rotate(q, Vector3(0.0f,0.0f,scale.z)));
+	SetXAxis(q.Rotate(Vector3(scale.x,0.0f,0.0f)));
+	SetYAxis(q.Rotate(Vector3(0.0f,scale.y,0.0f)));
+	SetZAxis(q.Rotate(Vector3(0.0f,0.0f,scale.z)));
 	SetTrans(trans);
 }
 
 Matrix::Matrix(const Vector3 axis, float angle)
 {
-	Quat q(axis, angle);
-	SetXAxis(Rotate(q, Vector3(1.0f,0.0f,0.0f)));
-	SetYAxis(Rotate(q, Vector3(0.0f,1.0f,0.0f)));
-	SetZAxis(Rotate(q, Vector3(0.0f,0.0f,1.0f)));
+	Quat q = Quat::AxisAngle(axis, angle);
+	SetXAxis(q.Rotate(Vector3(1.0f,0.0f,0.0f)));
+	SetYAxis(q.Rotate(Vector3(0.0f,1.0f,0.0f)));
+	SetZAxis(q.Rotate(Vector3(0.0f,0.0f,1.0f)));
 	SetTrans(Vector3(0.0f,0.0f,0.0f));	
 }
 
@@ -293,7 +295,7 @@ Quat Matrix::GetQuat() const
 	// create a matrix with no scale
 	Matrix m(GetXAxis().Unit(), GetYAxis().Unit(), GetZAxis().Unit(), Vector3(0,0,0));
 	float trace = m.Elem(0,0) + m.Elem(1,1) + m.Elem(2,2);
-	Quat q;
+	Vector4 q;
 	if (trace > -1.0f)
 	{
 		int i = x, j = y, k = z;
@@ -312,7 +314,7 @@ Quat Matrix::GetQuat() const
 		q.y = (row0[2] - row2[0]) / (4.0f * q.w);
 		q.z = (row1[0] - row0[1]) / (4.0f * q.w);
 	}
-	return q;
+	return Quat(q.x, q.y, q.z, q.w);
 }
 
 #ifdef ABACI_NAMESPACE

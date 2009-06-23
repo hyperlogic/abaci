@@ -263,35 +263,64 @@ Vector4 operator/(float numerator, const Vector4& v);
 // Vector division.
 Vector4 operator/(const Vector4& a, const Vector4& b);
 
-float Len(const Vector4& v);
-Vector4 UnitVec(const Vector4& v);
-
 
 //////////////////////////////////////////////////////
 
-struct Quat : public Vector4
+struct Quat
 {
+	// Create from axis and angle
+	static Quat AxisAngle(const Vector3& axis, float angle);
+
+	// Uninitialized by default.
 	Quat() {}
-	Quat(float xIn, float yIn, float zIn, float wIn);
-	Quat(const Vector3& axis, float angle);
+
+	// Construct from four floats.
+	Quat(float iIn, float jIn, float kIn, float rIn);
+
+	// Set all elements to zero.
+	void SetZero();
+
+	// Returns this quaternion normalized.
+	Quat Unit() const;
+
+	// Returns quat length.
+	float Len() const;
+
+	// Returns quat length squared.
+	float LenSq() const;
+
+	// Rotate a vector.
+	Vector3 Rotate(const Vector3& v) const;
+
+	// Quaternian exponential
+	Quat Exp() const;
+
+	// Quaternian logarithm
+	Quat Log() const;
+
+	float i;
+	float j;
+	float k;
+	float r;  // real part
 };
 
-Vector3 Rotate(const Quat& q, const Vector3& v);
-Quat operator~(const Quat& v);	// conjugate
+// Dot product
+float Dot(const Quat& a, const Quat& b);
+
+// Quaternion conjugate
+Quat operator~(const Quat& v);
+
+// Unary minus.
 Quat operator-(const Quat& v);
+
+// Quaternion subtraction.
 Quat operator-(const Quat& a, const Quat& b);
+
+// Quaternion addition.
 Quat operator+(const Quat& a, const Quat& b);
-Quat operator*(const Quat& v, float factor);
-Quat operator*(float factor, const Quat& v);
-Quat operator*(const Quat& a, const Quat& b);  // quat multiply
-Quat CompMul(const Quat& a, const Quat& b);
-Quat operator/(const Quat& v, float denominator);
-Quat operator/(float numerator, const Quat& v);
-Quat CompDiv(const Quat& a, const Quat& b);
-float Len(const Quat& v);
-Quat UnitVec(const Quat& v);
-Quat QuatExp(const Quat& q);
-Quat QuatLog(const Quat& q);
+
+// Quaternion multplication.
+Quat operator*(const Quat& a, const Quat& b);
 
 
 //////////////////////////////////////////////////////
