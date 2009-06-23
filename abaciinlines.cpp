@@ -65,72 +65,6 @@ inline bool FuzzyEqual(float rhs, float lhs, float epsilon)
 	return fabs(rhs - lhs) <= epsilon;
 }
 
-
-inline const float& VectorBase::operator[](int i) const 
-{ 
-	return data[i]; 
-}
-
-inline float& VectorBase::operator[](int i) 
-{ 
-	return data[i]; 
-}
-
-inline const float& VectorBase::X() const 
-{ 
-	return (*this)[0];
-}
-
-inline const float& VectorBase::Y() const
-{ 
-	return (*this)[1]; 
-}
-
-inline const float& VectorBase::Z() const
-{ 
-	return (*this)[2]; 
-}
-
-inline const float& VectorBase::W() const 
-{ 
-	return (*this)[3]; 
-}
-
-inline float& VectorBase::X()
-{ 
-	return (*this)[0];
-}
-
-inline float& VectorBase::Y()
-{ 
-	return (*this)[1]; 
-}
-
-inline float& VectorBase::Z()
-{ 
-	return (*this)[2]; 
-}
-
-inline float& VectorBase::W()
-{ 
-	return (*this)[3]; 
-}
-
-inline float Dot2(const VectorBase& a, const VectorBase& b)
-{
-	return (a.X() * b.X()) + (a.Y() * b.Y());
-}
-
-inline float Dot3(const VectorBase& a, const VectorBase& b)
-{
-	return (a.X() * b.X()) + (a.Y() * b.Y()) + (a.Z() * b.Z());
-}
-
-inline float Dot4(const VectorBase& a, const VectorBase& b)
-{
-	return (a.X() * b.X()) + (a.Y() * b.Y()) + (a.Z() * b.Z()) + (a.W() * b.W());
-}
-
 inline Vector2::Vector2(float xIn, float yIn) 
 { 
 	X() = xIn; 
@@ -176,7 +110,7 @@ inline Vector2 operator*(float factor, const Vector2& v)
 
 inline float operator*(const Vector2& a, const Vector2& b)
 {
-	return Dot2(a, b);
+	return a.X() * b.X()) + (a.Y() * b.Y();
 }
 
 inline Vector2 CompMul(const Vector2& a, const Vector2& b)
@@ -265,7 +199,7 @@ inline Vector3 operator*(float factor, const Vector3& v)
 
 inline float operator*(const Vector3& a, const Vector3& b)
 {
-	return Dot3(a, b);
+	return a.X() * b.X() + a.Y() * b.Y() + a.Z() * b.Z();
 }
 
 inline Vector3 CompMul(const Vector3& a, const Vector3& b)
@@ -365,7 +299,7 @@ inline Vector4 operator*(float factor, const Vector4& v)
 
 inline float operator*(const Vector4& a, const Vector4& b)
 {
-	return Dot4(a, b);
+	return a.X() * b.X() + a.Y() * b.Y() + a.Z() * b.Z() + a.W() * b.W();
 }
 
 inline Vector4 CompMul(const Vector4& a, const Vector4& b)
@@ -482,13 +416,33 @@ inline Quat CompDiv(const Quat& a, const Quat& b)
 
 inline float Len(const Quat& v)
 {
-	return sqrt(Dot4(v, v));	
+	return sqrt((Vector4)v * (Vector4)v));	
 }
 
 inline Quat UnitVec(const Quat& v)
 {
 	float len = Len(v);
 	return v / len;	
+}
+
+inline float Dot3(const Vector3& a, const Vector3& b)
+{
+	return (a.X() * b.X()) + (a.Y() * b.Y()) + (a.Z() * b.Z());
+}
+
+inline float Dot3(const Vector3& a, const Vector4& b)
+{
+	return (a.X() * b.X()) + (a.Y() * b.Y()) + (a.Z() * b.Z());
+}
+
+inline float Dot3(const Vector4& a, const Vector3& b)
+{
+	return (a.X() * b.X()) + (a.Y() * b.Y()) + (a.Z() * b.Z());
+}
+
+inline float Dot3(const Vector4& a, const Vector4& b)
+{
+	return (a.X() * b.X()) + (a.Y() * b.Y()) + (a.Z() * b.Z());
 }
 
 inline Matrix::Matrix(const Vector3& xAxis, const Vector3& yAxis, const Vector3& zAxis, const Vector3& trans)

@@ -45,36 +45,15 @@ float LimitPi(float theta);
 float Mod2Pi(float theta);
 bool FuzzyEqual(float rhs, float lhs, float epsilon = 0.0001f);
 
-struct VectorBase
-{
-	VectorBase() {}
-
-	const float& operator[](int i) const;
-	float& operator[](int i);
-
-	const float& X() const;
-	const float& Y() const;
-	const float& Z() const;
-	const float& W() const;
-
-	float& X();
-	float& Y();
-	float& Z();
-	float& W();
-
-	float data[4];
-};
-
-float Dot2(const VectorBase& a, const VectorBase& b);
-float Dot3(const VectorBase& a, const VectorBase& b);
-float Dot4(const VectorBase& a, const VectorBase& b);
-
-struct Vector2 : public VectorBase
+struct Vector2
 {
 	Vector2() {}
 	Vector2(float xIn, float yIn);
 	void Set(float xIn, float yIn);
 	void SetZero();
+
+	float x;
+	float y;
 };
 
 Vector2 operator-(const Vector2& v);
@@ -97,6 +76,10 @@ struct Vector3 : public VectorBase
 	Vector3(float xIn, float yIn, float zIn);
 	void Set(float xIn, float yIn, float zIn);
 	void SetZero();
+
+	float x;
+	float y;
+	float z;
 };
 
 Vector3 operator-(const Vector3& v);
@@ -120,6 +103,11 @@ struct Vector4 : public VectorBase
 	Vector4(float xIn, float yIn, float zIn, float wIn);
 	void Set(float xIn, float yIn, float zIn, float wIn);
 	void SetZero();
+
+	float x;
+	float y;
+	float z;
+	float w;
 };
 
 Vector4 operator-(const Vector4& v);
