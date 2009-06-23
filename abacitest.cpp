@@ -252,6 +252,45 @@ public:
 	}
 };
 
+template <class BinaryOp>
+class FloatBinaryOpTest : public TestCase
+{
+public:
+	FloatBinaryOpTest() : TestCase(BinaryOp::GetName()) {}
+	~FloatBinaryOpTest() {}
+
+	bool Test() const
+	{
+		BinaryOp op;
+		for (unsigned int i = 0; i < s_vector2Vec.size(); ++i)
+		{
+			for (unsigned int j = 0; j < s_vector2Vec.size(); ++j)
+			{
+				float a = s_floatVec[i];
+				float b = s_floatVec[j];
+				if (!op(a, b))
+				{
+					printf("a = %.5f b = %.5f", a, b);
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+};
+
+class FloatFuzzyEqual
+{
+public:
+	static const char* GetName() { return "FuzzyEqual"; }
+	bool operator() (float a, float b)
+	{
+		const float epsilon = 0.001f;
+		bool r = fabs(a - b) <= epsilon;
+		return !(r ^ FuzzyEqual(a, b, epsilon));
+	}
+};
+
 
 template <class TernaryOp>
 class FloatTernaryOpTest : public TestCase
@@ -1872,6 +1911,7 @@ int main(int argc, char* argv[])
 	floatSuite.AddTest(new FloatTernaryOpTest<FloatClamp>());
 	floatSuite.AddTest(new FloatUnaryOpTest<FloatLimitPi>());
 	floatSuite.AddTest(new FloatUnaryOpTest<FloatMod2Pi>());
+	floatSuite.AddTest(new FloatBinaryOpTest<FloatFuzzyEqual>());
 	floatSuite.RunTests();
 
 	TestSuite vector2Suite("Vector2");
