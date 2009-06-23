@@ -52,24 +52,29 @@ struct Vector2
 	void Set(float xIn, float yIn);
 	void SetZero();
 
+	Vector2 operator-() const;
+	float Dot(const Vector2& b) const;
+	Vector2 Unit() const;
+	float Len() const;
+	float LenSq() const;
+
 	float x;
 	float y;
 };
 
-Vector2 operator-(const Vector2& v);
 Vector2 operator-(const Vector2& a, const Vector2& b);
 Vector2 operator+(const Vector2& a, const Vector2& b);
 Vector2 operator*(const Vector2& v, float factor);
 Vector2 operator*(float factor, const Vector2& v);
-float operator*(const Vector2& a, const Vector2& b);  // dot product
-Vector2 CompMul(const Vector2& a, const Vector2& b);
+Vector2 operator*(const Vector2& a, const Vector2& b);
 Vector2 operator/(const Vector2& v, float denominator);
 Vector2 operator/(float numerator, const Vector2& v);
-Vector2 CompDiv(const Vector2& a, const Vector2& b);
-float Len(const Vector2& v);
-Vector2 UnitVec(const Vector2& v);
+Vector2 operator/(const Vector2& a, const Vector2& b);
 
-struct Vector3 : public VectorBase
+// TODO: Lerp
+// TODO: Cast from Vector3, Vector4
+
+struct Vector3
 {
 	Vector3() {}
 	Vector3(const Vector2& v, float zIn);
@@ -96,13 +101,16 @@ float Len(const Vector3& v);
 Vector3 UnitVec(const Vector3& v);
 Vector3 operator%(const Vector3& a, const Vector3& b);	// cross product
 
-struct Vector4 : public VectorBase
+struct Vector4
 {
 	Vector4() {}
 	Vector4(const Vector3& v, float wIn);
 	Vector4(float xIn, float yIn, float zIn, float wIn);
 	void Set(float xIn, float yIn, float zIn, float wIn);
 	void SetZero();
+
+	float operator[](int i) const;
+	float& operator[](int i);
 
 	float x;
 	float y;

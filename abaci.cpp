@@ -32,19 +32,19 @@ namespace ABACI_NAMESPACE
 
 Quat QuatExp(const Quat& q)
 {
-	float angle = Len(Vector3(q.X(), q.Y(), q.Z()));
+	float angle = Len(Vector3(q.x, q.y, q.z));
 	Vector3 n;
 	if (angle > 0.0001f)
-		n = UnitVec(Vector3(q.X(), q.Y(), q.Z())) * sin(angle/2.0f);
+		n = UnitVec(Vector3(q.x, q.y, q.z)) * sin(angle/2.0f);
 	else
 		n.Set(0,0,0);
 
-	return Quat(n.X(), n.Y(), n.Z(), cos(angle/2.0f));
+	return Quat(n.x, n.y, n.z, cos(angle/2.0f));
 }
 
 Quat QuatLog(const Quat& q)
 {
-	float cos_a = q.W();
+	float cos_a = q.w;
 	if (cos_a > 1.0f) cos_a = 1.0f;
 	if (cos_a < -1.0f) cos_a = -1.0f;
 
@@ -57,10 +57,10 @@ Quat QuatLog(const Quat& q)
 
     float angle = 2.0f * (float)acos(cos_a);
 	Quat log;
-    log.X() = q.X() * sin_a * angle;
-    log.Y() = q.Y() * sin_a * angle;
-    log.Z() = q.Z() * sin_a * angle;
-	log.W() = 0.0f;
+    log.x = q.x * sin_a * angle;
+    log.y = q.y * sin_a * angle;
+    log.z = q.z * sin_a * angle;
+	log.w = 0.0f;
 	return log;
 }
 
@@ -82,9 +82,9 @@ Matrix::Matrix(const Quat& q, const Vector3& trans)
 
 Matrix::Matrix(const Vector3& scale, const Quat& q, const Vector3& trans)
 {
-	SetXAxis(Rotate(q, Vector3(scale.X(),0.0f,0.0f)));
-	SetYAxis(Rotate(q, Vector3(0.0f,scale.Y(),0.0f)));
-	SetZAxis(Rotate(q, Vector3(0.0f,0.0f,scale.Z())));
+	SetXAxis(Rotate(q, Vector3(scale.x,0.0f,0.0f)));
+	SetYAxis(Rotate(q, Vector3(0.0f,scale.y,0.0f)));
+	SetZAxis(Rotate(q, Vector3(0.0f,0.0f,scale.z)));
 	SetTrans(trans);
 }
 
@@ -150,10 +150,10 @@ bool Inverse(const Matrix& m, Matrix& result)
 
 	// initialize the augmented temp matrix. 
 	// the first four columns are from m
-	temp[0][0] = m.row0.X(); temp[0][1] = m.row0.Y(); temp[0][2] = m.row0.Z(); temp[0][3] = m.row0.W();
-	temp[1][0] = m.row1.X(); temp[1][1] = m.row1.Y(); temp[1][2] = m.row1.Z(); temp[1][3] = m.row1.W();
-	temp[2][0] = m.row2.X(); temp[2][1] = m.row2.Y(); temp[2][2] = m.row2.Z(); temp[2][3] = m.row2.W();
-	temp[3][0] = m.row3.X(); temp[3][1] = m.row3.Y(); temp[3][2] = m.row3.Z(); temp[3][3] = m.row3.W();
+	temp[0][0] = m.row0.x; temp[0][1] = m.row0.y; temp[0][2] = m.row0.z; temp[0][3] = m.row0.w;
+	temp[1][0] = m.row1.x; temp[1][1] = m.row1.y; temp[1][2] = m.row1.z; temp[1][3] = m.row1.w;
+	temp[2][0] = m.row2.x; temp[2][1] = m.row2.y; temp[2][2] = m.row2.z; temp[2][3] = m.row2.w;
+	temp[3][0] = m.row3.x; temp[3][1] = m.row3.y; temp[3][2] = m.row3.z; temp[3][3] = m.row3.w;
 	// the second four are identity
 	temp[0][4] = 1.0f; temp[0][5] = 0.0f; temp[0][6] = 0.0f; temp[0][7] = 0.0f;
 	temp[1][4] = 0.0f; temp[1][5] = 1.0f; temp[1][6] = 0.0f; temp[1][7] = 0.0f;
@@ -260,20 +260,20 @@ bool Inverse(const Matrix& m, Matrix& result)
 //	printf("\n");
 
 	// init result
-	result.row0.X() = row[0][4]; result.row0.Y() = row[0][5]; result.row0.Z() = row[0][6]; result.row0.W() = row[0][7];
-	result.row1.X() = row[1][4]; result.row1.Y() = row[1][5]; result.row1.Z() = row[1][6]; result.row1.W() = row[1][7];
-	result.row2.X() = row[2][4]; result.row2.Y() = row[2][5]; result.row2.Z() = row[2][6]; result.row2.W() = row[2][7];
-	result.row3.X() = row[3][4]; result.row3.Y() = row[3][5]; result.row3.Z() = row[3][6]; result.row3.W() = row[3][7];
+	result.row0.x = row[0][4]; result.row0.y = row[0][5]; result.row0.z = row[0][6]; result.row0.w = row[0][7];
+	result.row1.x = row[1][4]; result.row1.y = row[1][5]; result.row1.z = row[1][6]; result.row1.w = row[1][7];
+	result.row2.x = row[2][4]; result.row2.y = row[2][5]; result.row2.z = row[2][6]; result.row2.w = row[2][7];
+	result.row3.x = row[3][4]; result.row3.y = row[3][5]; result.row3.z = row[3][6]; result.row3.w = row[3][7];
 
 	return true;	
 }
 
 void PrintMatrix(const Matrix& m)
 {
-	printf("| %15.5f, %15.5f, %15.5f, %15.5f |\n", m.row0.X(), m.row0.Y(), m.row0.Z(), m.row0.W());
-	printf("| %15.5f, %15.5f, %15.5f, %15.5f |\n", m.row1.X(), m.row1.Y(), m.row1.Z(), m.row1.W());
-	printf("| %15.5f, %15.5f, %15.5f, %15.5f |\n", m.row2.X(), m.row2.Y(), m.row2.Z(), m.row2.W());
-	printf("| %15.5f, %15.5f, %15.5f, %15.5f |\n", m.row3.X(), m.row3.Y(), m.row3.Z(), m.row3.W());
+	printf("| %15.5f, %15.5f, %15.5f, %15.5f |\n", m.row0.x, m.row0.y, m.row0.z, m.row0.w);
+	printf("| %15.5f, %15.5f, %15.5f, %15.5f |\n", m.row1.x, m.row1.y, m.row1.z, m.row1.w);
+	printf("| %15.5f, %15.5f, %15.5f, %15.5f |\n", m.row2.x, m.row2.y, m.row2.z, m.row2.w);
+	printf("| %15.5f, %15.5f, %15.5f, %15.5f |\n", m.row3.x, m.row3.y, m.row3.z, m.row3.w);
 }
 
 Matrix OrthonormalInverse(const Matrix& m)
@@ -307,10 +307,10 @@ Quat Matrix::GetQuat() const
 	}
     else
 	{
-		q.W() = sqrt(1.0f + trace) / 2.0f;
-		q.X() = (row2[1] - row1[2]) / (4.0f * q.W());
-		q.Y() = (row0[2] - row2[0]) / (4.0f * q.W());
-		q.Z() = (row1[0] - row0[1]) / (4.0f * q.W());
+		q.w = sqrt(1.0f + trace) / 2.0f;
+		q.x = (row2[1] - row1[2]) / (4.0f * q.w);
+		q.y = (row0[2] - row2[0]) / (4.0f * q.w);
+		q.z = (row1[0] - row0[1]) / (4.0f * q.w);
 	}
 	return q;
 }
