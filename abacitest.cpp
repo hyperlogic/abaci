@@ -167,7 +167,7 @@ void InitTestData()
 	for(unsigned int i = 0; i < s_vector4Vec.size(); ++i)
 	{
 		Vector4 v = s_vector4Vec[i];
-		v = UnitVec(v);
+		v = v.Unit();
 		s_quatVec.push_back(Quat(v.x, v.y, v.z, v.w));
 	}
 
@@ -843,7 +843,7 @@ public:
 	{
 		float ax = a.x, ay = a.y, az = a.z, aw = a.w;
 		float r = sqrt((ax * ax) + (ay * ay) + (az * az) + (aw * aw));
-		float len = Len(a);
+		float len = a.Len();
 		return FloatTest(r, len);
 	}
 };
@@ -857,7 +857,7 @@ public:
 		float ax = a.x, ay = a.y, az = a.z, aw = a.w;
 		float len = sqrt((ax * ax) + (ay * ay) + (az * az) + (aw * aw));
 		float rx = ax / len, ry = ay / len, rz = az / len, rw = aw / len;
-		Vector4 r = UnitVec(a);
+		Vector4 r = a.Unit();
 		return FloatTest(rx, r.x) && FloatTest(ry, r.y) && FloatTest(rz, r.z) && FloatTest(rw, r.w);
 	}
 };
@@ -980,7 +980,7 @@ public:
 		float ax = a.x, ay = a.y, az = a.z, aw = a.w;
 		float bx = b.x, by = b.y, bz = b.z, bw = b.w;
 		float r = (ax * bx) + (ay * by) + (az * bz) + (aw * bw);
-		float dot = a * b;
+		float dot = Dot(a, b);
 		return FloatTest(dot, r);
 	}
 };
@@ -994,7 +994,7 @@ public:
 		float ax = a.x, ay = a.y, az = a.z, aw = a.w;
 		float bx = b.x, by = b.y, bz = b.z, bw = b.w;
 		float rx = (ax * bx), ry = (ay * by), rz = (az * bz), rw = (aw * bw);
-		Vector4 r = CompMul(a, b);
+		Vector4 r = a * b;
 		return FloatTest(rx, r.x) && FloatTest(ry, r.y) && FloatTest(rz, r.z) && FloatTest(rw, r.w);
 	}
 };
@@ -1008,7 +1008,7 @@ public:
 		float ax = a.x, ay = a.y, az = a.z, aw = a.w;
 		float bx = b.x, by = b.y, bz = b.z, bw = b.w;
 		float rx = (ax / bx), ry = (ay / by), rz = (az / bz), rw = (aw / bw);
-		Vector4 r = CompDiv(a, b);
+		Vector4 r = a / b;
 		return FloatTest(rx, r.x) && FloatTest(ry, r.y) && FloatTest(rz, r.z) && FloatTest(rw, r.w);
 	}
 };

@@ -160,7 +160,7 @@ float Dot(const Vector3& a, const Vector3& b);
 Vector3 Cross(const Vector3& a, const Vector3& b);
 
 // Linear interpolation between two vectors
-Vector3 Lerp(const Vector3& lhs, const Vector3& rhs, float t);
+Vector3 Lerp(const Vector3& a, const Vector3& a, float t);
 
 // Unary minus.
 Vector3 operator-(const Vector3& a);
@@ -209,6 +209,15 @@ struct Vector4
 	// Set all elements to zero.
 	void SetZero();
 
+	// Returns a vector with same direction but unit length.
+	Vector4 Unit() const;
+
+	// Returns vector length.
+	float Len() const;
+
+	// Returns length squared.
+	float LenSq() const;
+
 	// const array accessor
 	float operator[](int i) const;
 
@@ -221,16 +230,39 @@ struct Vector4
 	float w;
 };
 
+// Dot product of two vectors.
+float Dot(const Vector4& a, const Vector4& b);
+
+// Linear interpolation between two vectors
+Vector4 Lerp(const Vector4& a, const Vector4& b, float t);
+
+// Unary minus.
 Vector4 operator-(const Vector4& v);
+
+// Vector subtraction.
 Vector4 operator-(const Vector4& a, const Vector4& b);
+
+// Vector addition.
 Vector4 operator+(const Vector4& a, const Vector4& b);
+
+// Multplies all elements of a vector by a scalar.
 Vector4 operator*(const Vector4& v, float factor);
+
+// Multplies all elements of a vector by a scalar.
 Vector4 operator*(float factor, const Vector4& v);
-float operator*(const Vector4& a, const Vector4& b); // dot product
-Vector4 CompMul(const Vector4& a, const Vector4& b);
+
+// Vector multiplication.
+Vector4 operator*(const Vector4& a, const Vector4& b);
+
+// Divides all elements of a vector by a scalar.
 Vector4 operator/(const Vector4& v, float denominator);
+
+// Multiplies a scalar to the reciprical of all elements in a vector.
 Vector4 operator/(float numerator, const Vector4& v);
-Vector4 CompDiv(const Vector4& a, const Vector4& b);
+
+// Vector division.
+Vector4 operator/(const Vector4& a, const Vector4& b);
+
 float Len(const Vector4& v);
 Vector4 UnitVec(const Vector4& v);
 

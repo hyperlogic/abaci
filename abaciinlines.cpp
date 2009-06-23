@@ -292,6 +292,7 @@ inline Vector3 operator/(const Vector3& a, const Vector3& b)
 	return Vector3(a.x / b.x, a.y / b.y, a.z / b.z);
 }
 
+// Construct from a Vector3 and a float.
 inline Vector4::Vector4(const Vector3& v, float wIn) 
 { 
 	x = v.x; 
@@ -300,6 +301,7 @@ inline Vector4::Vector4(const Vector3& v, float wIn)
     w = wIn; 
 }
 
+// Construct from four floats.
 inline Vector4::Vector4(float xIn, float yIn, float zIn, float wIn) 
 { 
 	x = xIn; 
@@ -308,6 +310,7 @@ inline Vector4::Vector4(float xIn, float yIn, float zIn, float wIn)
 	w = wIn; 
 }
 
+// Set from four floats.
 inline void Vector4::Set(float xIn, float yIn, float zIn, float wIn)
 {
 	x = xIn;
@@ -316,6 +319,7 @@ inline void Vector4::Set(float xIn, float yIn, float zIn, float wIn)
 	w = wIn;
 }
 
+// Set all elements to zero.
 inline void Vector4::SetZero()
 {
 	x = 0;
@@ -324,75 +328,100 @@ inline void Vector4::SetZero()
 	w = 0;
 }
 
+// Returns a vector with same direction but unit length.
+inline Vector4 Vector4::Unit() const
+{
+	return (*this) / Len();
+}
+
+// Returns vector length.
+inline float Vector4::Len() const
+{
+	return sqrt(Dot(*this, *this));
+}
+
+// Returns length squared.
+inline float Vector4::LenSq() const
+{
+	return Dot(*this, *this);
+}
+
+// const array accessor
 inline float Vector4::operator[](int i) const
 {
 	return *(&x + i);
 }
 
+// array accessor
 inline float& Vector4::operator[](int i)
 {
 	return *(&x + i);
 }
 
+// Dot product of two vectors.
+inline float Dot(const Vector4& a, const Vector4& b)
+{
+	return a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
+}
+
+// Linear interpolation between two vectors
+inline Vector4 Lerp(const Vector4& a, const Vector4& b, float t)
+{
+	return a + (b - a) * t;
+}
+
+// Unary minus.
 inline Vector4 operator-(const Vector4& v)
 {
 	return Vector4(-v.x, -v.y, -v.z, -v.w);
 }
 
+// Vector subtraction.
 inline Vector4 operator-(const Vector4& a, const Vector4& b)
 {
 	return Vector4(a.x - b.x, a.y - b.y, a.z - b.z, a.w - b.w);
 }
 
+// Vector addition.
 inline Vector4 operator+(const Vector4& a, const Vector4& b)
 {
 	return Vector4(a.x + b.x, a.y + b.y, a.z + b.z, a.w + b.w);
 }
 
+// Multplies all elements of a vector by a scalar.
 inline Vector4 operator*(const Vector4& v, float factor)
 {
 	return Vector4(factor * v.x, factor * v.y, factor * v.z, factor * v.w);
 }
 
+// Multplies all elements of a vector by a scalar.
 inline Vector4 operator*(float factor, const Vector4& v)
 {
 	return Vector4(factor * v.x, factor * v.y, factor * v.z, factor * v.w);	
 }
 
-inline float operator*(const Vector4& a, const Vector4& b)
+// Vector multiplication.
+inline Vector4 operator*(const Vector4& a, const Vector4& b)
 {
-	return a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
+	return Vector4(a.x * b.x, a.y * b.y, a.z * b.z, a.w * b.w);	
 }
 
-inline Vector4 CompMul(const Vector4& a, const Vector4& b)
-{
-	return Vector4(a.x * b.x, a.y * b.y, a.z * b.z, a.w * b.w);
-}
-
+// Divides all elements of a vector by a scalar.
 inline Vector4 operator/(const Vector4& v, float denominator)
 {
 	return Vector4(v.x / denominator, v.y / denominator, v.z / denominator, v.w / denominator);
 }
 
+// Multiplies a scalar to the reciprical of all elements in a vector.
 inline Vector4 operator/(float numerator, const Vector4& v)
 {
 	return Vector4(numerator / v.x, numerator / v.y, numerator / v.z, numerator / v.w);
 }
 
-inline Vector4 CompDiv(const Vector4& a, const Vector4& b)
+// Vector division.
+inline Vector4 operator/(const Vector4& a, const Vector4& b)
 {
 	return Vector4(a.x / b.x, a.y / b.y, a.z / b.z, a.w / b.w);
-}
-
-inline float Len(const Vector4& v)
-{
-	return sqrt(v * v);
-}
-
-inline Vector4 UnitVec(const Vector4& v)
-{
-	float len = Len(v);
-	return v / len;
 }
 
 inline Quat::Quat(float xIn, float yIn, float zIn, float wIn) 
@@ -478,7 +507,7 @@ inline Quat CompDiv(const Quat& a, const Quat& b)
 
 inline float Len(const Quat& v)
 {
-	return sqrt(static_cast<const Vector4&>(v) * static_cast<const Vector4&>(v));	
+	return sqrt(Dot(v,v));
 }
 
 inline Quat UnitVec(const Quat& v)
@@ -656,7 +685,7 @@ inline Vector3 Transform3x4(const Matrix& m, const Vector3& v)
 
 inline Vector4 Transform4x4(const Matrix& m, const Vector4& v)
 {
-	return Vector4(m.row0 * v, m.row1 * v, m.row2 * v, m.row3 * v);
+	return Vector4(Dot(m.row0, v), Dot(m.row1, v), Dot(m.row2, v), Dot(m.row3, v));
 }
 
 inline Matrix Transpose(const Matrix& m)

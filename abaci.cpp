@@ -110,10 +110,10 @@ Matrix operator-(const Matrix& a, const Matrix& b)
 Matrix operator*(const Matrix& a, const Matrix& b)
 {
 	Matrix bt = Transpose(b);
-	return Matrix( Vector4(a.row0 * bt.row0, a.row0 * bt.row1, a.row0 * bt.row2, a.row0 * bt.row3), 
-				   Vector4(a.row1 * bt.row0, a.row1 * bt.row1, a.row1 * bt.row2, a.row1 * bt.row3),
-				   Vector4(a.row2 * bt.row0, a.row2 * bt.row1, a.row2 * bt.row2, a.row2 * bt.row3),
-				   Vector4(a.row3 * bt.row0, a.row3 * bt.row1, a.row3 * bt.row2, a.row3 * bt.row3));
+	return Matrix( Vector4(Dot(a.row0, bt.row0), Dot(a.row0, bt.row1), Dot(a.row0, bt.row2), Dot(a.row0, bt.row3)), 
+				   Vector4(Dot(a.row1, bt.row0), Dot(a.row1, bt.row1), Dot(a.row1, bt.row2), Dot(a.row1, bt.row3)),
+				   Vector4(Dot(a.row2, bt.row0), Dot(a.row2, bt.row1), Dot(a.row2, bt.row2), Dot(a.row2, bt.row3)),
+				   Vector4(Dot(a.row3, bt.row0), Dot(a.row3, bt.row1), Dot(a.row3, bt.row2), Dot(a.row3, bt.row3)));
 }
 
 template <typename T>
