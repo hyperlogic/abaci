@@ -24,16 +24,19 @@ THE SOFTWARE.
 
 #ifdef ABACI_H
 
+// Convert from degrees to radians
 inline float DegToRad(float deg)
 { 
 	return deg * (PI / 180.0f);
 }
 
+// Convert from radians to degrees.
 inline float RadToDeg(float rad)
 {
 	return rad * (180.0f / PI);
 }
 
+// Clamps value between min & max.
 inline float Clamp(float value, float min, float max)
 {
 	float result = value;
@@ -56,94 +59,112 @@ inline float Mod2Pi(float theta)
 	return fmod(theta, 2.0f * PI);
 }
 
+// Fuzzy comparison between two float values.
 inline bool FuzzyEqual(float rhs, float lhs, float epsilon)
 {
 	return fabs(rhs - lhs) <= epsilon;
 }
 
+// Construct from two floats
 inline Vector2::Vector2(float xIn, float yIn) 
 { 
 	x = xIn; 
 	y = yIn; 
 }
 
+// Set from two floats
 inline void Vector2::Set(float xIn, float yIn)
 {
 	x = xIn;
 	y = yIn;
 }
 
+// Sets all elements to zero.
 inline void Vector2::SetZero()
 {
 	x = 0;
 	y = 0;
 }
 
+// Unary minus
 inline Vector2 Vector2::operator-() const
 {
 	return Vector2(-x, -y);
 }
 
+// Returns a vector of unit length.
 inline Vector2 Vector2::Unit() const
 {
 	return *this / Len();
 }
 
+// Returns vector length.
 inline float Vector2::Len() const
 {
 	return sqrt(Dot(*this, *this));
 }
 
+// Returns length squared.
 inline float Vector2::LenSq() const
 {
 	return Dot(*this, *this);
 }
 
+// Linear interpolation between two vectors
 inline Vector2 Vector2::Lerp(const Vector2& rhs, float t) const
 {
     return (*this) + (rhs - (*this)) * t;
 }
 
+// Dot product of two vectors.
 inline float Dot(const Vector2& lhs, const Vector2& rhs)
 {
 	return lhs.x * rhs.x + lhs.y * rhs.y;
 }
 
+// Vector subtraction.
 inline Vector2 operator-(const Vector2& a, const Vector2& b)
 {
 	return Vector2(a.x - b.x, a.y - b.y);
 }
 
+// Vector addition.
 inline Vector2 operator+(const Vector2& a, const Vector2& b)
 {
 	return Vector2(a.x + b.x, a.y + b.y);
 }
 
+// Multplies all elements of a vector by a scalar.
 inline Vector2 operator*(const Vector2& v, float scalar)
 {
 	return Vector2(scalar * v.x, scalar * v.y);
 }
 
+// Multplies all elements of a vector by a scalar.
 inline Vector2 operator*(float scalar, const Vector2& v)
 {
 	return Vector2(scalar * v.x, scalar * v.y);
 }
 
+// Vector multiplication.
 inline Vector2 operator*(const Vector2& a, const Vector2& b)
 {
 	return Vector2(a.x * b.x, a.y * b.y);
 }
 
+// Divides all elements of a vector by a scalar.
 inline Vector2 operator/(const Vector2& v, float denominator)
 {
 	return Vector2(v.x / denominator, v.y / denominator);
 }
 
+// Multiplies a scalar to the reciprical of all elements in a vector.
 inline Vector2 operator/(float numerator, const Vector2& v)
 {
 	return Vector2(numerator / v.x, numerator / v.y);
 }
 
+// Vector division.
 inline Vector2 operator/(const Vector2& a, const Vector2& b)
 {
 	return Vector2(a.x / b.x, a.y / b.y);
