@@ -73,9 +73,6 @@ struct Vector2
 	// Sets all elements to zero.
 	void SetZero();
 
-	// Unary minus
-	Vector2 operator-() const;
-
 	// Returns a vector with same direction but unit length.
 	Vector2 Unit() const;
 
@@ -94,6 +91,9 @@ float Dot(const Vector2& a, const Vector2& b);
 
 // Linear interpolation between two vectors
 Vector2 Lerp(const Vector2& a, const Vector2& b, float t);
+
+// Unary minus
+Vector2 operator-(const Vector2& a);
 
 // Vector subtraction.
 Vector2 operator-(const Vector2& a, const Vector2& b);
@@ -139,9 +139,6 @@ struct Vector3
 	// Set all elements to zero
 	void SetZero();
 
-	// Unary minus
-	Vector3 operator-() const;
-
 	// Returns a vector with same direction but unit length.
 	Vector3 Unit() const;
 
@@ -164,6 +161,9 @@ Vector3 Cross(const Vector3& a, const Vector3& b);
 
 // Linear interpolation between two vectors
 Vector3 Lerp(const Vector3& lhs, const Vector3& rhs, float t);
+
+// Unary minus.
+Vector3 operator-(const Vector3& a);
 
 // Vector subtraction.
 Vector3 operator-(const Vector3& a, const Vector3& b);
@@ -194,13 +194,25 @@ Vector3 operator/(const Vector3& a, const Vector3& b);
 
 struct Vector4
 {
+	// Uninitialized by default.
 	Vector4() {}
+
+	// Construct from a Vector3 and a float.
 	Vector4(const Vector3& v, float wIn);
+
+	// Construct from four floats.
 	Vector4(float xIn, float yIn, float zIn, float wIn);
+
+	// Set from four floats.
 	void Set(float xIn, float yIn, float zIn, float wIn);
+
+	// Set all elements to zero.
 	void SetZero();
 
+	// const array accessor
 	float operator[](int i) const;
+
+	// array accessor
 	float& operator[](int i);
 
 	float x;

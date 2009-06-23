@@ -86,12 +86,6 @@ inline void Vector2::SetZero()
 	y = 0;
 }
 
-// Unary minus
-inline Vector2 Vector2::operator-() const
-{
-	return Vector2(-x, -y);
-}
-
 // Returns a vector with same direction but unit length.
 inline Vector2 Vector2::Unit() const
 {
@@ -120,6 +114,12 @@ inline float Dot(const Vector2& a, const Vector2& b)
 inline Vector2 Lerp(const Vector2& a, const Vector2& b, float t)
 {
     return a + (b - a) * t;
+}
+
+// Unary minus
+inline Vector2 operator-(const Vector2& a)
+{
+	return Vector2(-a.x, -a.y);
 }
 
 // Vector subtraction.
@@ -202,12 +202,6 @@ inline void Vector3::SetZero()
 	z = 0;
 }
 
-// Unary minus
-inline Vector3 Vector3::operator-() const
-{
-	return Vector3(-x, -y, -z);
-}
-
 // Returns a vector with same direction but unit length.
 inline Vector3 Vector3::Unit() const
 {
@@ -242,6 +236,12 @@ inline Vector3 Cross(const Vector3& a, const Vector3& b)
 inline Vector3 Lerp(const Vector3& a, const Vector3& b, float t)
 {
     return a + (b - a) * t;
+}
+
+// Unary minus
+inline Vector3 operator-(const Vector3& a)
+{
+	return Vector3(-a.x, -a.y, -a.z);
 }
 
 // Vector subtraction.
