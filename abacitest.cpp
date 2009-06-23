@@ -27,6 +27,7 @@ THE SOFTWARE.
 #include <stdio.h>
 #include <stdlib.h>
 #include <float.h>
+#include <math.h>
 #include "unittest.h"
 
 #ifdef ABACI_NAMESPACE
@@ -41,9 +42,11 @@ std::vector<Vector4> s_vector4Vec;
 std::vector<Quat> s_quatVec;
 std::vector<Matrix> s_matrixVec;
 
-bool FuzzyFloatTest(float rhs, float lhs, float epsilon)
+bool FuzzyFloatTest(float rhs, float lhs, float epsilon=0.0001f)
 {
-	if (isnan(rhs) && isnan(lhs))
+	// NaN's are equal, and so are Infs
+	if ((isnan(rhs) && isnan(lhs)) ||
+		(isinf(rhs) && isinf(lhs)))
 		return true;
 	else
 		return FuzzyEqual(rhs, lhs, epsilon);
@@ -170,6 +173,137 @@ void InitTestData()
 
 	// TODO: nans, q-nans & denormalized...
 }
+
+//
+// Float tests
+//
+
+template <class UnaryOp>
+class FloatUnaryOpTest : public TestCase
+{
+public:
+	FloatUnaryOpTest() : TestCase(UnaryOp::GetName()) {}
+	~FloatUnaryOpTest() {}
+
+	bool Test() const
+	{
+		UnaryOp op;
+		for (unsigned int i = 0; i < s_floatVec.size(); ++i)
+		{
+			float a = s_floatVec[i];
+			if (!op(a))
+			{
+				printf("a = %.5f", a);
+				return false;
+			}
+		}
+		return true;
+	}
+};
+
+class FloatDegToRad
+{
+public:
+	static const char* GetName() { return "DegToRad"; }
+	bool operator() (float a)
+	{
+		float r = a * (PI / 180.0f);
+		bool retval = FuzzyFloatTest(DegToRad(a), r);
+		if (!retval)
+			printf("r = %.5f\n", r);
+		return retval;
+	}
+};
+
+class FloatRadToDeg
+{
+public:
+	static const char* GetName() { return "RadToDeg"; }
+	bool operator() (float a)
+	{
+		float r = a * (180.0f / PI);
+		return FuzzyFloatTest(RadToDeg(a), r);
+	}
+};
+
+class FloatLimitPi
+{
+public:
+	static const char* GetName() { return "LimitPi"; }
+	bool operator() (float a)
+	{
+		float r = a;
+		if ((a > PI) || (a < -PI))
+			r = fmod(a + PI, 2.0f * PI) - PI;
+		return FuzzyFloatTest(LimitPi(a), r);
+	}
+};
+
+class FloatMod2Pi
+{
+public:
+	static const char* GetName() { return "Mod2Pi"; }
+	bool operator() (float a)
+	{
+		float r = a;
+		if ((a > 0) || (a < 2.0f * PI))
+			r = fmod(a, 2.0f * PI);
+		return FuzzyFloatTest(Mod2Pi(a), r);
+	}
+};
+
+
+template <class TernaryOp>
+class FloatTernaryOpTest : public TestCase
+{
+public:
+	FloatTernaryOpTest() : TestCase(TernaryOp::GetName()) {}
+	~FloatTernaryOpTest() {}
+
+	bool Test() const
+	{
+		TernaryOp op;
+		for (unsigned int i = 0; i < s_vector2Vec.size(); ++i)
+		{
+			for (unsigned int j = 0; j < s_vector2Vec.size(); ++j)
+			{
+				for (unsigned int k = 0; k < s_vector2Vec.size(); ++k)
+				{
+					float a = s_floatVec[i];
+					float b = s_floatVec[j];
+					float c = s_floatVec[k];
+					if (!op(a, b, c))
+					{
+						printf("a = %.5f b = %.5f, c = %.5f", a, b, c);
+						return false;
+					}
+				}
+			}
+		}
+		return true;
+	}
+};
+
+class FloatClamp
+{
+public:
+	static const char* GetName() { return "Clamp"; }
+	bool operator() (float a, float min, float max)
+	{
+		float r = a;
+
+		// don't check degenerate values. I'm assuming the user does the right thing.
+		if (min > max)
+			return true;
+
+		if (a < min)
+			r = min;
+		else if (a > max)
+			r = max;
+
+		return FloatTest(Clamp(a, min, max), r);
+	}
+};
 
 // 
 // Vector2 tests
@@ -353,7 +487,7 @@ public:
 		float ax = a.x, ay = a.y;
 		float bx = b.x, by = b.y;
 		float r = (ax * bx) + (ay * by);
-		float dot = a.Dot(b);
+		float dot = Dot(a, b);
 		return FloatTest(dot, r);
 	}
 };
@@ -1731,6 +1865,14 @@ public:
 int main(int argc, char* argv[])
 {
 	InitTestData();
+
+	TestSuite floatSuite("float");
+	floatSuite.AddTest(new FloatUnaryOpTest<FloatDegToRad>());
+	floatSuite.AddTest(new FloatUnaryOpTest<FloatRadToDeg>());
+	floatSuite.AddTest(new FloatTernaryOpTest<FloatClamp>());
+	floatSuite.AddTest(new FloatUnaryOpTest<FloatLimitPi>());
+	floatSuite.AddTest(new FloatUnaryOpTest<FloatMod2Pi>());
+	floatSuite.RunTests();
 
 	TestSuite vector2Suite("Vector2");
 	vector2Suite.AddTest(new Vector2UnaryOpTest<Vector2Negation>());

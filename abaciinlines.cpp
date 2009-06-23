@@ -26,12 +26,12 @@ THE SOFTWARE.
 
 inline float DegToRad(float deg)
 { 
-	return deg * ((2 * PI) / 180.0f);
+	return deg * (PI / 180.0f);
 }
 
 inline float RadToDeg(float rad)
 {
-	return rad * (180.0f / (2 * PI));
+	return rad * (180.0f / PI);
 }
 
 inline float Clamp(float value, float min, float max)
@@ -39,7 +39,7 @@ inline float Clamp(float value, float min, float max)
 	float result = value;
 	if (value > max)
 		result = max;
-	if (value < min)
+	else if (value < min)
 		result = min;
 	return result; 
 }
@@ -47,11 +47,7 @@ inline float Clamp(float value, float min, float max)
 // Limits angle between -PI & PI using modulus arithmetic
 inline float LimitPi(float theta)
 {
-	float phi = Mod2Pi(theta);
-	if (phi > PI)
-		return phi - 2 * PI;
-	else
-		return phi;
+	return fmod(theta + PI, 2.0f * PI) - PI;
 }
 
 // Limits angle between zero & PI using modulus arithmetic
@@ -88,11 +84,6 @@ inline Vector2 Vector2::operator-() const
 	return Vector2(-x, -y);
 }
 
-inline float Vector2::Dot(const Vector2& b) const
-{
-	return x * b.x + y * b.y;
-}
-
 inline Vector2 Vector2::Unit() const
 {
 	return *this / Len();
@@ -100,12 +91,22 @@ inline Vector2 Vector2::Unit() const
 
 inline float Vector2::Len() const
 {
-	return sqrt((*this).Dot(*this));
+	return sqrt(Dot(*this, *this));
 }
 
 inline float Vector2::LenSq() const
 {
-	return (*this).Dot(*this);
+	return Dot(*this, *this);
+}
+
+inline Vector2 Vector2::Lerp(const Vector2& rhs, float t) const
+{
+    return (*this) + (rhs - (*this)) * t;
+}
+
+inline float Dot(const Vector2& lhs, const Vector2& rhs)
+{
+	return lhs.x * rhs.x + lhs.y * rhs.y;
 }
 
 inline Vector2 operator-(const Vector2& a, const Vector2& b)
@@ -118,14 +119,14 @@ inline Vector2 operator+(const Vector2& a, const Vector2& b)
 	return Vector2(a.x + b.x, a.y + b.y);
 }
 
-inline Vector2 operator*(const Vector2& v, float factor)
+inline Vector2 operator*(const Vector2& v, float scalar)
 {
-	return Vector2(factor * v.x, factor * v.y);
+	return Vector2(scalar * v.x, scalar * v.y);
 }
 
-inline Vector2 operator*(float factor, const Vector2& v)
+inline Vector2 operator*(float scalar, const Vector2& v)
 {
-	return Vector2(factor * v.x, factor * v.y);
+	return Vector2(scalar * v.x, scalar * v.y);
 }
 
 inline Vector2 operator*(const Vector2& a, const Vector2& b)

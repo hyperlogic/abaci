@@ -35,44 +35,86 @@ namespace ABACI_NAMESPACE
 #define PI 3.14159265f
 
 struct Matrix;
+struct Vector3;
+struct Vector4;
 
+// Convert from degrees to radians
 float DegToRad(float deg);
+
+// Convert from radians to degrees.
 float RadToDeg(float rad);
+
+// Clamps value between min & max.
 float Clamp(float value, float min, float max);
+
 // Limits angle between -PI & PI using modulus arithmetic
 float LimitPi(float theta);
+
 // Limits angle between zero & PI using modulus arithmetic
 float Mod2Pi(float theta);
+
+// Fuzzy comparison between two float values.
 bool FuzzyEqual(float rhs, float lhs, float epsilon = 0.0001f);
 
 struct Vector2
 {
+	// Uninitialized by default.
 	Vector2() {}
+
+	// Construct from two floats
 	Vector2(float xIn, float yIn);
+
+	// Set from two floats
 	void Set(float xIn, float yIn);
+
+	// Sets all elements to zero.
 	void SetZero();
 
+	// Unary minus
 	Vector2 operator-() const;
-	float Dot(const Vector2& b) const;
+
+	// Returns a vector of unit length.
 	Vector2 Unit() const;
+
+	// Returns vector length.
 	float Len() const;
+
+	// Returns length squared.
 	float LenSq() const;
+
+	// Linear interpolation between two vectors
+	Vector2 Lerp(const Vector2& rhs, float t) const;
 
 	float x;
 	float y;
 };
 
-Vector2 operator-(const Vector2& a, const Vector2& b);
-Vector2 operator+(const Vector2& a, const Vector2& b);
-Vector2 operator*(const Vector2& v, float factor);
-Vector2 operator*(float factor, const Vector2& v);
-Vector2 operator*(const Vector2& a, const Vector2& b);
-Vector2 operator/(const Vector2& v, float denominator);
-Vector2 operator/(float numerator, const Vector2& v);
-Vector2 operator/(const Vector2& a, const Vector2& b);
+// Dot product of two vectors.
+float Dot(const Vector2& lhs, const Vector2& rhs);
 
-// TODO: Lerp
-// TODO: Cast from Vector3, Vector4
+// Vector subtraction.
+Vector2 operator-(const Vector2& a, const Vector2& b);
+
+// Vector addition.
+Vector2 operator+(const Vector2& a, const Vector2& b);
+
+// Multplies all elements of a vector by a scalar.
+Vector2 operator*(const Vector2& v, float scalar);
+
+// Multplies all elements of a vector by a scalar.
+Vector2 operator*(float factor, const Vector2& v);
+
+// Vector multiplication.
+Vector2 operator*(const Vector2& a, const Vector2& b);
+
+// Divides all elements of a vector by a scalar.
+Vector2 operator/(const Vector2& v, float denominator);
+
+// Multiplies a scalar to the reciprical of all elements in a vector.
+Vector2 operator/(float numerator, const Vector2& v);
+
+// Vector division.
+Vector2 operator/(const Vector2& a, const Vector2& b);
 
 struct Vector3
 {
