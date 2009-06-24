@@ -11,7 +11,7 @@ It strives to be:
 
 Supports basic math primitives:
 
-    * 4×4 Matrices for coordinate transformations
+    * 4x4 Matrices for coordinate transformations
     * Quaternions for rotations
     * Vectors of two, three & four elements
     * Complex number arithmetic.
