@@ -1,0 +1,18 @@
+
+Abaci
+
+Abaci is a math library written specifically for 3d video game development.
+It strives to be:
+
+    * Standalone - It is not dependent on anything other then the c++ standard library.
+    * Streamlined - Tailored to the problems of 3d game development; it is not a generic math library.
+    * Portable - Not tied to a specific os or compiler.
+    * Fast - Use langauge features such as inlines & templates to achieve acceptable performance.
+
+Supports basic math primitives:
+
+    * 4×4 Matrices for coordinate transformations
+    * Quaternions for rotations
+    * Vectors of two, three & four elements
+    * Complex number arithmetic.
+
