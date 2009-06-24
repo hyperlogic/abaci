@@ -430,25 +430,54 @@ void PrintMatrix(const Matrix& m);
 
 struct Complex
 {
+	// Uninitialized by default.
 	Complex() {}
-	Complex(float realIn, float imagIn);
-	Complex conj() const;
-	float len() const;
 
-	float real;
-	float imag;
+	// Construct from two floats
+	Complex(float rIn, float iIn);
+
+	// Length
+	float Len() const;
+
+	// Square of length
+	float LenSq() const;
+
+	float r;
+	float i;
 };
 
-Complex operator+(const Complex& a, const Complex& b);
-Complex operator-(const Complex& a, const Complex& b);
+// Dot product
+float Dot(const Complex& a, const Complex& b);
+
+// Complex conjugate
+Complex operator~(const Complex& a);
+
+// Unary minus.
 Complex operator-(const Complex& a);
+
+// Unary plus.
 Complex operator+(const Complex& a);
+
+// Complex addition.
+Complex operator+(const Complex& a, const Complex& b);
+
+// Complex subtraction.
+Complex operator-(const Complex& a, const Complex& b);
+
+// Complex multiplication.
 Complex operator*(const Complex& a, const Complex& b);
+
+// Complex division.
 Complex operator/(const Complex& a, const Complex& b);
+
+// Multiplication by a real number.
 Complex operator*(float f, const Complex& c);
+
+// Multiplication by a real number.
 Complex operator*(Complex& c, float f);
-Complex expi(float imag);
-float dot(const Complex& a, const Complex& b);
+
+// e ^ 0 + xi
+Complex ExpI(float x);
 
 // inlines
 #include "abaciinlines.cpp"

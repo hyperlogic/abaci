@@ -716,80 +716,99 @@ inline Matrix Matrix::Transpose() const
 	return Rows(GetCol(0), GetCol(1), GetCol(2), GetCol(3));
 }
 
-inline Complex::Complex(float realIn, float imagIn) : real(realIn), imag(imagIn)
+// Construct from two floats
+inline Complex::Complex(float rIn, float iIn) : r(rIn), i(iIn)
 {
-
+	
 }
 
-inline Complex Complex::conj() const
+// Length
+inline float Complex::Len() const
 {
-	return Complex(real, -imag);
+	return sqrt(Dot(*this, *this));
 }
 
-inline float Complex::len() const
+// Square of length
+inline float Complex::LenSq() const
 {
-	return sqrt(dot(*this, *this));
+	return Dot(*this, *this);
 }
 
-inline Complex operator+(const Complex& a, const Complex& b)
+// Dot product
+inline float Dot(const Complex& a, const Complex& b)
 {
-	return Complex(a.real + b.real, a.imag + b.imag);
+	return a.r * b.r + b.i * b.i;
 }
 
-inline Complex operator-(const Complex& a, const Complex& b)
+// Complex conjugate
+inline Complex operator~(const Complex& a)
 {
-	return Complex(a.real - b.real, a.imag - b.imag);
+	return Complex(a.r, -a.i);
 }
 
+// Unary minus.
 inline Complex operator-(const Complex& a)
 {
-	return Complex(-a.real, -a.imag);
+	return Complex(-a.r, -a.i);
 }
 
+// Unary plus.
 inline Complex operator+(const Complex& a)
 {
-	return Complex(a.real, a.imag);
+	return Complex(a.r, a.i);
 }
 
+// Complex addition.
+inline Complex operator+(const Complex& a, const Complex& b)
+{
+	return Complex(a.r + b.r, a.i + b.i);
+}
+
+// Complex subtraction.
+inline Complex operator-(const Complex& a, const Complex& b)
+{
+	return Complex(a.r - b.r, a.i - b.i);
+}
+
+// Complex multiplication.
 inline Complex operator*(const Complex& a, const Complex& b)
 {
-	float aa = a.real;
-	float bb = a.imag;
-	float cc = b.real;
-	float dd = b.imag;
+	float aa = a.r;
+	float bb = a.i;
+	float cc = b.r;
+	float dd = b.i;
 
 	return Complex(aa * cc - (bb * dd), aa * dd + bb * cc);
 }
 
+// Multiplication by a real number.
 inline Complex operator*(float f, const Complex& c)
 {
 	return Complex(f,0) * c;
 }
 
+// Multiplication by a real number.
 inline Complex operator*(Complex& c, float f)
 {
 	return c * Complex(f,0);
 }
 
+// Complex division.
 inline Complex operator/(const Complex& a, const Complex& b)
 {
-	float aa = a.real;
-	float bb = a.imag;
-	float cc = b.real;
-	float dd = b.imag;
+	float aa = a.r;
+	float bb = a.i;
+	float cc = b.r;
+	float dd = b.i;
 	float denom = cc * cc + dd * dd;
 
 	return Complex((aa * cc + bb * dd) / denom, (bb * cc - aa * dd) / denom);
 }
 
-inline Complex expi(float imag)
+// e ^ 0 + xi
+inline Complex ExpI(float x)
 {
-	return Complex(cos(imag), sin(imag));
-}
-
-inline float dot(const Complex& a, const Complex& b)
-{
-	return (a.real * b.real) + (b.imag * b.imag);
+	return Complex(cos(x), sin(x));
 }
 
 #endif
