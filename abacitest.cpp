@@ -1102,64 +1102,6 @@ public:
 	}
 };
 
-/*
-class QuatScalarMultiplication
-{
-public:
-	static const char* GetName() { return "Scalar Multiplication"; }
-	bool operator() (const Quat& a)
-	{
-		float ax = a.i, ay = a.j, az = a.k, aw = a.r;
-		for (unsigned int i = 0; i < s_floatVec.size(); ++i)
-		{
-			// test (vector * scalar) and (scalar * vector)
-			float s = s_floatVec[i];
-			float r1x = ax * s, r1y = ay * s, r1z = az * s, r1w = aw * s;
-			float r2x = s * ax, r2y = s * ay, r2z = s * az, r2w = s * aw;
-			Quat r1 = a * s;
-			Quat r2 = s * a;
-			if (!(FloatTest(r1x, r1.x) && FloatTest(r1y, r1.y) && FloatTest(r1z, r1.z) && FloatTest(r1w, r1.w) &&
-				  FloatTest(r2x, r2.x) && FloatTest(r2y, r2.y) && FloatTest(r2z, r2.z) && FloatTest(r2w, r2.w) &&
-				  FloatTest(r1.x, r2.x) && FloatTest(r1.y, r2.y) && FloatTest(r1.z, r2.z) && FloatTest(r1.w, r2.w)))
-			{
-				printf("s = %.5f", s);
-				return false;
-			}
-		}
-		return true;
-	}
-};
-*/
-
-/*
-class QuatScalarDivision
-{
-public:
-	static const char* GetName() { return "Scalar Division"; }
-	bool operator() (const Quat& a)
-	{
-		float ax = a.x, ay = a.y, az = a.z, aw = a.w;
-		for (unsigned int i = 0; i < s_floatVec.size(); ++i)
-		{
-			// test (vector / scalar) and (scalar / vector)
-			float s = s_floatVec[i];
-			float r1x = ax / s, r1y = ay / s, r1z = az / s, r1w = aw / s;
-			float r2x = s / ax, r2y = s / ay, r2z = s / az, r2w = s / aw;
-			Quat r1 = a / s;
-			Quat r2 = s / a;
-
-			if (!(FloatTest(r1x, r1.x) && FloatTest(r1y, r1.y) && FloatTest(r1z, r1.z) && FloatTest(r1w, r1.w) &&
-				  FloatTest(r2x, r2.x) && FloatTest(r2y, r2.y) && FloatTest(r2z, r2.z) && FloatTest(r2w, r2.w)))
-			{
-				printf("s = %.5f\n", s);
-				return false;
-			}
-		}
-		return true;
-	}
-};
-*/
-
 class QuatLength
 {
 public:
@@ -1313,37 +1255,6 @@ public:
 		return FloatTest(rx, r.i) && FloatTest(ry, r.j) && FloatTest(rz, r.k) && FloatTest(rw, r.r);
 	}
 };
-
-/*
-class QuatCompMul
-{
-public:
-	static const char* GetName() { return "Comp Mul"; }
-	bool operator()(const Quat& a, const Quat& b) const
-	{
-		float ax = a.x, ay = a.y, az = a.z, aw = a.w;
-		float bx = b.x, by = b.y, bz = b.z, bw = b.w;
-		float rx = (ax * bx), ry = (ay * by), rz = (az * bz), rw = (aw * bw);
-		Quat r = CompMul(a, b);
-		return FloatTest(rx, r.x) && FloatTest(ry, r.y) && FloatTest(rz, r.z) && FloatTest(rw, r.w);
-	}
-};
-*/
-/*
-class QuatCompDiv
-{
-public:
-	static const char* GetName() { return "Comp Div"; }
-	bool operator()(const Quat& a, const Quat& b) const
-	{
-		float ax = a.x, ay = a.y, az = a.z, aw = a.w;
-		float bx = b.x, by = b.y, bz = b.z, bw = b.w;
-		float rx = (ax / bx), ry = (ay / by), rz = (az / bz), rw = (aw / bw);
-		Quat r = CompDiv(a, b);
-		return FloatTest(rx, r.x) && FloatTest(ry, r.y) && FloatTest(rz, r.z) && FloatTest(rw, r.w);
-	}
-};
-*/
 
 //
 // Matrix tests
@@ -1933,6 +1844,10 @@ int main(int argc, char* argv[])
 	vector2Suite.AddTest(new Vector2BinaryOpTest<Vector2CompMul>());
 	vector2Suite.AddTest(new Vector2BinaryOpTest<Vector2CompDiv>());
 	vector2Suite.RunTests();
+	// TODO: SetZero()
+	// TODO: Set()
+	// TODO: LenSq()
+	// TODO: Lerp()
 
 	TestSuite vector3Suite("Vector3");
 	vector3Suite.AddTest(new Vector3UnaryOpTest<Vector3Negation>());
@@ -1947,6 +1862,10 @@ int main(int argc, char* argv[])
 	vector3Suite.AddTest(new Vector3BinaryOpTest<Vector3CompDiv>());
 	vector3Suite.AddTest(new Vector3BinaryOpTest<Vector3CrossProduct>());
 	vector3Suite.RunTests();
+	// TODO: SetZero()
+	// TODO: Set()
+	// TODO: LenSq()
+	// TODO: Lerp()
 
 	TestSuite vector4Suite("Vector4");
 	vector4Suite.AddTest(new Vector4UnaryOpTest<Vector4Negation>());
@@ -1960,22 +1879,27 @@ int main(int argc, char* argv[])
 	vector4Suite.AddTest(new Vector4BinaryOpTest<Vector4CompMul>());
 	vector4Suite.AddTest(new Vector4BinaryOpTest<Vector4CompDiv>());
 	vector4Suite.RunTests();
+	// TODO: SetZero()
+	// TODO: Set()
+	// TODO: []
+	// TODO: LenSq()
+	// TODO: Lerp()
 
 	TestSuite quatSuite("Quat");
 	quatSuite.AddTest(new QuatUnaryOpTest<QuatRotate>());
 	quatSuite.AddTest(new QuatUnaryOpTest<QuatConjugate>());
 	quatSuite.AddTest(new QuatUnaryOpTest<QuatNegation>());
-//	quatSuite.AddTest(new QuatUnaryOpTest<QuatScalarMultiplication>());
-//	quatSuite.AddTest(new QuatUnaryOpTest<QuatScalarDivision>());
 	quatSuite.AddTest(new QuatUnaryOpTest<QuatLength>());
 	quatSuite.AddTest(new QuatUnaryOpTest<QuatUnitVec>());
 	quatSuite.AddTest(new QuatUnaryOpTest<QuatExponential>());
 	quatSuite.AddTest(new QuatUnaryOpTest<QuatLogarithm>());
 	quatSuite.AddTest(new QuatBinaryOpTest<QuatAddition>());
 	quatSuite.AddTest(new QuatBinaryOpTest<QuatSubtraction>());
-//	quatSuite.AddTest(new QuatBinaryOpTest<QuatCompMul>());
-//	quatSuite.AddTest(new QuatBinaryOpTest<QuatCompDiv>());
 	quatSuite.RunTests();
+	// TODO: AxisAngle()
+	// TODO: SetZero()
+	// TODO: LenSq()
+	// TODO: *
 
 	TestSuite matrixSuite("Matrix");
 	matrixSuite.AddTest(new MatrixUnaryOpTest<MatrixTransform3x3>());
@@ -1994,12 +1918,8 @@ int main(int argc, char* argv[])
 	// TODO: make ident
 	// TODO: matrix addition
 	// TODO: matrix subtraction
-	// TODO: Inverse
 	// TODO: OrthonormalInverse
 	matrixSuite.RunTests();
-
-	// TODO: Rad2Deg
-	// TODO: Deg2Rad
 
 	return 0;
 }
