@@ -1,0 +1,25 @@
+Version 0.2
+--------------
+One file!
+
+Full documentation!
+
+Full unit test
+
+Templatize on Scalar Type.
+Union data (x,y,z,w or array, or i j k r)
+Float* contructors & cast operators.
+Matrix to opengl matrix (transpose...)
++=, -=, *=, /= support
+
+Quat::Slerp
+Quat::Lerp
+Quat::NLerp
+
+Double check Quat::Log & Quat::Exp
+Double check Matrix from quat.
+Faster & more stable full inverse.
+
+stream output?
+
+Benchmarks
