@@ -1752,7 +1752,7 @@ public:
 		
 		// convert the transpose of a into a float vec. (why? because invert_matrix expects an opengl style matrix)
 		MatrixToFloatVec(fv, a.Transpose());
-		float rfv[16];
+		float rfv[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};  // initalize it to stop compiler warnings.
 		bool invertable = invert_matrix(fv, rfv);
 
 		float rfv2[16];
@@ -1923,13 +1923,14 @@ int main(int argc, char* argv[])
 
 	// TODO: Complex Tests
 
-
+	/*
 	// template tests
 	Vector2f vf(FLT_MAX, DBL_MAX);
 	printf("x = %.5f, y = %.5f\n", vf.x, vf.y);
 
 	Vector2d vd(FLT_MAX * 2.0, DBL_MAX);
 	printf("x = %.5f, y = %.5f\n", vd.x, vd.y);
+	*/
 
 	return 0;
 }

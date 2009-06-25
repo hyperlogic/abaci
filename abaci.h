@@ -56,8 +56,9 @@ float Mod2Pi(float theta);
 // Fuzzy comparison between two float values.
 bool FuzzyEqual(float rhs, float lhs, float epsilon = 0.0001f);
 
-
+// TODO: remove template test
 //////////////////////////////////////////////////////
+/*
 template <class Scalar>
 struct Vector2Template
 {
@@ -71,6 +72,7 @@ struct Vector2Template
 
 typedef Vector2Template<float> Vector2f;
 typedef Vector2Template<double> Vector2d;
+*/
 
 //////////////////////////////////////////////////////
 struct Vector2

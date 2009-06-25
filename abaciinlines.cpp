@@ -65,6 +65,7 @@ inline bool FuzzyEqual(float rhs, float lhs, float epsilon)
 	return fabs(rhs - lhs) <= epsilon;
 }
 
+/*
 // Template test TODO: REMOVE
 template <class Scalar>
 Vector2Template<Scalar>::Vector2Template(Scalar xIn, Scalar yIn)
@@ -72,7 +73,7 @@ Vector2Template<Scalar>::Vector2Template(Scalar xIn, Scalar yIn)
 	x = xIn;
 	y = yIn;
 }
-
+*/
 
 // Construct from two floats
 inline Vector2::Vector2(float xIn, float yIn) : x(xIn), y(yIn) {}
