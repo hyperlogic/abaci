@@ -1923,5 +1923,13 @@ int main(int argc, char* argv[])
 
 	// TODO: Complex Tests
 
+
+	// template tests
+	Vector2f vf(FLT_MAX, DBL_MAX);
+	printf("x = %.5f, y = %.5f\n", vf.x, vf.y);
+
+	Vector2d vd(FLT_MAX * 2.0, DBL_MAX);
+	printf("x = %.5f, y = %.5f\n", vd.x, vd.y);
+
 	return 0;
 }

@@ -65,12 +65,17 @@ inline bool FuzzyEqual(float rhs, float lhs, float epsilon)
 	return fabs(rhs - lhs) <= epsilon;
 }
 
-// Construct from two floats
-inline Vector2::Vector2(float xIn, float yIn) 
-{ 
-	x = xIn; 
-	y = yIn; 
+// Template test TODO: REMOVE
+template <class Scalar>
+Vector2Template<Scalar>::Vector2Template(Scalar xIn, Scalar yIn)
+{
+	x = xIn;
+	y = yIn;
 }
+
+
+// Construct from two floats
+inline Vector2::Vector2(float xIn, float yIn) : x(xIn), y(yIn) {}
 
 // Set from two floats
 inline void Vector2::Set(float xIn, float yIn)
@@ -82,8 +87,7 @@ inline void Vector2::Set(float xIn, float yIn)
 // Sets all elements to zero.
 inline void Vector2::SetZero()
 {
-	x = 0;
-	y = 0;
+	x = y = 0;
 }
 
 // Returns a vector with same direction but unit length.
@@ -170,21 +174,8 @@ inline Vector2 operator/(const Vector2& a, const Vector2& b)
 	return Vector2(a.x / b.x, a.y / b.y);
 }
 
-// Construct from a Vector2 and a float
-inline Vector3::Vector3(const Vector2& v, float zIn) 
-{ 
-	x = v.x; 
-	y = v.y; 
-	z = zIn; 
-}
-
 // Construct from three floats
-inline Vector3::Vector3(float xIn, float yIn, float zIn) 
-{ 
-	x = xIn; 
-	y = yIn; 
-	z = zIn; 
-}
+inline Vector3::Vector3(float xIn, float yIn, float zIn) : x(xIn), y(yIn), z(zIn) {}
 
 // Set from three floats
 inline void Vector3::Set(float xIn, float yIn, float zIn)
@@ -197,9 +188,7 @@ inline void Vector3::Set(float xIn, float yIn, float zIn)
 // Set all elements to zero
 inline void Vector3::SetZero()
 {
-	x = 0;
-	y = 0;
-	z = 0;
+	x = y = z = 0;
 }
 
 // Returns a vector with same direction but unit length.
@@ -292,23 +281,8 @@ inline Vector3 operator/(const Vector3& a, const Vector3& b)
 	return Vector3(a.x / b.x, a.y / b.y, a.z / b.z);
 }
 
-// Construct from a Vector3 and a float.
-inline Vector4::Vector4(const Vector3& v, float wIn) 
-{ 
-	x = v.x; 
-	y = v.y; 
-	z = v.z; 
-    w = wIn; 
-}
-
 // Construct from four floats.
-inline Vector4::Vector4(float xIn, float yIn, float zIn, float wIn) 
-{ 
-	x = xIn; 
-	y = yIn; 
-	z = zIn; 
-	w = wIn; 
-}
+inline Vector4::Vector4(float xIn, float yIn, float zIn, float wIn) : x(xIn), y(yIn), z(zIn), w(wIn) {}
 
 // Set from four floats.
 inline void Vector4::Set(float xIn, float yIn, float zIn, float wIn)
@@ -322,10 +296,7 @@ inline void Vector4::Set(float xIn, float yIn, float zIn, float wIn)
 // Set all elements to zero.
 inline void Vector4::SetZero()
 {
-	x = 0;
-	y = 0;
-	z = 0;
-	w = 0;
+	x = y = z = w = 0;
 }
 
 // Returns a vector with same direction but unit length.
@@ -433,18 +404,12 @@ inline Quat Quat::AxisAngle(const Vector3& axis, float angle)
 }
 
 // Construct from four floats.
-inline Quat::Quat(float iIn, float jIn, float kIn, float rIn)
-{
-	i = iIn;
-	j = jIn;
-	k = kIn;
-	r = rIn;
-}
+inline Quat::Quat(float iIn, float jIn, float kIn, float rIn) : i(iIn), j(jIn), k(kIn), r(rIn) {}
 
 // Set all elements to zero.
 inline void Quat::SetZero()
 {
-	i = j = k = r = 0.0f;
+	i = j = k = r = 0;
 }
 
 // Returns this quaternion normalized.
@@ -717,10 +682,7 @@ inline Matrix Matrix::Transpose() const
 }
 
 // Construct from two floats
-inline Complex::Complex(float rIn, float iIn) : r(rIn), i(iIn)
-{
-	
-}
+inline Complex::Complex(float rIn, float iIn) : r(rIn), i(iIn) {}
 
 // Length
 inline float Complex::Len() const

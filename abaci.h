@@ -58,7 +58,21 @@ bool FuzzyEqual(float rhs, float lhs, float epsilon = 0.0001f);
 
 
 //////////////////////////////////////////////////////
+template <class Scalar>
+struct Vector2Template
+{
+	Vector2Template() {}
 
+	Vector2Template(Scalar xIn, Scalar yIn);
+
+	Scalar x;
+	Scalar y;
+};
+
+typedef Vector2Template<float> Vector2f;
+typedef Vector2Template<double> Vector2d;
+
+//////////////////////////////////////////////////////
 struct Vector2
 {
 	// Uninitialized by default.
@@ -127,9 +141,6 @@ struct Vector3
 	// Uninitialized by default.
 	Vector3() {}
 
-	// Construct from a Vector2 and a float
-	Vector3(const Vector2& v, float zIn);
-
 	// Construct from three floats
 	Vector3(float xIn, float yIn, float zIn);
 
@@ -196,9 +207,6 @@ struct Vector4
 {
 	// Uninitialized by default.
 	Vector4() {}
-
-	// Construct from a Vector3 and a float.
-	Vector4(const Vector3& v, float wIn);
 
 	// Construct from four floats.
 	Vector4(float xIn, float yIn, float zIn, float wIn);
