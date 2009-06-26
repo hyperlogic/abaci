@@ -508,6 +508,9 @@ struct Complex
 	Scalar i;
 };
 
+typedef Complex<float> Complexf;
+typedef Complex<double> Complexd;
+
 // Dot product
 template <typename Scalar>
 Scalar Dot(const Complex<Scalar>& a, const Complex<Scalar>& b);
