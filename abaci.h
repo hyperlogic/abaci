@@ -34,10 +34,6 @@ namespace ABACI_NAMESPACE
 
 #define PI M_PI
 
-struct Matrix;
-struct Vector3;
-struct Vector4;
-
 // Convert from degrees to radians
 template <typename Scalar>
 Scalar DegToRad(Scalar deg);
@@ -58,7 +54,7 @@ Scalar LimitPi(Scalar theta);
 template <typename Scalar>
 Scalar Mod2Pi(Scalar theta);
 
-// Fuzzy comparison between two float values.
+// Fuzzy comparison between two Scalar values.
 template <typename Scalar>
 bool FuzzyEqual(Scalar rhs, Scalar lhs, Scalar epsilon = 0.0001);
 
@@ -143,16 +139,17 @@ Vector2<Scalar> operator/(const Vector2<Scalar>& a, const Vector2<Scalar>& b);
 
 //////////////////////////////////////////////////////
 
+template <typename Scalar>
 struct Vector3
 {
 	// Uninitialized by default.
 	Vector3() {}
 
-	// Construct from three floats
-	Vector3(float xIn, float yIn, float zIn);
+	// Construct from three Scalars
+	Vector3(Scalar xIn, Scalar yIn, Scalar zIn);
 
-	// Set from three floats
-	void Set(float xIn, float yIn, float zIn);
+	// Set from three Scalars
+	void Set(Scalar xIn, Scalar yIn, Scalar zIn);
 
 	// Set all elements to zero
 	void SetZero();
@@ -161,65 +158,81 @@ struct Vector3
 	Vector3 Unit() const;
 
 	// Returns vector length.
-	float Len() const;
+	Scalar Len() const;
 
 	// Returns length squared.
-	float LenSq() const;
+	Scalar LenSq() const;
 
-	float x;
-	float y;
-	float z;
+	Scalar x;
+	Scalar y;
+	Scalar z;
 };
 
+typedef Vector3<float> Vector3f;
+typedef Vector3<double> Vector3d;
+
 // Dot product of two vectors.
-float Dot(const Vector3& a, const Vector3& b);
+template <typename Scalar>
+Scalar Dot(const Vector3<Scalar>& a, const Vector3<Scalar>& b);
 
 // Cross product of two vectors.
-Vector3 Cross(const Vector3& a, const Vector3& b);
+template <typename Scalar>
+Vector3<Scalar> Cross(const Vector3<Scalar>& a, const Vector3<Scalar>& b);
 
 // Linear interpolation between two vectors
-Vector3 Lerp(const Vector3& a, const Vector3& a, float t);
+template <typename Scalar>
+Vector3<Scalar> Lerp(const Vector3<Scalar>& a, const Vector3<Scalar>& a, Scalar t);
 
 // Unary minus.
-Vector3 operator-(const Vector3& a);
+template <typename Scalar>
+Vector3<Scalar> operator-(const Vector3<Scalar>& a);
 
 // Vector subtraction.
-Vector3 operator-(const Vector3& a, const Vector3& b);
+template <typename Scalar>
+Vector3<Scalar> operator-(const Vector3<Scalar>& a, const Vector3<Scalar>& b);
 
 // Vector addition.
-Vector3 operator+(const Vector3& a, const Vector3& b);
+template <typename Scalar>
+Vector3<Scalar> operator+(const Vector3<Scalar>& a, const Vector3<Scalar>& b);
 
 // Multplies all elements of a vector by a scalar.
-Vector3 operator*(const Vector3& v, float factor);
+template <typename Scalar>
+Vector3<Scalar> operator*(const Vector3<Scalar>& v, Scalar factor);
 
 // Multplies all elements of a vector by a scalar.
-Vector3 operator*(float factor, const Vector3& v);
+template <typename Scalar>
+Vector3<Scalar> operator*(Scalar factor, const Vector3<Scalar>& v);
 
 // Vector multiplication
-Vector3 operator*(const Vector3& a, const Vector3& b);
+template <typename Scalar>
+Vector3<Scalar> operator*(const Vector3<Scalar>& a, const Vector3<Scalar>& b);
 
 // Divides all elements of a vector by a scalar.
-Vector3 operator/(const Vector3& v, float denominator);
+template <typename Scalar>
+Vector3<Scalar> operator/(const Vector3<Scalar>& v, Scalar denominator);
 
 // Multiplies a scalar to the reciprical of all elements in a vector.
-Vector3 operator/(float numerator, const Vector3& v);
+template <typename Scalar>
+Vector3<Scalar> operator/(Scalar numerator, const Vector3<Scalar>& v);
 
 // Vector division.
-Vector3 operator/(const Vector3& a, const Vector3& b);
+template <typename Scalar>
+Vector3<Scalar> operator/(const Vector3<Scalar>& a, const Vector3<Scalar>& b);
 
 
 //////////////////////////////////////////////////////
 
+template <typename Scalar>
 struct Vector4
 {
 	// Uninitialized by default.
 	Vector4() {}
 
-	// Construct from four floats.
-	Vector4(float xIn, float yIn, float zIn, float wIn);
+	// Construct from four Scalars.
+	Vector4(Scalar xIn, Scalar yIn, Scalar zIn, Scalar wIn);
 
-	// Set from four floats.
-	void Set(float xIn, float yIn, float zIn, float wIn);
+	// Set from four Scalars.
+	void Set(Scalar xIn, Scalar yIn, Scalar zIn, Scalar wIn);
 
 	// Set all elements to zero.
 	void SetZero();
@@ -228,69 +241,84 @@ struct Vector4
 	Vector4 Unit() const;
 
 	// Returns vector length.
-	float Len() const;
+	Scalar Len() const;
 
 	// Returns length squared.
-	float LenSq() const;
+	Scalar LenSq() const;
 
 	// const array accessor
-	float operator[](int i) const;
+	Scalar operator[](int i) const;
 
 	// array accessor
-	float& operator[](int i);
+	Scalar& operator[](int i);
 
-	float x;
-	float y;
-	float z;
-	float w;
+	Scalar x;
+	Scalar y;
+	Scalar z;
+	Scalar w;
 };
 
+typedef Vector4<float> Vector4f;
+typedef Vector4<double> Vector4d;
+
 // Dot product of two vectors.
-float Dot(const Vector4& a, const Vector4& b);
+template <typename Scalar>
+Scalar Dot(const Vector4<Scalar>& a, const Vector4<Scalar>& b);
 
 // Linear interpolation between two vectors
-Vector4 Lerp(const Vector4& a, const Vector4& b, float t);
+template <typename Scalar>
+Vector4<Scalar> Lerp(const Vector4<Scalar>& a, const Vector4<Scalar>& b, Scalar t);
 
 // Unary minus.
-Vector4 operator-(const Vector4& v);
+template <typename Scalar>
+Vector4<Scalar> operator-(const Vector4<Scalar>& v);
 
 // Vector subtraction.
-Vector4 operator-(const Vector4& a, const Vector4& b);
+template <typename Scalar>
+Vector4<Scalar> operator-(const Vector4<Scalar>& a, const Vector4<Scalar>& b);
 
 // Vector addition.
-Vector4 operator+(const Vector4& a, const Vector4& b);
+template <typename Scalar>
+Vector4<Scalar> operator+(const Vector4<Scalar>& a, const Vector4<Scalar>& b);
 
 // Multplies all elements of a vector by a scalar.
-Vector4 operator*(const Vector4& v, float factor);
+template <typename Scalar>
+Vector4<Scalar> operator*(const Vector4<Scalar>& v, Scalar factor);
 
 // Multplies all elements of a vector by a scalar.
-Vector4 operator*(float factor, const Vector4& v);
+template <typename Scalar>
+Vector4<Scalar> operator*(Scalar factor, const Vector4<Scalar>& v);
 
 // Vector multiplication.
-Vector4 operator*(const Vector4& a, const Vector4& b);
+template <typename Scalar>
+Vector4<Scalar> operator*(const Vector4<Scalar>& a, const Vector4<Scalar>& b);
 
 // Divides all elements of a vector by a scalar.
-Vector4 operator/(const Vector4& v, float denominator);
+template <typename Scalar>
+Vector4<Scalar> operator/(const Vector4<Scalar>& v, Scalar denominator);
 
 // Multiplies a scalar to the reciprical of all elements in a vector.
-Vector4 operator/(float numerator, const Vector4& v);
+template <typename Scalar>
+Vector4<Scalar> operator/(Scalar numerator, const Vector4<Scalar>& v);
 
 // Vector division.
-Vector4 operator/(const Vector4& a, const Vector4& b);
+template <typename Scalar>
+Vector4<Scalar> operator/(const Vector4<Scalar>& a, const Vector4<Scalar>& b);
 
 
 //////////////////////////////////////////////////////
 
+template <typename Scalar>
 struct Quat
 {
 	// Create from axis and angle
-	static Quat AxisAngle(const Vector3& axis, float angle);
+	static Quat AxisAngle(const Vector3<Scalar>& axis, Scalar angle);
 
 	// Uninitialized by default.
 	Quat() {}
 
-	// Construct from four floats.
-	Quat(float iIn, float jIn, float kIn, float rIn);
+	// Construct from four Scalars.
+	Quat(Scalar iIn, Scalar jIn, Scalar kIn, Scalar rIn);
 
 	// Set all elements to zero.
 	void SetZero();
@@ -299,13 +327,13 @@ struct Quat
 	Quat Unit() const;
 
 	// Returns quat length.
-	float Len() const;
+	Scalar Len() const;
 
 	// Returns quat length squared.
-	float LenSq() const;
+	Scalar LenSq() const;
 
 	// Rotate a vector.
-	Vector3 Rotate(const Vector3& v) const;
+	Vector3<Scalar> Rotate(const Vector3<Scalar>& v) const;
 
 	// Quaternian exponential
 	Quat Exp() const;
@@ -313,101 +341,111 @@ struct Quat
 	// Quaternian logarithm
 	Quat Log() const;
 
-	float i;
-	float j;
-	float k;
-	float r;  // real part
+	Scalar i;
+	Scalar j;
+	Scalar k;
+	Scalar r;  // real part
 };
 
+typedef Quat<float> Quatf;
+typedef Quat<double> Quatd;
+
 // Dot product
-float Dot(const Quat& a, const Quat& b);
+template <typename Scalar>
+Scalar Dot(const Quat<Scalar>& a, const Quat<Scalar>& b);
 
 // Quaternion conjugate
-Quat operator~(const Quat& v);
+template <typename Scalar>
+Quat<Scalar> operator~(const Quat<Scalar>& v);
 
 // Unary minus.
-Quat operator-(const Quat& v);
+template <typename Scalar>
+Quat<Scalar> operator-(const Quat<Scalar>& v);
 
 // Quaternion subtraction.
-Quat operator-(const Quat& a, const Quat& b);
+template <typename Scalar>
+Quat<Scalar> operator-(const Quat<Scalar>& a, const Quat<Scalar>& b);
 
 // Quaternion addition.
-Quat operator+(const Quat& a, const Quat& b);
+template <typename Scalar>
+Quat<Scalar> operator+(const Quat<Scalar>& a, const Quat<Scalar>& b);
 
 // Quaternion multplication.
-Quat operator*(const Quat& a, const Quat& b);
+template <typename Scalar>
+Quat<Scalar> operator*(const Quat<Scalar>& a, const Quat<Scalar>& b);
 
 
 //////////////////////////////////////////////////////
 
 // column major
+template <typename Scalar>
 struct Matrix
 {
 	// Create a Matrix from three principle axes and a translation.
-	static Matrix Axes(const Vector3& xAxis, const Vector3& yAxis, const Vector3& zAxis, const Vector3& trans = Vector3(0,0,0));
+	static Matrix Axes(const Vector3<Scalar>& xAxis, const Vector3<Scalar>& yAxis, const Vector3<Scalar>& zAxis, const Vector3<Scalar>& trans = Vector3<Scalar>(0,0,0));
 
 	// Create a Matrix from four row vectors.
-	static Matrix Rows(const Vector4& row0In, const Vector4& row1In, const Vector4& row2In, const Vector4& row3In);
+	static Matrix Rows(const Vector4<Scalar>& row0In, const Vector4<Scalar>& row1In, const Vector4<Scalar>& row2In, const Vector4<Scalar>& row3In);
 
 	// Create a Matrix from a Quat and a translation.
-	static Matrix QuatTrans(const Quat& q, const Vector3& trans);
+	static Matrix QuatTrans(const Quat<Scalar>& q, const Vector3<Scalar>& trans);
 
 	// Create a Matrix from a Scale vector, a Quat and a translation.
-	static Matrix ScaleQuatTrans(const Vector3& scale, const Quat& rot, const Vector3& trans);
+	static Matrix ScaleQuatTrans(const Vector3<Scalar>& scale, const Quat<Scalar>& rot, const Vector3<Scalar>& trans);
 
 	// Create a Matrix from a rotation represented by an axis and an angle.
-	static Matrix AxisAngle(const Vector3 axis, float angle);
+	static Matrix AxisAngle(const Vector3<Scalar>& axis, Scalar angle);
 
 	// Create an identity Matrix.
 	static Matrix Identity();
 
 	// Create a persective projection Matrix.
-	static Matrix Frustum(float fovy, float aspect, float nearVal, float farVal);
+	static Matrix Frustum(Scalar fovy, Scalar aspect, Scalar nearVal, Scalar farVal);
 
 	// Create an orthograpic projection Matrix.
-	static Matrix Ortho(float left, float right, float bottom, float top, float nearVal, float farVal);
+	static Matrix Ortho(Scalar left, Scalar right, Scalar bottom, Scalar top, Scalar nearVal, Scalar farVal);
 
 	// Create a look at matrix. (x is forward)
-	static Matrix LookAt(const Vector3& eye, const Vector3& target, const Vector3& up);
+	static Matrix LookAt(const Vector3<Scalar>& eye, const Vector3<Scalar>& target, const Vector3<Scalar>& up);
 	
 	// Uninitialized by default.
 	Matrix() {}
 	
 	// Axes accessors
-	Vector3 GetXAxis() const;
-	Vector3 GetYAxis() const;
-	Vector3 GetZAxis() const;
-	Vector3 GetTrans() const;
+	Vector3<Scalar> GetXAxis() const;
+	Vector3<Scalar> GetYAxis() const;
+	Vector3<Scalar> GetZAxis() const;
+	Vector3<Scalar> GetTrans() const;
 	
-	void SetXAxis(const Vector3 xAxis);
-	void SetYAxis(const Vector3 yAxis);
-	void SetZAxis(const Vector3 zAxis);
-	void SetTrans(const Vector3 trans);
+	void SetXAxis(const Vector3<Scalar>& xAxis);
+	void SetYAxis(const Vector3<Scalar>& yAxis);
+	void SetZAxis(const Vector3<Scalar>& zAxis);
+	void SetTrans(const Vector3<Scalar>& trans);
 	
 	// Multiplies by uniform scale.
-	void SetScale(float scale);
+	void SetScale(Scalar scale);
 
 	// Multiplies by non-uniform scale.
-	void SetScale(const Vector3 scale);
+	void SetScale(const Vector3<Scalar>& scale);
 	
 	// Element accessors
-	const float& Elem(int r, int c) const;
-	float& Elem(int r, int c);
+	const Scalar& Elem(int r, int c) const;
+	Scalar& Elem(int r, int c);
 	
 	// Column accessor
-	Vector4 GetCol(int c) const;
+	Vector4<Scalar> GetCol(int c) const;
 
 	// Returns the rotation component of this Matrix.
-	Quat GetQuat() const;
+	Quat<Scalar> GetQuat() const;
 
 	// Multiply the 3x3 component of this Matrix with a column vector.
-	Vector3 Mul3x3(const Vector3& v) const;
+	Vector3<Scalar> Mul3x3(const Vector3<Scalar>& v) const;
 
 	// Multiply the 3x4 component of this Matrix with a column vector. (w component of vector is 1.0)
-	Vector3 Mul3x4(const Vector3& v) const;
+	Vector3<Scalar> Mul3x4(const Vector3<Scalar>& v) const;
 
 	// Multiply this Matrix with a column vector.
-	Vector4 Mul4x4(const Vector4& v) const;
+	Vector4<Scalar> Mul4x4(const Vector4<Scalar>& v) const;
 
 	// Returns the transpose of this Matrix
 	Matrix Transpose() const;
@@ -419,26 +457,34 @@ struct Matrix
 	// Full 4x4 Matrix Inverse, returns Identity if matrix has no inverse.
 	Matrix FullInverse() const;
 
-	Vector4 row0;
-	Vector4 row1;
-	Vector4 row2;
-	Vector4 row3;
+	Vector4<Scalar> row0;
+	Vector4<Scalar> row1;
+	Vector4<Scalar> row2;
+	Vector4<Scalar> row3;
 };
 
+typedef Matrix<float> Matrixf;
+typedef Matrix<double> Matrixd;
+
 // Matrix addition
-Matrix operator+(const Matrix& a, const Matrix& b);
+template <typename Scalar>
+Matrix<Scalar> operator+(const Matrix<Scalar>& a, const Matrix<Scalar>& b);
 
 // Matrix subtraction
-Matrix operator-(const Matrix& a, const Matrix& b);
+template <typename Scalar>
+Matrix<Scalar> operator-(const Matrix<Scalar>& a, const Matrix<Scalar>& b);
 
 // Matrix multiplication
-Matrix operator*(const Matrix& a, const Matrix& b);
+template <typename Scalar>
+Matrix<Scalar> operator*(const Matrix<Scalar>& a, const Matrix<Scalar>& b);
 
 // Full 4x4 Matrix inverse, returns false if Matrix has no inverse.
-bool FullInverse(const Matrix& m, Matrix& result);
+template <typename Scalar>
+bool FullInverse(const Matrix<Scalar>& m, Matrix<Scalar>& result);
 
 // Print to stdout.
-void PrintMatrix(const Matrix& m);
+template <typename Scalar>
+void PrintMatrix(const Matrix<Scalar>& m);
 
 
 //////////////////////////////////////////////////////

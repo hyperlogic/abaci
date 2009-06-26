@@ -36,11 +36,11 @@ using namespace ABACI_NAMESPACE;
 
 // static test containers
 std::vector<float> s_floatVec;
-std::vector<Vector2f> s_vector2Vec;
-std::vector<Vector3> s_vector3Vec;
-std::vector<Vector4> s_vector4Vec;
-std::vector<Quat> s_quatVec;
-std::vector<Matrix> s_matrixVec;
+std::vector<Vector2f> s_vector2fVec;
+std::vector<Vector3f> s_vector3fVec;
+std::vector<Vector4f> s_vector4fVec;
+std::vector<Quatf> s_quatfVec;
+std::vector<Matrixf> s_matrixfVec;
 
 bool FuzzyFloatTest(float rhs, float lhs, float epsilon=0.0001f)
 {
@@ -82,93 +82,93 @@ void InitTestData()
 	for (int i = 0; i < RANDOM_DATA_SIZE; ++i)
 	{
 		s_floatVec.push_back(RandomFloat());
-		s_vector2Vec.push_back(Vector2f(RandomFloat(), RandomFloat()));
-		s_vector3Vec.push_back(Vector3(RandomFloat(), RandomFloat(), RandomFloat()));
-		s_vector4Vec.push_back(Vector4(RandomFloat(), RandomFloat(), RandomFloat(), RandomFloat()));
+		s_vector2fVec.push_back(Vector2f(RandomFloat(), RandomFloat()));
+		s_vector3fVec.push_back(Vector3f(RandomFloat(), RandomFloat(), RandomFloat()));
+		s_vector4fVec.push_back(Vector4f(RandomFloat(), RandomFloat(), RandomFloat(), RandomFloat()));
 
-		Vector4 row0(RandomFloat(), RandomFloat(), RandomFloat(), RandomFloat());
-		Vector4 row1(RandomFloat(), RandomFloat(), RandomFloat(), RandomFloat());
-		Vector4 row2(RandomFloat(), RandomFloat(), RandomFloat(), RandomFloat());
-		Vector4 row3(RandomFloat(), RandomFloat(), RandomFloat(), RandomFloat());
-		s_matrixVec.push_back(Matrix::Rows(row0, row1, row2, row3));
+		Vector4f row0(RandomFloat(), RandomFloat(), RandomFloat(), RandomFloat());
+		Vector4f row1(RandomFloat(), RandomFloat(), RandomFloat(), RandomFloat());
+		Vector4f row2(RandomFloat(), RandomFloat(), RandomFloat(), RandomFloat());
+		Vector4f row3(RandomFloat(), RandomFloat(), RandomFloat(), RandomFloat());
+		s_matrixfVec.push_back(Matrixf::Rows(row0, row1, row2, row3));
 	}
 
 	// zero
 	s_floatVec.push_back(0);
-	s_vector2Vec.push_back(Vector2f(0, 0));
-	s_vector3Vec.push_back(Vector3(0, 0, 0));
-	s_vector4Vec.push_back(Vector4(0, 0, 0, 0));
-	s_matrixVec.push_back(Matrix::Rows(Vector4(0, 0, 0, 0), Vector4(0, 0, 0, 0), Vector4(0, 0, 0, 0), Vector4(0, 0, 0, 0)));
+	s_vector2fVec.push_back(Vector2f(0, 0));
+	s_vector3fVec.push_back(Vector3f(0, 0, 0));
+	s_vector4fVec.push_back(Vector4f(0, 0, 0, 0));
+	s_matrixfVec.push_back(Matrixf::Rows(Vector4f(0, 0, 0, 0), Vector4f(0, 0, 0, 0), Vector4f(0, 0, 0, 0), Vector4f(0, 0, 0, 0)));
 
 	// ident-matrix
-	s_matrixVec.push_back(Matrix::Rows(Vector4(1, 0, 0, 0), Vector4(0, 1, 0, 0), Vector4(0, 0, 1, 0), Vector4(0, 0, 0, 1)));
+	s_matrixfVec.push_back(Matrixf::Rows(Vector4f(1, 0, 0, 0), Vector4f(0, 1, 0, 0), Vector4f(0, 0, 1, 0), Vector4f(0, 0, 0, 1)));
 
 	// FLT_MAX
 	s_floatVec.push_back(FLT_MAX);
-	s_vector2Vec.push_back(Vector2f(FLT_MAX, FLT_MAX));
-	s_vector3Vec.push_back(Vector3(FLT_MAX, FLT_MAX, FLT_MAX));
-	s_vector4Vec.push_back(Vector4(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX));
-	s_matrixVec.push_back(Matrix::Rows(Vector4(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX), 
-									   Vector4(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX), 
-									   Vector4(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX), 
-									   Vector4(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX)));
+	s_vector2fVec.push_back(Vector2f(FLT_MAX, FLT_MAX));
+	s_vector3fVec.push_back(Vector3f(FLT_MAX, FLT_MAX, FLT_MAX));
+	s_vector4fVec.push_back(Vector4f(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX));
+	s_matrixfVec.push_back(Matrixf::Rows(Vector4f(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX), 
+										 Vector4f(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX), 
+										 Vector4f(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX), 
+										 Vector4f(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX)));
 
 	s_floatVec.push_back(-FLT_MAX);
-	s_vector2Vec.push_back(Vector2f(-FLT_MAX, -FLT_MAX));
-	s_vector3Vec.push_back(Vector3(-FLT_MAX, -FLT_MAX, -FLT_MAX));
-	s_vector4Vec.push_back(Vector4(-FLT_MAX, -FLT_MAX, -FLT_MAX, -FLT_MAX));
-	s_matrixVec.push_back(Matrix::Rows(Vector4(-FLT_MAX, -FLT_MAX, -FLT_MAX, -FLT_MAX), 
-									   Vector4(-FLT_MAX, -FLT_MAX, -FLT_MAX, -FLT_MAX), 
-									   Vector4(-FLT_MAX, -FLT_MAX, -FLT_MAX, -FLT_MAX), 
-									   Vector4(-FLT_MAX, -FLT_MAX, -FLT_MAX, -FLT_MAX)));
+	s_vector2fVec.push_back(Vector2f(-FLT_MAX, -FLT_MAX));
+	s_vector3fVec.push_back(Vector3f(-FLT_MAX, -FLT_MAX, -FLT_MAX));
+	s_vector4fVec.push_back(Vector4f(-FLT_MAX, -FLT_MAX, -FLT_MAX, -FLT_MAX));
+	s_matrixfVec.push_back(Matrixf::Rows(Vector4f(-FLT_MAX, -FLT_MAX, -FLT_MAX, -FLT_MAX), 
+										 Vector4f(-FLT_MAX, -FLT_MAX, -FLT_MAX, -FLT_MAX), 
+										 Vector4f(-FLT_MAX, -FLT_MAX, -FLT_MAX, -FLT_MAX), 
+										 Vector4f(-FLT_MAX, -FLT_MAX, -FLT_MAX, -FLT_MAX)));
 
 	// FLT_MIN
 	s_floatVec.push_back(FLT_MIN);
-	s_vector2Vec.push_back(Vector2f(FLT_MIN, FLT_MIN));
-	s_vector3Vec.push_back(Vector3(FLT_MIN, FLT_MIN, FLT_MIN));
-	s_vector4Vec.push_back(Vector4(FLT_MIN, FLT_MIN, FLT_MIN, FLT_MIN));
-	s_matrixVec.push_back(Matrix::Rows(Vector4(FLT_MIN, FLT_MIN, FLT_MIN, FLT_MIN), 
-									   Vector4(FLT_MIN, FLT_MIN, FLT_MIN, FLT_MIN), 
-									   Vector4(FLT_MIN, FLT_MIN, FLT_MIN, FLT_MIN), 
-									   Vector4(FLT_MIN, FLT_MIN, FLT_MIN, FLT_MIN)));
+	s_vector2fVec.push_back(Vector2f(FLT_MIN, FLT_MIN));
+	s_vector3fVec.push_back(Vector3f(FLT_MIN, FLT_MIN, FLT_MIN));
+	s_vector4fVec.push_back(Vector4f(FLT_MIN, FLT_MIN, FLT_MIN, FLT_MIN));
+	s_matrixfVec.push_back(Matrixf::Rows(Vector4f(FLT_MIN, FLT_MIN, FLT_MIN, FLT_MIN), 
+										 Vector4f(FLT_MIN, FLT_MIN, FLT_MIN, FLT_MIN), 
+										 Vector4f(FLT_MIN, FLT_MIN, FLT_MIN, FLT_MIN), 
+										 Vector4f(FLT_MIN, FLT_MIN, FLT_MIN, FLT_MIN)));
 
 	s_floatVec.push_back(-FLT_MIN);
-	s_vector2Vec.push_back(Vector2f(-FLT_MIN, -FLT_MIN));
-	s_vector3Vec.push_back(Vector3(-FLT_MIN, -FLT_MIN, -FLT_MIN));
-	s_vector4Vec.push_back(Vector4(-FLT_MIN, -FLT_MIN, -FLT_MIN, -FLT_MIN));
-	s_matrixVec.push_back(Matrix::Rows(Vector4(-FLT_MIN, -FLT_MIN, -FLT_MIN, -FLT_MIN), 
-									   Vector4(-FLT_MIN, -FLT_MIN, -FLT_MIN, -FLT_MIN), 
-									   Vector4(-FLT_MIN, -FLT_MIN, -FLT_MIN, -FLT_MIN), 
-									   Vector4(-FLT_MIN, -FLT_MIN, -FLT_MIN, -FLT_MIN)));
+	s_vector2fVec.push_back(Vector2f(-FLT_MIN, -FLT_MIN));
+	s_vector3fVec.push_back(Vector3f(-FLT_MIN, -FLT_MIN, -FLT_MIN));
+	s_vector4fVec.push_back(Vector4f(-FLT_MIN, -FLT_MIN, -FLT_MIN, -FLT_MIN));
+	s_matrixfVec.push_back(Matrixf::Rows(Vector4f(-FLT_MIN, -FLT_MIN, -FLT_MIN, -FLT_MIN), 
+										 Vector4f(-FLT_MIN, -FLT_MIN, -FLT_MIN, -FLT_MIN), 
+										 Vector4f(-FLT_MIN, -FLT_MIN, -FLT_MIN, -FLT_MIN), 
+										 Vector4f(-FLT_MIN, -FLT_MIN, -FLT_MIN, -FLT_MIN)));
 
 	// inf
 	float inf = FLT_MAX * FLT_MAX;
 	s_floatVec.push_back(inf);
-	s_vector2Vec.push_back(Vector2f(inf, inf));
-	s_vector3Vec.push_back(Vector3(inf, inf, inf));
-	s_vector4Vec.push_back(Vector4(inf, inf, inf, inf));
-	s_matrixVec.push_back(Matrix::Rows(Vector4(inf, inf, inf, inf), 
-									   Vector4(inf, inf, inf, inf), 
-									   Vector4(inf, inf, inf, inf), 
-									   Vector4(inf, inf, inf, inf)));
+	s_vector2fVec.push_back(Vector2f(inf, inf));
+	s_vector3fVec.push_back(Vector3f(inf, inf, inf));
+	s_vector4fVec.push_back(Vector4f(inf, inf, inf, inf));
+	s_matrixfVec.push_back(Matrixf::Rows(Vector4f(inf, inf, inf, inf), 
+										 Vector4f(inf, inf, inf, inf), 
+										 Vector4f(inf, inf, inf, inf), 
+										 Vector4f(inf, inf, inf, inf)));
 
 	// -inf
 	inf = -FLT_MAX * FLT_MAX;
 	s_floatVec.push_back(inf);
-	s_vector2Vec.push_back(Vector2f(inf, inf));
-	s_vector3Vec.push_back(Vector3(inf, inf, inf));
-	s_vector4Vec.push_back(Vector4(inf, inf, inf, inf));
-	s_matrixVec.push_back(Matrix::Rows(Vector4(inf, inf, inf, inf), 
-									   Vector4(inf, inf, inf, inf), 
-									   Vector4(inf, inf, inf, inf), 
-									   Vector4(inf, inf, inf, inf)));
+	s_vector2fVec.push_back(Vector2f(inf, inf));
+	s_vector3fVec.push_back(Vector3f(inf, inf, inf));
+	s_vector4fVec.push_back(Vector4f(inf, inf, inf, inf));
+	s_matrixfVec.push_back(Matrixf::Rows(Vector4f(inf, inf, inf, inf), 
+										 Vector4f(inf, inf, inf, inf), 
+										 Vector4f(inf, inf, inf, inf), 
+										 Vector4f(inf, inf, inf, inf)));
 
 	// Generate the quats from the vec4s
-	for(unsigned int i = 0; i < s_vector4Vec.size(); ++i)
+	for(unsigned int i = 0; i < s_vector4fVec.size(); ++i)
 	{
-		Vector4 v = s_vector4Vec[i];
+		Vector4f v = s_vector4fVec[i];
 		v = v.Unit();
-		s_quatVec.push_back(Quat(v.x, v.y, v.z, v.w));
+		s_quatfVec.push_back(Quatf(v.x, v.y, v.z, v.w));
 	}
 
 	// TODO: nans, q-nans & denormalized...
@@ -262,9 +262,9 @@ public:
 	bool Test() const
 	{
 		BinaryOp op;
-		for (unsigned int i = 0; i < s_vector2Vec.size(); ++i)
+		for (unsigned int i = 0; i < s_vector2fVec.size(); ++i)
 		{
-			for (unsigned int j = 0; j < s_vector2Vec.size(); ++j)
+			for (unsigned int j = 0; j < s_vector2fVec.size(); ++j)
 			{
 				float a = s_floatVec[i];
 				float b = s_floatVec[j];
@@ -302,11 +302,11 @@ public:
 	bool Test() const
 	{
 		TernaryOp op;
-		for (unsigned int i = 0; i < s_vector2Vec.size(); ++i)
+		for (unsigned int i = 0; i < s_vector2fVec.size(); ++i)
 		{
-			for (unsigned int j = 0; j < s_vector2Vec.size(); ++j)
+			for (unsigned int j = 0; j < s_vector2fVec.size(); ++j)
 			{
-				for (unsigned int k = 0; k < s_vector2Vec.size(); ++k)
+				for (unsigned int k = 0; k < s_vector2fVec.size(); ++k)
 				{
 					float a = s_floatVec[i];
 					float b = s_floatVec[j];
@@ -358,9 +358,9 @@ public:
 	bool Test() const
 	{
 		UnaryOp op;
-		for (unsigned int i = 0; i < s_vector2Vec.size(); ++i)
+		for (unsigned int i = 0; i < s_vector2fVec.size(); ++i)
 		{
-			Vector2f a = s_vector2Vec[i];
+			Vector2f a = s_vector2fVec[i];
 			if (!op(a))
 			{
 				printf("a = (%.5f, %.5f)", a.x, a.y);
@@ -472,12 +472,12 @@ public:
 	bool Test() const
 	{
 		BinaryOp op;
-		for (unsigned int i = 0; i < s_vector2Vec.size(); ++i)
+		for (unsigned int i = 0; i < s_vector2fVec.size(); ++i)
 		{
-			for (unsigned int j = 0; j < s_vector2Vec.size(); ++j)
+			for (unsigned int j = 0; j < s_vector2fVec.size(); ++j)
 			{
-				Vector2f a = s_vector2Vec[i];
-				Vector2f b = s_vector2Vec[j];
+				Vector2f a = s_vector2fVec[i];
+				Vector2f b = s_vector2fVec[j];
 				if (!op(a, b))
 				{
 					printf("a = (%.5f, %.5f), b = (%.5f, %.5f)", a.x, a.y, b.x, b.y);
@@ -560,22 +560,22 @@ public:
 };
 
 //
-// Vector3 tests
+// Vector3f tests
 //
 
 template <class UnaryOp>
-class Vector3UnaryOpTest : public TestCase
+class Vector3fUnaryOpTest : public TestCase
 {
 public:
-	Vector3UnaryOpTest() : TestCase(UnaryOp::GetName()) {}
-	~Vector3UnaryOpTest() {}
+	Vector3fUnaryOpTest() : TestCase(UnaryOp::GetName()) {}
+	~Vector3fUnaryOpTest() {}
 
 	bool Test() const
 	{
 		UnaryOp op;
-		for (unsigned int i = 0; i < s_vector3Vec.size(); ++i)
+		for (unsigned int i = 0; i < s_vector3fVec.size(); ++i)
 		{
-			Vector3 a = s_vector3Vec[i];
+			Vector3f a = s_vector3fVec[i];
 			if (!op(a))
 			{
 				printf("a = (%.5f, %.5f, %.5f)", a.x, a.y, a.z);
@@ -586,24 +586,24 @@ public:
 	}
 };
 
-class Vector3Negation
+class Vector3fNegation
 {
 public:
 	static const char* GetName() { return "Negation"; }
-	bool operator() (const Vector3& a)
+	bool operator() (const Vector3f& a)
 	{
 		float ax = a.x, ay = a.y, az = a.z;
 		float rx = -ax, ry = -ay, rz = -az;
-		Vector3 r = -a;
+		Vector3f r = -a;
 		return FloatTest(rx, r.x) && FloatTest(ry, r.y) && FloatTest(rz, r.z);
 	}
 };
 
-class Vector3Length
+class Vector3fLength
 {
 public:
 	static const char* GetName() { return "Length"; }
-	bool operator() (const Vector3& a)
+	bool operator() (const Vector3f& a)
 	{
 		float ax = a.x, ay = a.y, az = a.z;
 		float r = sqrt((ax * ax) + (ay * ay) + (az * az));
@@ -612,25 +612,25 @@ public:
 	}
 };
 
-class Vector3UnitVec
+class Vector3fUnitVec
 {
 public:
 	static const char* GetName() { return "UnitVec"; }
-	bool operator() (const Vector3& a)
+	bool operator() (const Vector3f& a)
 	{
 		float ax = a.x, ay = a.y, az = a.z;
 		float len = sqrt((ax * ax) + (ay * ay) + (az * az));
 		float rx = ax / len, ry = ay / len, rz = az / len;
-		Vector3 r = a.Unit();
+		Vector3f r = a.Unit();
 		return FloatTest(rx, r.x) && FloatTest(ry, r.y) && FloatTest(rz ,r.z);
 	}
 };
 
-class Vector3ScalarMultiplication
+class Vector3fScalarMultiplication
 {
 public:
 	static const char* GetName() { return "Scalar Multiplication"; }
-	bool operator() (const Vector3& a)
+	bool operator() (const Vector3f& a)
 	{
 		float ax = a.x, ay = a.y, az = a.z;
 		for (unsigned int i = 0; i < s_floatVec.size(); ++i)
@@ -639,8 +639,8 @@ public:
 			float s = s_floatVec[i];
 			float r1x = ax * s, r1y = ay * s, r1z = az * s;
 			float r2x = s * ax, r2y = s * ay, r2z = s * az;
-			Vector3 r1 = a * s;
-			Vector3 r2 = s * a;
+			Vector3f r1 = a * s;
+			Vector3f r2 = s * a;
 			if (!(FloatTest(r1x, r1.x) && FloatTest(r1y, r1.y) && FloatTest(r1z, r1.z) && 
 				  FloatTest(r2x, r2.x) && FloatTest(r2y, r2.y) && FloatTest(r2z, r2.z) &&
 				  FloatTest(r1.x, r2.x) && FloatTest(r1.y, r2.y) && FloatTest(r1.z, r2.z)))
@@ -653,11 +653,11 @@ public:
 	}
 };
 
-class Vector3ScalarDivision
+class Vector3fScalarDivision
 {
 public:
 	static const char* GetName() { return "Scalar Division"; }
-	bool operator() (const Vector3& a)
+	bool operator() (const Vector3f& a)
 	{
 		float ax = a.x, ay = a.y, az = a.z;
 		for (unsigned int i = 0; i < s_floatVec.size(); ++i)
@@ -666,8 +666,8 @@ public:
 			float s = s_floatVec[i];
 			float r1x = ax / s, r1y = ay / s, r1z = az / s;
 			float r2x = s / ax, r2y = s / ay, r2z = s / az;
-			Vector3 r1 = a / s;
-			Vector3 r2 = s / a;
+			Vector3f r1 = a / s;
+			Vector3f r2 = s / a;
 
 			if (!(FloatTest(r1x, r1.x) && FloatTest(r1y, r1.y) && FloatTest(r1z, r1.z) && 
 				  FloatTest(r2x, r2.x) && FloatTest(r2y, r2.y) && FloatTest(r2z, r2.z)))
@@ -681,21 +681,21 @@ public:
 };
 
 template <class BinaryOp>
-class Vector3BinaryOpTest : public TestCase
+class Vector3fBinaryOpTest : public TestCase
 {
 public:
-	Vector3BinaryOpTest() : TestCase(BinaryOp::GetName()) {}
-	~Vector3BinaryOpTest() {}
+	Vector3fBinaryOpTest() : TestCase(BinaryOp::GetName()) {}
+	~Vector3fBinaryOpTest() {}
 
 	bool Test() const
 	{
 		BinaryOp op;
-		for (unsigned int i = 0; i < s_vector3Vec.size(); ++i)
+		for (unsigned int i = 0; i < s_vector3fVec.size(); ++i)
 		{
-			for (unsigned int j = 0; j < s_vector3Vec.size(); ++j)
+			for (unsigned int j = 0; j < s_vector3fVec.size(); ++j)
 			{
-				Vector3 a = s_vector3Vec[i];
-				Vector3 b = s_vector3Vec[j];
+				Vector3f a = s_vector3fVec[i];
+				Vector3f b = s_vector3fVec[j];
 				if (!op(a, b))
 				{
 					printf("a = (%.5f, %.5f, %.5f), b = (%.5f, %.5f, %.5f)", a.x, a.y, a.z, b.x, b.y, b.z);
@@ -707,39 +707,39 @@ public:
 	}
 };
 
-class Vector3Addition
+class Vector3fAddition
 {
 public:
 	static const char* GetName() { return "Addition"; }
-	bool operator()(const Vector3& a, const Vector3& b) const
+	bool operator()(const Vector3f& a, const Vector3f& b) const
 	{
 		float ax = a.x, ay = a.y, az = a.z;
 		float bx = b.x, by = b.y, bz = b.z;
 		float rx = ax + bx, ry = ay + by, rz = az + bz;
-		Vector3 r = a + b;
+		Vector3f r = a + b;
 		return FloatTest(rx, r.x) && FloatTest(ry, r.y) && FloatTest(rz, r.z);
 	}
 };
 
-class Vector3Subtraction
+class Vector3fSubtraction
 {
 public:
 	static const char* GetName() { return "Subtraction"; }
-	bool operator()(const Vector3& a, const Vector3& b) const
+	bool operator()(const Vector3f& a, const Vector3f& b) const
 	{
 		float ax = a.x, ay = a.y, az = a.z;
 		float bx = b.x, by = b.y, bz = b.z;
 		float rx = ax - bx, ry = ay - by, rz = az - bz;
-		Vector3 r = a - b;
+		Vector3f r = a - b;
 		return FloatTest(rx, r.x) && FloatTest(ry, r.y) && FloatTest(rz, r.z);
 	}
 };
 
-class Vector3DotProduct
+class Vector3fDotProduct
 {
 public:
 	static const char* GetName() { return "Dot Product"; }
-	bool operator()(const Vector3& a, const Vector3& b) const
+	bool operator()(const Vector3f& a, const Vector3f& b) const
 	{
 		float ax = a.x, ay = a.y, az = a.z;
 		float bx = b.x, by = b.y, bz = b.z;
@@ -749,39 +749,39 @@ public:
 	}
 };
 
-class Vector3CompMul
+class Vector3fCompMul
 {
 public:
 	static const char* GetName() { return "Comp Mul"; }
-	bool operator()(const Vector3& a, const Vector3& b) const
+	bool operator()(const Vector3f& a, const Vector3f& b) const
 	{
 		float ax = a.x, ay = a.y, az = a.z;
 		float bx = b.x, by = b.y, bz = b.z;
 		float rx = (ax * bx), ry = (ay * by), rz = (az * bz);
-		Vector3 r = a * b;
+		Vector3f r = a * b;
 		return FloatTest(rx, r.x) && FloatTest(ry, r.y) && FloatTest(rz, r.z);
 	}
 };
 
-class Vector3CompDiv
+class Vector3fCompDiv
 {
 public:
 	static const char* GetName() { return "Comp Div"; }
-	bool operator()(const Vector3& a, const Vector3& b) const
+	bool operator()(const Vector3f& a, const Vector3f& b) const
 	{
 		float ax = a.x, ay = a.y, az = a.z;
 		float bx = b.x, by = b.y, bz = b.z;
 		float rx = (ax / bx), ry = (ay / by), rz = (az / bz);
-		Vector3 r = a / b;
+		Vector3f r = a / b;
 		return FloatTest(rx, r.x) && FloatTest(ry, r.y) && FloatTest(rz, r.z);
 	}
 };
 
-class Vector3CrossProduct
+class Vector3fCrossProduct
 {
 public:
 	static const char* GetName() { return "Cross Product"; }
-	bool operator()(const Vector3& a, const Vector3& b) const
+	bool operator()(const Vector3f& a, const Vector3f& b) const
 	{
 		float ax = a.x, ay = a.y, az = a.z;
 		float bx = b.x, by = b.y, bz = b.z;
@@ -790,28 +790,28 @@ public:
 		float ry = (az * bx) - (ax * bz);
 		float rz = (ax * by) - (ay * bx);
 
-		Vector3 r = Cross(a, b);
+		Vector3f r = Cross(a, b);
 		return FloatTest(rx, r.x) && FloatTest(ry, r.y) && FloatTest(rz, r.z);
 	}
 };
 
 //
-// Vector4 tests
+// Vector4f tests
 //
 
 template <class UnaryOp>
-class Vector4UnaryOpTest : public TestCase
+class Vector4fUnaryOpTest : public TestCase
 {
 public:
-	Vector4UnaryOpTest() : TestCase(UnaryOp::GetName()) {}
-	~Vector4UnaryOpTest() {}
+	Vector4fUnaryOpTest() : TestCase(UnaryOp::GetName()) {}
+	~Vector4fUnaryOpTest() {}
 
 	bool Test() const
 	{
 		UnaryOp op;
-		for (unsigned int i = 0; i < s_vector4Vec.size(); ++i)
+		for (unsigned int i = 0; i < s_vector4fVec.size(); ++i)
 		{
-			Vector4 a = s_vector4Vec[i];
+			Vector4f a = s_vector4fVec[i];
 			if (!op(a))
 			{
 				printf("a = (%.5f, %.5f, %.5f, %.5f)", a.x, a.y, a.z, a.w);
@@ -822,24 +822,24 @@ public:
 	}
 };
 
-class Vector4Negation
+class Vector4fNegation
 {
 public:
 	static const char* GetName() { return "Negation"; }
-	bool operator() (const Vector4& a)
+	bool operator() (const Vector4f& a)
 	{
 		float ax = a.x, ay = a.y, az = a.z, aw = a.w;
 		float rx = -ax, ry = -ay, rz = -az, rw = -aw;
-		Vector4 r = -a;
+		Vector4f r = -a;
 		return FloatTest(rx, r.x) && FloatTest(ry, r.y) && FloatTest(rz, r.z) && FloatTest(rw, r.w);
 	}
 };
 
-class Vector4Length
+class Vector4fLength
 {
 public:
 	static const char* GetName() { return "Length"; }
-	bool operator() (const Vector4& a)
+	bool operator() (const Vector4f& a)
 	{
 		float ax = a.x, ay = a.y, az = a.z, aw = a.w;
 		float r = sqrt((ax * ax) + (ay * ay) + (az * az) + (aw * aw));
@@ -848,25 +848,25 @@ public:
 	}
 };
 
-class Vector4UnitVec
+class Vector4fUnitVec
 {
 public:
 	static const char* GetName() { return "UnitVec"; }
-	bool operator() (const Vector4& a)
+	bool operator() (const Vector4f& a)
 	{
 		float ax = a.x, ay = a.y, az = a.z, aw = a.w;
 		float len = sqrt((ax * ax) + (ay * ay) + (az * az) + (aw * aw));
 		float rx = ax / len, ry = ay / len, rz = az / len, rw = aw / len;
-		Vector4 r = a.Unit();
+		Vector4f r = a.Unit();
 		return FloatTest(rx, r.x) && FloatTest(ry, r.y) && FloatTest(rz, r.z) && FloatTest(rw, r.w);
 	}
 };
 
-class Vector4ScalarMultiplication
+class Vector4fScalarMultiplication
 {
 public:
 	static const char* GetName() { return "Scalar Multiplication"; }
-	bool operator() (const Vector4& a)
+	bool operator() (const Vector4f& a)
 	{
 		float ax = a.x, ay = a.y, az = a.z, aw = a.w;
 		for (unsigned int i = 0; i < s_floatVec.size(); ++i)
@@ -875,8 +875,8 @@ public:
 			float s = s_floatVec[i];
 			float r1x = ax * s, r1y = ay * s, r1z = az * s, r1w = aw * s;
 			float r2x = s * ax, r2y = s * ay, r2z = s * az, r2w = s * aw;
-			Vector4 r1 = a * s;
-			Vector4 r2 = s * a;
+			Vector4f r1 = a * s;
+			Vector4f r2 = s * a;
 			if (!(FloatTest(r1x, r1.x) && FloatTest(r1y, r1.y) && FloatTest(r1z, r1.z) && FloatTest(r1w, r1.w) &&
 				  FloatTest(r2x, r2.x) && FloatTest(r2y, r2.y) && FloatTest(r2z, r2.z) && FloatTest(r2w, r2.w) &&
 				  FloatTest(r1.x, r2.x) && FloatTest(r1.y, r2.y) && FloatTest(r1.z, r2.z) && FloatTest(r1.w, r2.w)))
@@ -889,11 +889,11 @@ public:
 	}
 };
 
-class Vector4ScalarDivision
+class Vector4fScalarDivision
 {
 public:
 	static const char* GetName() { return "Scalar Division"; }
-	bool operator() (const Vector4& a)
+	bool operator() (const Vector4f& a)
 	{
 		float ax = a.x, ay = a.y, az = a.z, aw = a.w;
 		for (unsigned int i = 0; i < s_floatVec.size(); ++i)
@@ -902,8 +902,8 @@ public:
 			float s = s_floatVec[i];
 			float r1x = ax / s, r1y = ay / s, r1z = az / s, r1w = aw / s;
 			float r2x = s / ax, r2y = s / ay, r2z = s / az, r2w = s / aw;
-			Vector4 r1 = a / s;
-			Vector4 r2 = s / a;
+			Vector4f r1 = a / s;
+			Vector4f r2 = s / a;
 
 			if (!(FloatTest(r1x, r1.x) && FloatTest(r1y, r1.y) && FloatTest(r1z, r1.z) && FloatTest(r1w, r1.w) &&
 				  FloatTest(r2x, r2.x) && FloatTest(r2y, r2.y) && FloatTest(r2z, r2.z) && FloatTest(r2w, r2.w)))
@@ -917,21 +917,21 @@ public:
 };
 
 template <class BinaryOp>
-class Vector4BinaryOpTest : public TestCase
+class Vector4fBinaryOpTest : public TestCase
 {
 public:
-	Vector4BinaryOpTest() : TestCase(BinaryOp::GetName()) {}
-	~Vector4BinaryOpTest() {}
+	Vector4fBinaryOpTest() : TestCase(BinaryOp::GetName()) {}
+	~Vector4fBinaryOpTest() {}
 
 	bool Test() const
 	{
 		BinaryOp op;
-		for (unsigned int i = 0; i < s_vector4Vec.size(); ++i)
+		for (unsigned int i = 0; i < s_vector4fVec.size(); ++i)
 		{
-			for (unsigned int j = 0; j < s_vector4Vec.size(); ++j)
+			for (unsigned int j = 0; j < s_vector4fVec.size(); ++j)
 			{
-				Vector4 a = s_vector4Vec[i];
-				Vector4 b = s_vector4Vec[j];
+				Vector4f a = s_vector4fVec[i];
+				Vector4f b = s_vector4fVec[j];
 				if (!op(a, b))
 				{
 					printf("a = (%.5f, %.5f, %.5f, %.5f), b = (%.5f, %.5f, %.5f, %.5f)", a.x, a.y, a.z, a.w, b.x, b.y, b.z, b.w);
@@ -943,39 +943,39 @@ public:
 	}
 };
 
-class Vector4Addition
+class Vector4fAddition
 {
 public:
 	static const char* GetName() { return "Addition"; }
-	bool operator()(const Vector4& a, const Vector4& b) const
+	bool operator()(const Vector4f& a, const Vector4f& b) const
 	{
 		float ax = a.x, ay = a.y, az = a.z, aw = a.w;
 		float bx = b.x, by = b.y, bz = b.z, bw = b.w;
 		float rx = ax + bx, ry = ay + by, rz = az + bz, rw = aw + bw;
-		Vector4 r = a + b;
+		Vector4f r = a + b;
 		return FloatTest(rx, r.x) && FloatTest(ry, r.y) && FloatTest(rz, r.z) && FloatTest(rw, r.w);
 	}
 };
 
-class Vector4Subtraction
+class Vector4fSubtraction
 {
 public:
 	static const char* GetName() { return "Subtraction"; }
-	bool operator()(const Vector4& a, const Vector4& b) const
+	bool operator()(const Vector4f& a, const Vector4f& b) const
 	{
 		float ax = a.x, ay = a.y, az = a.z, aw = a.w;
 		float bx = b.x, by = b.y, bz = b.z, bw = b.w;
 		float rx = ax - bx, ry = ay - by, rz = az - bz, rw = aw - bw;
-		Vector4 r = a - b;
+		Vector4f r = a - b;
 		return FloatTest(rx, r.x) && FloatTest(ry, r.y) && FloatTest(rz, r.z) && FloatTest(rw, r.w);
 	}
 };
 
-class Vector4DotProduct
+class Vector4fDotProduct
 {
 public:
 	static const char* GetName() { return "Dot Product"; }
-	bool operator()(const Vector4& a, const Vector4& b) const
+	bool operator()(const Vector4f& a, const Vector4f& b) const
 	{
 		float ax = a.x, ay = a.y, az = a.z, aw = a.w;
 		float bx = b.x, by = b.y, bz = b.z, bw = b.w;
@@ -985,51 +985,51 @@ public:
 	}
 };
 
-class Vector4CompMul
+class Vector4fCompMul
 {
 public:
 	static const char* GetName() { return "Comp Mul"; }
-	bool operator()(const Vector4& a, const Vector4& b) const
+	bool operator()(const Vector4f& a, const Vector4f& b) const
 	{
 		float ax = a.x, ay = a.y, az = a.z, aw = a.w;
 		float bx = b.x, by = b.y, bz = b.z, bw = b.w;
 		float rx = (ax * bx), ry = (ay * by), rz = (az * bz), rw = (aw * bw);
-		Vector4 r = a * b;
+		Vector4f r = a * b;
 		return FloatTest(rx, r.x) && FloatTest(ry, r.y) && FloatTest(rz, r.z) && FloatTest(rw, r.w);
 	}
 };
 
-class Vector4CompDiv
+class Vector4fCompDiv
 {
 public:
 	static const char* GetName() { return "Comp Div"; }
-	bool operator()(const Vector4& a, const Vector4& b) const
+	bool operator()(const Vector4f& a, const Vector4f& b) const
 	{
 		float ax = a.x, ay = a.y, az = a.z, aw = a.w;
 		float bx = b.x, by = b.y, bz = b.z, bw = b.w;
 		float rx = (ax / bx), ry = (ay / by), rz = (az / bz), rw = (aw / bw);
-		Vector4 r = a / b;
+		Vector4f r = a / b;
 		return FloatTest(rx, r.x) && FloatTest(ry, r.y) && FloatTest(rz, r.z) && FloatTest(rw, r.w);
 	}
 };
 
 //
-// Quat tests
+// Quatf tests
 //
 
 template <class UnaryOp>
-class QuatUnaryOpTest : public TestCase
+class QuatfUnaryOpTest : public TestCase
 {
 public:
-	QuatUnaryOpTest() : TestCase(UnaryOp::GetName()) {}
-	~QuatUnaryOpTest() {}
+	QuatfUnaryOpTest() : TestCase(UnaryOp::GetName()) {}
+	~QuatfUnaryOpTest() {}
 
 	bool Test() const
 	{
 		UnaryOp op;
-		for (unsigned int i = 0; i < s_quatVec.size(); ++i)
+		for (unsigned int i = 0; i < s_quatfVec.size(); ++i)
 		{
-			Quat a = s_quatVec[i];
+			Quatf a = s_quatfVec[i];
 			if (!op(a))
 			{
 				printf("a = (%.5f, %.5f, %.5f, %.5f)", a.i, a.j, a.k, a.r);
@@ -1040,7 +1040,7 @@ public:
 	}
 };
 
-void QuatMul(float* rx, float* ry, float* rz, float* rw, float ax, float ay, float az, float aw, float bx, float by, float bz, float bw)
+void QuatfMul(float* rx, float* ry, float* rz, float* rw, float ax, float ay, float az, float aw, float bx, float by, float bz, float bw)
 {
     *rx =  ax * bw + ay * bz - az * by + aw * bx;
     *ry = -ax * bz + ay * bw + az * bx + aw * by;
@@ -1048,24 +1048,24 @@ void QuatMul(float* rx, float* ry, float* rz, float* rw, float ax, float ay, flo
     *rw = -ax * bx - ay * by - az * bz + aw * bw;
 }
 
-class QuatRotate
+class QuatfRotate
 {
 public:
 	static const char* GetName() { return "Rotate"; }
-	bool operator() (const Quat& a)
+	bool operator() (const Quatf& a)
 	{
 		float ax = a.i, ay = a.j, az = a.k, aw = a.r;
 		float rx, ry, rz, rw;
 
-		for (unsigned int i = 0; i < s_vector3Vec.size(); ++i)
+		for (unsigned int i = 0; i < s_vector3fVec.size(); ++i)
 		{
-			Vector3 v = s_vector3Vec[i];
+			Vector3f v = s_vector3fVec[i];
 			float bx = v.x, by = v.y, bz = v.z, bw = 0.0f;
 
-			QuatMul(&rx, &ry, &rz, &rw, ax, ay, az, aw, bx, by, bz, bw);
-			QuatMul(&rx, &ry, &rz, &rw, rx, ry, rz, rw, -ax, -ay, -az, aw);
+			QuatfMul(&rx, &ry, &rz, &rw, ax, ay, az, aw, bx, by, bz, bw);
+			QuatfMul(&rx, &ry, &rz, &rw, rx, ry, rz, rw, -ax, -ay, -az, aw);
 
-			Vector3 r = a.Rotate(v);
+			Vector3f r = a.Rotate(v);
 			if (!(FloatTest(rx, r.x) && FloatTest(ry, r.y) && FloatTest(rz, r.z)))
 			{
 				printf("v = (%.5f, %.5f, %.5f)", v.x, v.y, v.z);
@@ -1076,37 +1076,37 @@ public:
 	}
 };
 
-class QuatConjugate
+class QuatfConjugate
 {
 public:
 	static const char* GetName() { return "Conjugate"; }
-	bool operator() (const Quat& a)
+	bool operator() (const Quatf& a)
 	{
 		float ax = a.i, ay = a.j, az = a.k, aw = a.r;
 		float rx = -ax, ry = -ay, rz = -az, rw = aw;
-		Quat r = ~a;
+		Quatf r = ~a;
 		return FloatTest(rx, r.i) && FloatTest(ry, r.j) && FloatTest(rz, r.k) && FloatTest(rw, r.r);
 	}
 };
 
-class QuatNegation
+class QuatfNegation
 {
 public:
 	static const char* GetName() { return "Negation"; }
-	bool operator() (const Quat& a)
+	bool operator() (const Quatf& a)
 	{
 		float ax = a.i, ay = a.j, az = a.k, aw = a.r;
 		float rx = -ax, ry = -ay, rz = -az, rw = -aw;
-		Quat r = -a;
+		Quatf r = -a;
 		return FloatTest(rx, r.i) && FloatTest(ry, r.j) && FloatTest(rz, r.k) && FloatTest(rw, r.r);
 	}
 };
 
-class QuatLength
+class QuatfLength
 {
 public:
 	static const char* GetName() { return "Length"; }
-	bool operator() (const Quat& a)
+	bool operator() (const Quatf& a)
 	{
 		float ax = a.i, ay = a.j, az = a.k, aw = a.r;
 		float r = sqrt((ax * ax) + (ay * ay) + (az * az) + (aw * aw));
@@ -1115,21 +1115,21 @@ public:
 	}
 };
 
-class QuatUnitVec
+class QuatfUnitVec
 {
 public:
 	static const char* GetName() { return "UnitVec"; }
-	bool operator() (const Quat& a)
+	bool operator() (const Quatf& a)
 	{
 		float ax = a.i, ay = a.j, az = a.k, aw = a.r;
 		float len = sqrt((ax * ax) + (ay * ay) + (az * az) + (aw * aw));
 		float rx = ax / len, ry = ay / len, rz = az / len, rw = aw / len;
-		Quat r = a.Unit();
+		Quatf r = a.Unit();
 		return FloatTest(rx, r.i) && FloatTest(ry, r.j) && FloatTest(rz, r.k) && FloatTest(rw, r.r);
 	}
 };
 
-void QuatExp(float* rx, float* ry, float* rz, float* rw, float qx, float qy, float qz, float qw)
+void QuatfExp(float* rx, float* ry, float* rz, float* rw, float qx, float qy, float qz, float qw)
 {
 	float angle = sqrt((qx * qx) + (qy * qy) + (qz * qz));
 	float sin_a = sin(angle / 2.0f);
@@ -1146,16 +1146,16 @@ void QuatExp(float* rx, float* ry, float* rz, float* rw, float qx, float qy, flo
 	*rw = cos(angle / 2.0f);
 }
 
-class QuatExponential
+class QuatfExponential
 {
 public:
-	static const char* GetName() { return "Quat Exponential"; }
-	bool operator() (const Quat& a)
+	static const char* GetName() { return "Quatf Exponential"; }
+	bool operator() (const Quatf& a)
 	{
 		float ax = a.i, ay = a.j, az = a.k, aw = a.r;
 		float rx, ry, rz, rw;
-		QuatExp(&rx, &ry, &rz, &rw, ax, ay, az, aw);
-		Quat r = a.Exp();
+		QuatfExp(&rx, &ry, &rz, &rw, ax, ay, az, aw);
+		Quatf r = a.Exp();
 		bool rval = FloatTest(rx, r.i) && FloatTest(ry, r.j) && FloatTest(rz, r.k) && FloatTest(rw, r.r);
 		if (!rval)
 		{
@@ -1166,7 +1166,7 @@ public:
 	}
 };
 
-void QuatLog(float* rx, float* ry, float* rz, float* rw, float qx, float qy, float qz, float qw)
+void QuatfLog(float* rx, float* ry, float* rz, float* rw, float qx, float qy, float qz, float qw)
 {
 	float cos_a = qw;
 	if (cos_a > 1.0f) cos_a = 1.0f;
@@ -1187,36 +1187,39 @@ void QuatLog(float* rx, float* ry, float* rz, float* rw, float qx, float qy, flo
 	*rw = 0.0f;
 }
 
-class QuatLogarithm
+class QuatfLogarithm
 {
 public:
-	static const char* GetName() { return "Quat Logarithm"; }
-	bool operator() (const Quat& a)
+	static const char* GetName() { return "Quatf Logarithm"; }
+	bool operator() (const Quatf& a)
 	{
 		float ax = a.i, ay = a.j, az = a.k, aw = a.r;
 		float rx, ry, rz, rw;
-		QuatLog(&rx, &ry, &rz, &rw, ax, ay, az, aw);
-		Quat r = a.Log();
-		return FloatTest(rx, r.i) && FloatTest(ry, r.j) && FloatTest(rz, r.k) && FloatTest(rw, r.r);
+		QuatfLog(&rx, &ry, &rz, &rw, ax, ay, az, aw);
+		Quatf r = a.Log();
+		bool retval = FuzzyFloatTest(rx, r.i) && FuzzyFloatTest(ry, r.j) && FuzzyFloatTest(rz, r.k) && FuzzyFloatTest(rw, r.r);
+		if (!retval)
+			printf("rx = %.5f, ry = %.5f, rz = %.5f, rw = %.5f\n", rx, ry, rz, rw);
+		return retval;
 	}
 };
 
 template <class BinaryOp>
-class QuatBinaryOpTest : public TestCase
+class QuatfBinaryOpTest : public TestCase
 {
 public:
-	QuatBinaryOpTest() : TestCase(BinaryOp::GetName()) {}
-	~QuatBinaryOpTest() {}
+	QuatfBinaryOpTest() : TestCase(BinaryOp::GetName()) {}
+	~QuatfBinaryOpTest() {}
 
 	bool Test() const
 	{
 		BinaryOp op;
-		for (unsigned int i = 0; i < s_quatVec.size(); ++i)
+		for (unsigned int i = 0; i < s_quatfVec.size(); ++i)
 		{
-			for (unsigned int j = 0; j < s_quatVec.size(); ++j)
+			for (unsigned int j = 0; j < s_quatfVec.size(); ++j)
 			{
-				Quat a = s_quatVec[i];
-				Quat b = s_quatVec[j];
+				Quatf a = s_quatfVec[i];
+				Quatf b = s_quatfVec[j];
 				if (!op(a, b))
 				{
 					printf("a = (%.5f, %.5f, %.5f, %.5f), b = (%.5f, %.5f, %.5f, %.5f)", a.i, a.j, a.k, a.r, b.i, b.j, b.k, b.r);
@@ -1228,52 +1231,52 @@ public:
 	}
 };
 
-class QuatAddition
+class QuatfAddition
 {
 public:
 	static const char* GetName() { return "Addition"; }
-	bool operator()(const Quat& a, const Quat& b) const
+	bool operator()(const Quatf& a, const Quatf& b) const
 	{
 		float ax = a.i, ay = a.j, az = a.k, aw = a.r;
 		float bx = b.i, by = b.j, bz = b.k, bw = b.r;
 		float rx = ax + bx, ry = ay + by, rz = az + bz, rw = aw + bw;
-		Quat r = a + b;
+		Quatf r = a + b;
 		return FloatTest(rx, r.i) && FloatTest(ry, r.j) && FloatTest(rz, r.k) && FloatTest(rw, r.r);
 	}
 };
 
-class QuatSubtraction
+class QuatfSubtraction
 {
 public:
 	static const char* GetName() { return "Subtraction"; }
-	bool operator()(const Quat& a, const Quat& b) const
+	bool operator()(const Quatf& a, const Quatf& b) const
 	{
 		float ax = a.i, ay = a.j, az = a.k, aw = a.r;
 		float bx = b.i, by = b.j, bz = b.k, bw = b.r;
 		float rx = ax - bx, ry = ay - by, rz = az - bz, rw = aw - bw;
-		Quat r = a - b;
+		Quatf r = a - b;
 		return FloatTest(rx, r.i) && FloatTest(ry, r.j) && FloatTest(rz, r.k) && FloatTest(rw, r.r);
 	}
 };
 
 //
-// Matrix tests
+// Matrixf tests
 //
 
 
 template <class UnaryOp>
-class MatrixUnaryOpTest : public TestCase
+class MatrixfUnaryOpTest : public TestCase
 {
 public:
-	MatrixUnaryOpTest() : TestCase(UnaryOp::GetName()) {}
-	~MatrixUnaryOpTest() {}
+	MatrixfUnaryOpTest() : TestCase(UnaryOp::GetName()) {}
+	~MatrixfUnaryOpTest() {}
 
 	bool Test() const
 	{
 		UnaryOp op;
-		for (unsigned int i = 0; i < s_matrixVec.size(); ++i)
+		for (unsigned int i = 0; i < s_matrixfVec.size(); ++i)
 		{
-			Matrix m = s_matrixVec[i];
+			Matrixf m = s_matrixfVec[i];
 			if (!op(m))
 			{
 				printf("m = \n");
@@ -1285,7 +1288,7 @@ public:
 	}
 };
 
-void MatrixToFloatVec(float *fv, const Matrix& m)
+void MatrixfToFloatVec(float *fv, const Matrixf& m)
 {
 	for(int r = 0; r < 4; ++r)
 	{
@@ -1296,25 +1299,25 @@ void MatrixToFloatVec(float *fv, const Matrix& m)
 	}
 }
 
-class MatrixTransform3x3
+class MatrixfTransform3x3
 {
 public:
 	static const char* GetName() { return "Transform3x3"; }
-	bool operator() (const Matrix& a)
+	bool operator() (const Matrixf& a)
 	{
 		float fv[16];
-		MatrixToFloatVec(fv, a);
+		MatrixfToFloatVec(fv, a);
 
-		for (unsigned int i = 0; i < s_vector3Vec.size(); ++i)
+		for (unsigned int i = 0; i < s_vector3fVec.size(); ++i)
 		{
-			Vector3 v = s_vector3Vec[i];
+			Vector3f v = s_vector3fVec[i];
 			float bx = v.x, by = v.y, bz = v.z;
 
 			float rx = fv[0] * bx + fv[1] * by + fv[2] * bz;
 			float ry = fv[4] * bx + fv[5] * by + fv[6] * bz;
 			float rz = fv[8] * bx + fv[9] * by + fv[10] * bz;
 
-			Vector3 r = a.Mul3x3(v);
+			Vector3f r = a.Mul3x3(v);
 			if (!(FloatTest(rx, r.x) && FloatTest(ry, r.y) && FloatTest(rz, r.z)))
 			{
 				printf("v = (%.5f, %.5f, %.5f)", v.x, v.y, v.z);
@@ -1325,25 +1328,25 @@ public:
 	}
 };
 
-class MatrixTransform3x4
+class MatrixfTransform3x4
 {
 public:
 	static const char* GetName() { return "Transform3x4"; }
-	bool operator() (const Matrix& a)
+	bool operator() (const Matrixf& a)
 	{
 		float fv[16];
-		MatrixToFloatVec(fv, a);
+		MatrixfToFloatVec(fv, a);
 
-		for (unsigned int i = 0; i < s_vector3Vec.size(); ++i)
+		for (unsigned int i = 0; i < s_vector3fVec.size(); ++i)
 		{
-			Vector3 v = s_vector3Vec[i];
+			Vector3f v = s_vector3fVec[i];
 			float bx = v.x, by = v.y, bz = v.z;
 
 			float rx = fv[0] * bx + fv[1] * by + fv[2] * bz + fv[3];
 			float ry = fv[4] * bx + fv[5] * by + fv[6] * bz + fv[7];
 			float rz = fv[8] * bx + fv[9] * by + fv[10] * bz + fv[11];
 
-			Vector3 r = a.Mul3x4(v);
+			Vector3f r = a.Mul3x4(v);
 			if (!(FloatTest(rx, r.x) && FloatTest(ry, r.y) && FloatTest(rz, r.z)))
 			{
 				printf("v = (%.5f, %.5f, %.5f)", v.x, v.y, v.z);
@@ -1354,18 +1357,18 @@ public:
 	}
 };
 
-class MatrixTransform4x4
+class MatrixfTransform4x4
 {
 public:
 	static const char* GetName() { return "Transform4x4"; }
-	bool operator() (const Matrix& a)
+	bool operator() (const Matrixf& a)
 	{
 		float fv[16];
-		MatrixToFloatVec(fv, a);
+		MatrixfToFloatVec(fv, a);
 
-		for (unsigned int i = 0; i < s_vector4Vec.size(); ++i)
+		for (unsigned int i = 0; i < s_vector4fVec.size(); ++i)
 		{
-			Vector4 v = s_vector4Vec[i];
+			Vector4f v = s_vector4fVec[i];
 			float bx = v.x, by = v.y, bz = v.z, bw = v.w;
 
 			float rx = fv[0] * bx + fv[1] * by + fv[2] * bz + fv[3] * bw;
@@ -1373,7 +1376,7 @@ public:
 			float rz = fv[8] * bx + fv[9] * by + fv[10] * bz + fv[11] * bw;
 			float rw = fv[12] * bx + fv[13] * by + fv[14] * bz + fv[15] * bw;
 
-			Vector4 r = a.Mul4x4(v);
+			Vector4f r = a.Mul4x4(v);
 			if (!(FloatTest(rx, r.x) && FloatTest(ry, r.y) && FloatTest(rz, r.z) && FloatTest(rw, r.w)))
 			{
 				printf("v = (%.5f, %.5f, %.5f, %.5f)", v.x, v.y, v.z, v.w);
@@ -1385,21 +1388,21 @@ public:
 };
 
 template <class BinaryOp>
-class MatrixBinaryOpTest : public TestCase
+class MatrixfBinaryOpTest : public TestCase
 {
 public:
-	MatrixBinaryOpTest() : TestCase(BinaryOp::GetName()) {}
-	~MatrixBinaryOpTest() {}
+	MatrixfBinaryOpTest() : TestCase(BinaryOp::GetName()) {}
+	~MatrixfBinaryOpTest() {}
 
 	bool Test() const
 	{
 		BinaryOp op;
-		for (unsigned int i = 0; i < s_matrixVec.size(); ++i)
+		for (unsigned int i = 0; i < s_matrixfVec.size(); ++i)
 		{
-			for (unsigned int j = 0; j < s_matrixVec.size(); ++j)
+			for (unsigned int j = 0; j < s_matrixfVec.size(); ++j)
 			{
-				Matrix a = s_matrixVec[i];
-				Matrix b = s_matrixVec[j];
+				Matrixf a = s_matrixfVec[i];
+				Matrixf b = s_matrixfVec[j];
 				if (!op(a, b))
 				{
 					printf("a = \n");
@@ -1417,15 +1420,15 @@ public:
 
 
 
-class MatrixMultiplication
+class MatrixfMultiplication
 {
 public:
 	static const char* GetName() { return "Multiplication"; }
-	bool operator()(const Matrix& a, const Matrix& b) const
+	bool operator()(const Matrixf& a, const Matrixf& b) const
 	{
 		float afv[16], bfv[16];
-		MatrixToFloatVec(afv, a);
-		MatrixToFloatVec(bfv, b);
+		MatrixfToFloatVec(afv, a);
+		MatrixfToFloatVec(bfv, b);
 
 		float rfv[16];
 		static int ri[4][4] = {{0, 1, 2, 3}, {4, 5, 6, 7}, {8, 9, 10, 11}, {12, 13, 14, 15}};
@@ -1441,7 +1444,7 @@ public:
 			}
 		}
 
-		Matrix r = a * b;
+		Matrixf r = a * b;
 
 		return FloatTest(rfv[0], r.Elem(0,0)) && FloatTest(rfv[1], r.Elem(0,1)) && FloatTest(rfv[2], r.Elem(0,2)) && FloatTest(rfv[3], r.Elem(0,3)) &&
 		    FloatTest(rfv[4], r.Elem(1,0)) && FloatTest(rfv[5], r.Elem(1,1)) && FloatTest(rfv[6], r.Elem(1,2)) && FloatTest(rfv[7], r.Elem(1,3)) &&
@@ -1739,26 +1742,26 @@ static void invert_matrix_general( const float *m, float *out )
 
 
 
-class MatrixInverse
+class MatrixfInverse
 {
 public:
 	static const char* GetName() { return "Inverse"; }
-	bool operator()(const Matrix& a) const
+	bool operator()(const Matrixf& a) const
 	{
-//		Matrix m(Quat(Vector3(0.3f,1.5f,0.7f), -PI/2.0f), Vector3(1.0, 2.0f, 3.0f));
-//		m.SetScale(Vector3(1,2,1));
+//		Matrixf m(Quatf(Vector3f(0.3f,1.5f,0.7f), -PI/2.0f), Vector3f(1.0, 2.0f, 3.0f));
+//		m.SetScale(Vector3f(1,2,1));
 
 		float fv[16];
 		
 		// convert the transpose of a into a float vec. (why? because invert_matrix expects an opengl style matrix)
-		MatrixToFloatVec(fv, a.Transpose());
+		MatrixfToFloatVec(fv, a.Transpose());
 		float rfv[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};  // initalize it to stop compiler warnings.
 		bool invertable = invert_matrix(fv, rfv);
 
 		float rfv2[16];
 		invert_matrix_general(fv, rfv2);
 		
-		Matrix r;
+		Matrixf r;
 		bool matrix_invertable = FullInverse(a, r);
 
 		if (invertable != matrix_invertable)
@@ -1849,35 +1852,35 @@ int main(int argc, char* argv[])
 	// TODO: LenSq()
 	// TODO: Lerp()
 
-	TestSuite vector3Suite("Vector3");
-	vector3Suite.AddTest(new Vector3UnaryOpTest<Vector3Negation>());
-	vector3Suite.AddTest(new Vector3UnaryOpTest<Vector3Length>());
-	vector3Suite.AddTest(new Vector3UnaryOpTest<Vector3UnitVec>());
-	vector3Suite.AddTest(new Vector3UnaryOpTest<Vector3ScalarMultiplication>());
-	vector3Suite.AddTest(new Vector3UnaryOpTest<Vector3ScalarDivision>());
-	vector3Suite.AddTest(new Vector3BinaryOpTest<Vector3Addition>());
-	vector3Suite.AddTest(new Vector3BinaryOpTest<Vector3Subtraction>());
-	vector3Suite.AddTest(new Vector3BinaryOpTest<Vector3DotProduct>());
-	vector3Suite.AddTest(new Vector3BinaryOpTest<Vector3CompMul>());
-	vector3Suite.AddTest(new Vector3BinaryOpTest<Vector3CompDiv>());
-	vector3Suite.AddTest(new Vector3BinaryOpTest<Vector3CrossProduct>());
+	TestSuite vector3Suite("Vector3f");
+	vector3Suite.AddTest(new Vector3fUnaryOpTest<Vector3fNegation>());
+	vector3Suite.AddTest(new Vector3fUnaryOpTest<Vector3fLength>());
+	vector3Suite.AddTest(new Vector3fUnaryOpTest<Vector3fUnitVec>());
+	vector3Suite.AddTest(new Vector3fUnaryOpTest<Vector3fScalarMultiplication>());
+	vector3Suite.AddTest(new Vector3fUnaryOpTest<Vector3fScalarDivision>());
+	vector3Suite.AddTest(new Vector3fBinaryOpTest<Vector3fAddition>());
+	vector3Suite.AddTest(new Vector3fBinaryOpTest<Vector3fSubtraction>());
+	vector3Suite.AddTest(new Vector3fBinaryOpTest<Vector3fDotProduct>());
+	vector3Suite.AddTest(new Vector3fBinaryOpTest<Vector3fCompMul>());
+	vector3Suite.AddTest(new Vector3fBinaryOpTest<Vector3fCompDiv>());
+	vector3Suite.AddTest(new Vector3fBinaryOpTest<Vector3fCrossProduct>());
 	vector3Suite.RunTests();
 	// TODO: SetZero()
 	// TODO: Set()
 	// TODO: LenSq()
 	// TODO: Lerp()
 
-	TestSuite vector4Suite("Vector4");
-	vector4Suite.AddTest(new Vector4UnaryOpTest<Vector4Negation>());
-	vector4Suite.AddTest(new Vector4UnaryOpTest<Vector4Length>());
-	vector4Suite.AddTest(new Vector4UnaryOpTest<Vector4UnitVec>());
-	vector4Suite.AddTest(new Vector4UnaryOpTest<Vector4ScalarMultiplication>());
-	vector4Suite.AddTest(new Vector4UnaryOpTest<Vector4ScalarDivision>());
-	vector4Suite.AddTest(new Vector4BinaryOpTest<Vector4Addition>());
-	vector4Suite.AddTest(new Vector4BinaryOpTest<Vector4Subtraction>());
-	vector4Suite.AddTest(new Vector4BinaryOpTest<Vector4DotProduct>());
-	vector4Suite.AddTest(new Vector4BinaryOpTest<Vector4CompMul>());
-	vector4Suite.AddTest(new Vector4BinaryOpTest<Vector4CompDiv>());
+	TestSuite vector4Suite("Vector4f");
+	vector4Suite.AddTest(new Vector4fUnaryOpTest<Vector4fNegation>());
+	vector4Suite.AddTest(new Vector4fUnaryOpTest<Vector4fLength>());
+	vector4Suite.AddTest(new Vector4fUnaryOpTest<Vector4fUnitVec>());
+	vector4Suite.AddTest(new Vector4fUnaryOpTest<Vector4fScalarMultiplication>());
+	vector4Suite.AddTest(new Vector4fUnaryOpTest<Vector4fScalarDivision>());
+	vector4Suite.AddTest(new Vector4fBinaryOpTest<Vector4fAddition>());
+	vector4Suite.AddTest(new Vector4fBinaryOpTest<Vector4fSubtraction>());
+	vector4Suite.AddTest(new Vector4fBinaryOpTest<Vector4fDotProduct>());
+	vector4Suite.AddTest(new Vector4fBinaryOpTest<Vector4fCompMul>());
+	vector4Suite.AddTest(new Vector4fBinaryOpTest<Vector4fCompDiv>());
 	vector4Suite.RunTests();
 	// TODO: SetZero()
 	// TODO: Set()
@@ -1885,28 +1888,28 @@ int main(int argc, char* argv[])
 	// TODO: LenSq()
 	// TODO: Lerp()
 
-	TestSuite quatSuite("Quat");
-	quatSuite.AddTest(new QuatUnaryOpTest<QuatRotate>());
-	quatSuite.AddTest(new QuatUnaryOpTest<QuatConjugate>());
-	quatSuite.AddTest(new QuatUnaryOpTest<QuatNegation>());
-	quatSuite.AddTest(new QuatUnaryOpTest<QuatLength>());
-	quatSuite.AddTest(new QuatUnaryOpTest<QuatUnitVec>());
-	quatSuite.AddTest(new QuatUnaryOpTest<QuatExponential>());
-	quatSuite.AddTest(new QuatUnaryOpTest<QuatLogarithm>());
-	quatSuite.AddTest(new QuatBinaryOpTest<QuatAddition>());
-	quatSuite.AddTest(new QuatBinaryOpTest<QuatSubtraction>());
+	TestSuite quatSuite("Quatf");
+	quatSuite.AddTest(new QuatfUnaryOpTest<QuatfRotate>());
+	quatSuite.AddTest(new QuatfUnaryOpTest<QuatfConjugate>());
+	quatSuite.AddTest(new QuatfUnaryOpTest<QuatfNegation>());
+	quatSuite.AddTest(new QuatfUnaryOpTest<QuatfLength>());
+	quatSuite.AddTest(new QuatfUnaryOpTest<QuatfUnitVec>());
+	quatSuite.AddTest(new QuatfUnaryOpTest<QuatfExponential>());
+	quatSuite.AddTest(new QuatfUnaryOpTest<QuatfLogarithm>());
+	quatSuite.AddTest(new QuatfBinaryOpTest<QuatfAddition>());
+	quatSuite.AddTest(new QuatfBinaryOpTest<QuatfSubtraction>());
 	quatSuite.RunTests();
 	// TODO: AxisAngle()
 	// TODO: SetZero()
 	// TODO: LenSq()
 	// TODO: *
 
-	TestSuite matrixSuite("Matrix");
-	matrixSuite.AddTest(new MatrixUnaryOpTest<MatrixTransform3x3>());
-	matrixSuite.AddTest(new MatrixUnaryOpTest<MatrixTransform3x4>());
-	matrixSuite.AddTest(new MatrixUnaryOpTest<MatrixTransform4x4>());
-	matrixSuite.AddTest(new MatrixBinaryOpTest<MatrixMultiplication>());
-	matrixSuite.AddTest(new MatrixUnaryOpTest<MatrixInverse>());
+	TestSuite matrixSuite("Matrixf");
+	matrixSuite.AddTest(new MatrixfUnaryOpTest<MatrixfTransform3x3>());
+	matrixSuite.AddTest(new MatrixfUnaryOpTest<MatrixfTransform3x4>());
+	matrixSuite.AddTest(new MatrixfUnaryOpTest<MatrixfTransform4x4>());
+	matrixSuite.AddTest(new MatrixfBinaryOpTest<MatrixfMultiplication>());
+	matrixSuite.AddTest(new MatrixfUnaryOpTest<MatrixfInverse>());
 	
 	// TODO: matrix from quat
 	// TODO: matrix from quat & trans
