@@ -32,29 +32,35 @@ namespace ABACI_NAMESPACE
 {
 #endif
 
-#define PI 3.14159265f
+#define PI M_PI
 
 struct Matrix;
 struct Vector3;
 struct Vector4;
 
 // Convert from degrees to radians
-float DegToRad(float deg);
+template <typename Scalar>
+Scalar DegToRad(Scalar deg);
 
 // Convert from radians to degrees.
-float RadToDeg(float rad);
+template <typename Scalar>
+Scalar RadToDeg(Scalar rad);
 
 // Clamps value between min & max.
-float Clamp(float value, float min, float max);
+template <typename Scalar>
+Scalar Clamp(Scalar value, Scalar min, Scalar max);
 
 // Limits angle between -PI & PI using modulus arithmetic
-float LimitPi(float theta);
+template <typename Scalar>
+Scalar LimitPi(Scalar theta);
 
 // Limits angle between zero & PI using modulus arithmetic
-float Mod2Pi(float theta);
+template <typename Scalar>
+Scalar Mod2Pi(Scalar theta);
 
 // Fuzzy comparison between two float values.
-bool FuzzyEqual(float rhs, float lhs, float epsilon = 0.0001f);
+template <typename Scalar>
+bool FuzzyEqual(Scalar rhs, Scalar lhs, Scalar epsilon = 0.0001);
 
 
 //////////////////////////////////////////////////////

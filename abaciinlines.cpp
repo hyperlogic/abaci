@@ -25,21 +25,24 @@ THE SOFTWARE.
 #ifdef ABACI_H
 
 // Convert from degrees to radians
-inline float DegToRad(float deg)
+template <typename Scalar>
+inline Scalar DegToRad(Scalar deg)
 { 
-	return deg * (PI / 180.0f);
+	return deg * (PI / 180.0);
 }
 
 // Convert from radians to degrees.
-inline float RadToDeg(float rad)
+template <typename Scalar>
+inline Scalar RadToDeg(Scalar rad)
 {
-	return rad * (180.0f / PI);
+	return rad * (180.0 / PI);
 }
 
 // Clamps value between min & max.
-inline float Clamp(float value, float min, float max)
+template <typename Scalar>
+inline Scalar Clamp(Scalar value, Scalar min, Scalar max)
 {
-	float result = value;
+	Scalar result = value;
 	if (value > max)
 		result = max;
 	else if (value < min)
@@ -48,28 +51,31 @@ inline float Clamp(float value, float min, float max)
 }
 
 // Limits angle between -PI & PI using modulus arithmetic
-inline float LimitPi(float theta)
+template <typename Scalar>
+inline Scalar LimitPi(Scalar theta)
 {
-	return fmod(theta + PI, 2.0f * PI) - PI;
+	return fmod(theta + PI, 2 * PI) - PI;
 }
 
 // Limits angle between zero & PI using modulus arithmetic
-inline float Mod2Pi(float theta)
+template <typename Scalar>
+inline Scalar Mod2Pi(Scalar theta)
 {
-	return fmod(theta, 2.0f * PI);
+	return fmod(theta, 2 * PI);
 }
 
-// Fuzzy comparison between two float values.
-inline bool FuzzyEqual(float rhs, float lhs, float epsilon)
+// Fuzzy comparison between two Scalar values.
+template <typename Scalar>
+inline bool FuzzyEqual(Scalar rhs, Scalar lhs, Scalar epsilon)
 {
 	return fabs(rhs - lhs) <= epsilon;
 }
 
-// Construct from two floats
+// Construct from two Scalars
 template <typename Scalar>
 inline Vector2<Scalar>::Vector2(Scalar xIn, Scalar yIn) : x(xIn), y(yIn) {}
 
-// Set from two floats
+// Set from two Scalars
 template <typename Scalar>
 inline void Vector2<Scalar>::Set(Scalar xIn, Scalar yIn)
 {
@@ -114,7 +120,7 @@ inline Scalar Dot(const Vector2<Scalar>& a, const Vector2<Scalar>& b)
 
 // Linear interpolation between two vectors
 template <typename Scalar>
-inline Vector2<Scalar> Lerp(const Vector2<Scalar>& a, const Vector2<Scalar>& b, float t)
+inline Vector2<Scalar> Lerp(const Vector2<Scalar>& a, const Vector2<Scalar>& b, Scalar t)
 {
     return a + (b - a) * t;
 }
