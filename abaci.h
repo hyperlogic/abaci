@@ -58,16 +58,18 @@ bool FuzzyEqual(float rhs, float lhs, float epsilon = 0.0001f);
 
 
 //////////////////////////////////////////////////////
+
+template <typename Scalar>
 struct Vector2
 {
 	// Uninitialized by default.
 	Vector2() {}
 
-	// Construct from two floats
-	Vector2(float xIn, float yIn);
+	// Construct from two Scalars
+	Vector2(Scalar xIn, Scalar yIn);
 
-	// Set from two floats
-	void Set(float xIn, float yIn);
+	// Set from two Scalars
+	void Set(Scalar xIn, Scalar yIn);
 
 	// Sets all elements to zero.
 	void SetZero();
@@ -76,47 +78,61 @@ struct Vector2
 	Vector2 Unit() const;
 
 	// Returns vector length.
-	float Len() const;
+	Scalar Len() const;
 
 	// Returns length squared.
-	float LenSq() const;
+	Scalar LenSq() const;
 
-	float x;
-	float y;
+	Scalar x;
+	Scalar y;
 };
 
+typedef Vector2<float> Vector2f;
+typedef Vector2<double> Vector2d;
+
 // Dot product of two vectors.
-float Dot(const Vector2& a, const Vector2& b);
+template <typename Scalar>
+Scalar Dot(const Vector2<Scalar>& a, const Vector2<Scalar>& b);
 
 // Linear interpolation between two vectors
-Vector2 Lerp(const Vector2& a, const Vector2& b, float t);
+template <typename Scalar>
+Vector2<Scalar> Lerp(const Vector2<Scalar>& a, const Vector2<Scalar>& b, Scalar t);
 
 // Unary minus
-Vector2 operator-(const Vector2& a);
+template <typename Scalar>
+Vector2<Scalar> operator-(const Vector2<Scalar>& a);
 
 // Vector subtraction.
-Vector2 operator-(const Vector2& a, const Vector2& b);
+template <typename Scalar>
+Vector2<Scalar> operator-(const Vector2<Scalar>& a, const Vector2<Scalar>& b);
 
 // Vector addition.
-Vector2 operator+(const Vector2& a, const Vector2& b);
+template <typename Scalar>
+Vector2<Scalar> operator+(const Vector2<Scalar>& a, const Vector2<Scalar>& b);
 
 // Multplies all elements of a vector by a scalar.
-Vector2 operator*(const Vector2& v, float scalar);
+template <typename Scalar>
+Vector2<Scalar> operator*(const Vector2<Scalar>& v, Scalar scalar);
 
 // Multplies all elements of a vector by a scalar.
-Vector2 operator*(float factor, const Vector2& v);
+template <typename Scalar>
+Vector2<Scalar> operator*(Scalar factor, const Vector2<Scalar>& v);
 
 // Vector multiplication
-Vector2 operator*(const Vector2& a, const Vector2& b);
+template <typename Scalar>
+Vector2<Scalar> operator*(const Vector2<Scalar>& a, const Vector2<Scalar>& b);
 
 // Divides all elements of a vector by a scalar.
-Vector2 operator/(const Vector2& v, float denominator);
+template <typename Scalar>
+Vector2<Scalar> operator/(const Vector2<Scalar>& v, Scalar denominator);
 
 // Multiplies a scalar to the reciprical of all elements in a vector.
-Vector2 operator/(float numerator, const Vector2& v);
+template <typename Scalar>
+Vector2<Scalar> operator/(Scalar numerator, const Vector2<Scalar>& v);
 
 // Vector division.
-Vector2 operator/(const Vector2& a, const Vector2& b);
+template <typename Scalar>
+Vector2<Scalar> operator/(const Vector2<Scalar>& a, const Vector2<Scalar>& b);
 
 
 //////////////////////////////////////////////////////

@@ -66,103 +66,120 @@ inline bool FuzzyEqual(float rhs, float lhs, float epsilon)
 }
 
 // Construct from two floats
-inline Vector2::Vector2(float xIn, float yIn) : x(xIn), y(yIn) {}
+template <typename Scalar>
+inline Vector2<Scalar>::Vector2(Scalar xIn, Scalar yIn) : x(xIn), y(yIn) {}
 
 // Set from two floats
-inline void Vector2::Set(float xIn, float yIn)
+template <typename Scalar>
+inline void Vector2<Scalar>::Set(Scalar xIn, Scalar yIn)
 {
 	x = xIn;
 	y = yIn;
 }
 
 // Sets all elements to zero.
-inline void Vector2::SetZero()
+template <typename Scalar>
+inline void Vector2<Scalar>::SetZero()
 {
 	x = y = 0;
 }
 
 // Returns a vector with same direction but unit length.
-inline Vector2 Vector2::Unit() const
+template <typename Scalar>
+inline Vector2<Scalar> Vector2<Scalar>::Unit() const
 {
 	return *this / Len();
 }
 
 // Returns vector length.
-inline float Vector2::Len() const
+template <typename Scalar>
+inline Scalar Vector2<Scalar>::Len() const
 {
 	return sqrt(Dot(*this, *this));
 }
 
 // Returns length squared.
-inline float Vector2::LenSq() const
+template <typename Scalar>
+inline Scalar Vector2<Scalar>::LenSq() const
 {
 	return Dot(*this, *this);
 }
 
 // Dot product of two vectors.
-inline float Dot(const Vector2& a, const Vector2& b)
+template <typename Scalar>
+inline Scalar Dot(const Vector2<Scalar>& a, const Vector2<Scalar>& b)
 {
 	return a.x * b.x + a.y * b.y;
 }
 
 // Linear interpolation between two vectors
-inline Vector2 Lerp(const Vector2& a, const Vector2& b, float t)
+template <typename Scalar>
+inline Vector2<Scalar> Lerp(const Vector2<Scalar>& a, const Vector2<Scalar>& b, float t)
 {
     return a + (b - a) * t;
 }
 
 // Unary minus
-inline Vector2 operator-(const Vector2& a)
+template <typename Scalar>
+inline Vector2<Scalar> operator-(const Vector2<Scalar>& a)
 {
-	return Vector2(-a.x, -a.y);
+	return Vector2<Scalar>(-a.x, -a.y);
 }
 
 // Vector subtraction.
-inline Vector2 operator-(const Vector2& a, const Vector2& b)
+template <typename Scalar>
+inline Vector2<Scalar> operator-(const Vector2<Scalar>& a, const Vector2<Scalar>& b)
 {
-	return Vector2(a.x - b.x, a.y - b.y);
+	return Vector2<Scalar>(a.x - b.x, a.y - b.y);
 }
 
 // Vector addition.
-inline Vector2 operator+(const Vector2& a, const Vector2& b)
+template <typename Scalar>
+inline Vector2<Scalar> operator+(const Vector2<Scalar>& a, const Vector2<Scalar>& b)
 {
-	return Vector2(a.x + b.x, a.y + b.y);
+	return Vector2<Scalar>(a.x + b.x, a.y + b.y);
 }
 
 // Multplies all elements of a vector by a scalar.
-inline Vector2 operator*(const Vector2& v, float scalar)
+template <typename Scalar>
+inline Vector2<Scalar> operator*(const Vector2<Scalar>& v, Scalar scalar)
 {
-	return Vector2(scalar * v.x, scalar * v.y);
+	return Vector2<Scalar>(scalar * v.x, scalar * v.y);
 }
 
 // Multplies all elements of a vector by a scalar.
-inline Vector2 operator*(float scalar, const Vector2& v)
+template <typename Scalar>
+inline Vector2<Scalar> operator*(Scalar scalar, const Vector2<Scalar>& v)
 {
-	return Vector2(scalar * v.x, scalar * v.y);
+	return Vector2<Scalar>(scalar * v.x, scalar * v.y);
 }
 
 // Vector multiplication.
-inline Vector2 operator*(const Vector2& a, const Vector2& b)
+template <typename Scalar>
+inline Vector2<Scalar> operator*(const Vector2<Scalar>& a, const Vector2<Scalar>& b)
 {
-	return Vector2(a.x * b.x, a.y * b.y);
+	return Vector2<Scalar>(a.x * b.x, a.y * b.y);
 }
 
 // Divides all elements of a vector by a scalar.
-inline Vector2 operator/(const Vector2& v, float denominator)
+template <typename Scalar>
+inline Vector2<Scalar> operator/(const Vector2<Scalar>& v, Scalar denominator)
 {
-	return Vector2(v.x / denominator, v.y / denominator);
+	return Vector2<Scalar>(v.x / denominator, v.y / denominator);
 }
 
 // Multiplies a scalar to the reciprical of all elements in a vector.
-inline Vector2 operator/(float numerator, const Vector2& v)
+template <typename Scalar>
+inline Vector2<Scalar> operator/(Scalar numerator, const Vector2<Scalar>& v)
 {
-	return Vector2(numerator / v.x, numerator / v.y);
+	return Vector2<Scalar>(numerator / v.x, numerator / v.y);
 }
 
 // Vector division.
-inline Vector2 operator/(const Vector2& a, const Vector2& b)
+template <typename Scalar>
+inline Vector2<Scalar> operator/(const Vector2<Scalar>& a, const Vector2<Scalar>& b)
 {
-	return Vector2(a.x / b.x, a.y / b.y);
+	return Vector2<Scalar>(a.x / b.x, a.y / b.y);
 }
 
 // Construct from three floats
