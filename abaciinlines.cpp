@@ -464,7 +464,7 @@ inline Vector4<Scalar> operator/(const Vector4<Scalar>& a, const Vector4<Scalar>
 template <typename Scalar>
 inline Quat<Scalar> Quat<Scalar>::AxisAngle(const Vector3<Scalar>& axis, Scalar angle)
 {
-	Vector3<Scalar> n = axis.Unit() * sin(angle/2.0f);
+	Vector3<Scalar> n = axis.Unit() * static_cast<Scalar>(sin(angle/2.0f));
 	Scalar w = cos(angle/2.0f);
 	return Quat<Scalar>(n.x, n.y, n.z, w);
 }
