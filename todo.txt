@@ -6,7 +6,6 @@ Full documentation!
 
 Full unit test
 
-Templatize on Scalar Type.
 Union data (x,y,z,w or array, or i j k r)
 Float* contructors & cast operators.
 Matrix to opengl matrix (transpose...)
@@ -22,4 +21,4 @@ Faster & more stable full inverse.
 
 stream output?
 
-Benchmarks
+Benchmarks vs bullet & vmmlib & vmath

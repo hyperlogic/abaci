@@ -489,56 +489,68 @@ void PrintMatrix(const Matrix<Scalar>& m);
 
 //////////////////////////////////////////////////////
 
+template <typename Scalar>
 struct Complex
 {
 	// Uninitialized by default.
 	Complex() {}
 
 	// Construct from two floats
-	Complex(float rIn, float iIn);
+	Complex(Scalar rIn, Scalar iIn);
 
 	// Length
-	float Len() const;
+	Scalar Len() const;
 
 	// Square of length
-	float LenSq() const;
+	Scalar LenSq() const;
 
-	float r;
-	float i;
+	Scalar r;
+	Scalar i;
 };
 
 // Dot product
-float Dot(const Complex& a, const Complex& b);
+template <typename Scalar>
+Scalar Dot(const Complex<Scalar>& a, const Complex<Scalar>& b);
 
 // Complex conjugate
-Complex operator~(const Complex& a);
+template <typename Scalar>
+Complex<Scalar> operator~(const Complex<Scalar>& a);
 
 // Unary minus.
-Complex operator-(const Complex& a);
+template <typename Scalar>
+Complex<Scalar> operator-(const Complex<Scalar>& a);
 
 // Unary plus.
-Complex operator+(const Complex& a);
+template <typename Scalar>
+Complex<Scalar> operator+(const Complex<Scalar>& a);
 
 // Complex addition.
-Complex operator+(const Complex& a, const Complex& b);
+template <typename Scalar>
+Complex<Scalar> operator+(const Complex<Scalar>& a, const Complex<Scalar>& b);
 
 // Complex subtraction.
-Complex operator-(const Complex& a, const Complex& b);
+template <typename Scalar>
+Complex<Scalar> operator-(const Complex<Scalar>& a, const Complex<Scalar>& b);
 
 // Complex multiplication.
-Complex operator*(const Complex& a, const Complex& b);
+template <typename Scalar>
+Complex<Scalar> operator*(const Complex<Scalar>& a, const Complex<Scalar>& b);
 
 // Complex division.
-Complex operator/(const Complex& a, const Complex& b);
+template <typename Scalar>
+Complex<Scalar> operator/(const Complex<Scalar>& a, const Complex<Scalar>& b);
 
 // Multiplication by a real number.
-Complex operator*(float f, const Complex& c);
+template <typename Scalar>
+Complex<Scalar> operator*(Scalar scalar, const Complex<Scalar>& c);
 
 // Multiplication by a real number.
-Complex operator*(Complex& c, float f);
+template <typename Scalar>
+Complex<Scalar> operator*(Complex<Scalar>& c, Scalar scalar);
 
 // e ^ 0 + xi
-Complex ExpI(float x);
+template <typename Scalar>
+Complex<Scalar> ExpI(Scalar x);
 
 // inlines
 #include "abaciinlines.cpp"

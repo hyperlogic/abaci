@@ -1093,95 +1093,109 @@ void PrintMatrix(const Matrix<Scalar>& m)
 // Complex
 
 // Construct from two floats
-inline Complex::Complex(float rIn, float iIn) : r(rIn), i(iIn) {}
+template <typename Scalar>
+inline Complex<Scalar>::Complex(Scalar rIn, Scalar iIn) : r(rIn), i(iIn) {}
 
 // Length
-inline float Complex::Len() const
+template <typename Scalar>
+inline Scalar Complex<Scalar>::Len() const
 {
 	return sqrt(Dot(*this, *this));
 }
 
 // Square of length
-inline float Complex::LenSq() const
+template <typename Scalar>
+inline Scalar Complex<Scalar>::LenSq() const
 {
 	return Dot(*this, *this);
 }
 
 // Dot product
-inline float Dot(const Complex& a, const Complex& b)
+template <typename Scalar>
+inline Scalar Dot(const Complex<Scalar>& a, const Complex<Scalar>& b)
 {
 	return a.r * b.r + b.i * b.i;
 }
 
 // Complex conjugate
-inline Complex operator~(const Complex& a)
+template <typename Scalar>
+inline Complex<Scalar> operator~(const Complex<Scalar>& a)
 {
-	return Complex(a.r, -a.i);
+	return Complex<Scalar>(a.r, -a.i);
 }
 
 // Unary minus.
-inline Complex operator-(const Complex& a)
+template <typename Scalar>
+inline Complex<Scalar> operator-(const Complex<Scalar>& a)
 {
-	return Complex(-a.r, -a.i);
+	return Complex<Scalar>(-a.r, -a.i);
 }
 
 // Unary plus.
-inline Complex operator+(const Complex& a)
+template <typename Scalar>
+inline Complex<Scalar> operator+(const Complex<Scalar>& a)
 {
-	return Complex(a.r, a.i);
+	return Complex<Scalar>(a.r, a.i);
 }
 
 // Complex addition.
-inline Complex operator+(const Complex& a, const Complex& b)
+template <typename Scalar>
+inline Complex<Scalar> operator+(const Complex<Scalar>& a, const Complex<Scalar>& b)
 {
-	return Complex(a.r + b.r, a.i + b.i);
+	return Complex<Scalar>(a.r + b.r, a.i + b.i);
 }
 
 // Complex subtraction.
-inline Complex operator-(const Complex& a, const Complex& b)
+template <typename Scalar>
+inline Complex<Scalar> operator-(const Complex<Scalar>& a, const Complex<Scalar>& b)
 {
-	return Complex(a.r - b.r, a.i - b.i);
+	return Complex<Scalar>(a.r - b.r, a.i - b.i);
 }
 
 // Complex multiplication.
-inline Complex operator*(const Complex& a, const Complex& b)
+template <typename Scalar>
+inline Complex<Scalar> operator*(const Complex<Scalar>& a, const Complex<Scalar>& b)
 {
-	float aa = a.r;
-	float bb = a.i;
-	float cc = b.r;
-	float dd = b.i;
+	Scalar aa = a.r;
+	Scalar bb = a.i;
+	Scalar cc = b.r;
+	Scalar dd = b.i;
 
-	return Complex(aa * cc - (bb * dd), aa * dd + bb * cc);
+	return Complex<Scalar>(aa * cc - (bb * dd), aa * dd + bb * cc);
 }
 
 // Multiplication by a real number.
-inline Complex operator*(float f, const Complex& c)
+template <typename Scalar>
+inline Complex<Scalar> operator*(Scalar scalar, const Complex<Scalar>& c)
 {
-	return Complex(f,0) * c;
+	return Complex<Scalar>(scalar, 0) * c;
 }
 
 // Multiplication by a real number.
-inline Complex operator*(Complex& c, float f)
+template <typename Scalar>
+inline Complex<Scalar> operator*(Complex<Scalar>& c, Scalar scalar)
 {
-	return c * Complex(f,0);
+	return c * Complex<Scalar>(scalar, 0);
 }
 
 // Complex division.
-inline Complex operator/(const Complex& a, const Complex& b)
+template <typename Scalar>
+inline Complex<Scalar> operator/(const Complex<Scalar>& a, const Complex<Scalar>& b)
 {
-	float aa = a.r;
-	float bb = a.i;
-	float cc = b.r;
-	float dd = b.i;
-	float denom = cc * cc + dd * dd;
+	Scalar aa = a.r;
+	Scalar bb = a.i;
+	Scalar cc = b.r;
+	Scalar dd = b.i;
+	Scalar denom = cc * cc + dd * dd;
 
-	return Complex((aa * cc + bb * dd) / denom, (bb * cc - aa * dd) / denom);
+	return Complex<Scalar>((aa * cc + bb * dd) / denom, (bb * cc - aa * dd) / denom);
 }
 
 // e ^ 0 + xi
-inline Complex ExpI(float x)
+template <typename Scalar>
+inline Complex<Scalar> ExpI(Scalar x)
 {
-	return Complex(cos(x), sin(x));
+	return Complex<Scalar>(cos(x), sin(x));
 }
 
 #endif
