@@ -167,6 +167,12 @@ void InitTestData()
 										 Vector4f(inf, inf, inf, inf)));
 	*/
 
+	s_matrixfVec.push_back(Matrixf::Rows(
+							   Vector4f(0.79450,         0.00000,         0.00000,        -0.00000),
+							   Vector4f(0.00000,         1.19175,         0.00000,         0.00000),
+							   Vector4f(0.00000,         0.00000,        -1.00200,         0.80180),
+							   Vector4f(0.00000,         0.00000,        -1.00000,         1.00000)));
+
 	// Generate the quats from the vec4s
 	for(unsigned int i = 0; i < s_vector4fVec.size(); ++i)
 	{
@@ -1172,24 +1178,6 @@ public:
 
 void QuatfLog(float* rx, float* ry, float* rz, float* rw, float qx, float qy, float qz, float qw)
 {
-	double cos_a = qw;
-	if (cos_a > 1.0f) cos_a = 1.0;
-	if (cos_a < -1.0f) cos_a = -1.0;
-
-    double sin_a = sqrt(1.0 - cos_a * cos_a);
-
-    if (abs(sin_a) < 0.0005)
-		sin_a = 1.0;
-	else
-		sin_a = 1.0/sin_a;
-
-    double angle = 2.0 * acos(cos_a);
-
-    *rx = qx * sin_a * angle;
-    *ry = qy * sin_a * angle;
-    *rz = qz * sin_a * angle;
-	*rw = 0.0f;
-/*
 	float cos_a = qw;
 	if (cos_a > 1.0f) cos_a = 1.0f;
 	if (cos_a < -1.0f) cos_a = -1.0f;
@@ -1207,7 +1195,6 @@ void QuatfLog(float* rx, float* ry, float* rz, float* rw, float qx, float qy, fl
     *ry = qy * sin_a * angle;
     *rz = qz * sin_a * angle;
 	*rw = 0.0f;
-	*/
 }
 
 class QuatfLogarithm

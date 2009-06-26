@@ -24,6 +24,8 @@ THE SOFTWARE.
 
 #ifdef ABACI_H
 
+#include <stdio.h>
+
 // Convert from degrees to radians
 template <typename Scalar>
 inline Scalar DegToRad(Scalar deg)
@@ -532,7 +534,7 @@ Quat<Scalar> Quat<Scalar>::Log() const
 
     Scalar sin_a = sqrt(1 - cos_a * cos_a);
 
-    if (abs(sin_a) < 0.0005)
+    if (fabs(sin_a) < 0.0005)
 		sin_a = 1;
 	else
 		sin_a = 1/sin_a;
@@ -983,15 +985,17 @@ bool FullInverse(const Matrix<Scalar>& m, Matrix<Scalar>& result)
 	temp[3][4] = 0; temp[3][5] = 0; temp[3][6] = 0; temp[3][7] = 1;
 
 	// bubble up row with largest leading number (partial pivot)
-	if (abs(row[0][0]) < abs(row[1][0]))
+	if (fabs(row[0][0]) < fabs(row[1][0]))
 		AbaciSwap(row[0], row[1]);
-	if (abs(row[0][0]) < abs(row[2][0]))
+	if (fabs(row[0][0]) < fabs(row[2][0]))
 		AbaciSwap(row[0], row[2]);
-	if (abs(row[0][0]) < abs(row[3][0]))
+	if (fabs(row[0][0]) < fabs(row[3][0]))
 		AbaciSwap(row[0], row[3]);
 
-	if (abs(row[0][0]) < 0.00001f)  // column is all zeros, there is no inverse.
+	if (fabs(row[0][0]) < 0.00001)  // column is all zeros, there is no inverse.
+	{		
 		return false;
+	}
 
 	// mult row[0] by 1/row[0][0].  To introduce a leading 1.
 	Scalar s = 1 / row[0][0];
@@ -1005,13 +1009,15 @@ bool FullInverse(const Matrix<Scalar>& m, Matrix<Scalar>& result)
 	}
 
 	// move row with largest leading number 
-	if (abs(row[1][1]) < abs(row[2][1]))
+	if (fabs(row[1][1]) < fabs(row[2][1]))
 		AbaciSwap(row[1], row[2]);
-	if (abs(row[1][1]) < abs(row[3][1]))
+	if (fabs(row[1][1]) < fabs(row[3][1]))
 		AbaciSwap(row[1], row[3]);
 
-	if (abs(row[1][1]) < 0.00001f)  // column is all zeros, there is no inverse.
+	if (fabs(row[1][1]) < 0.00001)  // column is all zeros, there is no inverse.
+	{
 		return false;
+	}
 
 	// mult row[1] by 1/row[1][1].  To introduce a leading 1.
 	s = 1 / row[1][1];
@@ -1025,11 +1031,13 @@ bool FullInverse(const Matrix<Scalar>& m, Matrix<Scalar>& result)
 	}
 
 	// move row with largest leading number 
-	if (abs(row[2][2]) < abs(row[3][2]))
+	if (fabs(row[2][2]) < fabs(row[3][2]))
 		AbaciSwap(row[2], row[3]);
 
-	if (abs(row[2][2]) < 0.00001f)  // column is all zeros, there is no inverse.
+	if (fabs(row[2][2]) < 0.00001)  // column is all zeros, there is no inverse.
+	{
 		return false;
+	}
 
 	// mult row[2] by 1/row[2][2].  To introduce a leading 1.
 	s = 1.0f / row[2][2];
