@@ -95,6 +95,20 @@ inline void Vector2<Scalar>::SetZero()
 	x = y = 0;
 }
 
+// const array accessor
+template <typename Scalar>
+Scalar Vector2<Scalar>::operator[](int i) const
+{
+	return *(&x + i);
+}
+
+// array accessor
+template <typename Scalar>
+Scalar& Vector2<Scalar>::operator[](int i)
+{
+	return *(&x + i);
+}
+
 // Returns a vector with same direction but unit length.
 template <typename Scalar>
 inline Vector2<Scalar> Vector2<Scalar>::Unit() const
@@ -214,6 +228,20 @@ template <typename Scalar>
 inline void Vector3<Scalar>::SetZero()
 {
 	x = y = z = 0;
+}
+
+// const array accessor
+template <typename Scalar>
+Scalar Vector3<Scalar>::operator[](int i) const
+{
+	return *(&x + i);
+}
+
+// array accessor
+template <typename Scalar>
+Scalar& Vector3<Scalar>::operator[](int i)
+{
+	return *(&x + i);
 }
 
 // Returns a vector with same direction but unit length.

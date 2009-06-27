@@ -7,13 +7,6 @@ extern "C"
 #include <ruby.h>
 }
 
-// GC NOTE:
-// Abaci classes dont need a mark function because they do not contain references to other Ruby objects.
-// Currently Abaci classes are allocated off of the C++ heap.
-
-
-// TODO: use erb to generate code.
-
 // Convert a Ruby VALUE to a double.
 static double v2d(VALUE v)
 {
@@ -29,7 +22,9 @@ static double v2d(VALUE v)
     return 0.0f;
 }
 
-VALUE cVector2;
+// GC NOTE:
+// Abaci classes dont need a mark function because they do not contain references to other Ruby objects.
+// Currently Abaci classes are allocated off of the C++ heap.
 
 inline Vector2d* GetVec2(VALUE data)
 {
@@ -37,6 +32,11 @@ inline Vector2d* GetVec2(VALUE data)
 	Data_Get_Struct(data, Vector2d, vec);
 	return vec;
 }
+
+#define GET_VEC2(name) Vector2d* name##_vec = GetVec2(name);
+#define GET_LONG(name) long name##_long = NUM2LONG(name);
+
+VALUE cVector2;
 
 // free
 static void vector2_free(void* p)
@@ -49,14 +49,6 @@ static VALUE vector2_alloc(VALUE klass)
 {
 	Vector2d* vec = new Vector2d(0, 0);
 	return Data_Wrap_Struct(klass, 0, vector2_free, vec);
-}
-
-// initialize
-static VALUE vector2_initialize(VALUE self, VALUE x, VALUE y)
-{
-	Vector2d* self_vec = GetVec2(self);
-	self_vec->Set(v2d(x), v2d(y));
-	return self;
 }
 
 // copy, used by clone and dup 
@@ -75,73 +67,62 @@ static VALUE vector2_initialize_copy(VALUE copy, VALUE orig)
 	return copy;
 }
 
-// get x
-static VALUE vector2_get_x(VALUE self)
-{
-	Vector2d* self_vec = GetVec2(self);
-	return rb_float_new(self_vec->x);
-}
+<%
+def vec2_accessors *args
+	getters = args.map {|a| CMethod.new("get_#{a}", a, [], <<-CODE)}
+	    GET_VEC2(self);
+		return rb_float_new(self_vec->x);
+	CODE
+	setters = args.map {|a| CMethod.new("set_#{a}", a, ['value'], <<-CODE)}
+		GET_VEC2(self);
+	    self_vec->x = v2d(value);
+	    return value;
+    CODE
+	getters + setters
+end
 
-// get y
-static VALUE vector2_get_y(VALUE self)
-{
-	Vector2d* self_vec = GetVec2(self);
-	return rb_float_new(self_vec->y);
-}
+CMethod = Struct.new :c_name, :rb_name, :args, :code
+Vector2 = [
+	CMethod.new('initialize', 'initialize', ['x', 'y'], <<-CODE),
+		GET_VEC2(self);
+		self_vec->Set(v2d(x), v2d(y));
+		return self;
+    CODE
+	CMethod.new('add', '+', ['other'], <<-CODE),
+		if (TYPE(other) != T_DATA || RDATA(other)->dfree != (RUBY_DATA_FUNC)vector2_free)
+		    rb_raise(rb_eTypeError, "wrong argument type");
+	    VALUE result = vector2_alloc(cVector2);
+		GET_VEC2(self);
+		GET_VEC2(other);
+		GET_VEC2(result);
+	    *result_vec = *self_vec + *other_vec;
+	    return result;
+	CODE
+	CMethod.new('len', 'len', [], <<-CODE),
+	    GET_VEC2(self);
+	    return rb_float_new(self_vec->Len());
+	CODE
+	CMethod.new('get_elem', '[]', ['index'], <<-CODE),
+	    GET_VEC2(self);
+	    GET_LONG(index);
+		return rb_float_new((*self_vec)[index_long]);
+	CODE
+] + vec2_accessors('x', 'y')
+%>
 
-// set x
-static VALUE vector2_set_x(VALUE self, VALUE value)
-{
-	Vector2d* self_vec = GetVec2(self);
-	self_vec->x = v2d(value);
-	return value;
-}
+<% Vector2.each do |method| %>
+<%= "static VALUE vector2_#{method.c_name}(#{(['self'] + method.args).map {|arg| "VALUE #{arg}"}.join(', ')})" %>
+<%= "\{\n#{method.code}\}" %>
+<% end %>
 
-// set y
-static VALUE vector2_set_y(VALUE self, VALUE value)
-{
-	Vector2d* self_vec = GetVec2(self);
-	self_vec->y = v2d(value);
-	return value;
-}
-
-// +
-static VALUE vector2_add(VALUE self, VALUE other)
-{
-	if (TYPE(other) != T_DATA || RDATA(other)->dfree != (RUBY_DATA_FUNC)vector2_free)
-		rb_raise(rb_eTypeError, "wrong argument type");
-
-	VALUE result = vector2_alloc(cVector2);
-
-	Vector2d* self_vec = GetVec2(self);
-	Vector2d* other_vec = GetVec2(other);
-	Vector2d* result_vec = GetVec2(result);
-
-	*result_vec = *self_vec + *other_vec;
-
-	return result;
-}
-
-// len
-static VALUE vector2_len(VALUE self)
-{
-	Vector2d* self_vec = GetVec2(self);
-	return rb_float_new(self_vec->Len());
-}
 
 void init_abaci()
 {
 	// register alloc functions
 	cVector2 = rb_define_class("Vector2", rb_cObject);
 	rb_define_alloc_func(cVector2, vector2_alloc);
-	rb_define_method(cVector2, "initialize", RUBY_METHOD_FUNC(vector2_initialize), 2);
 	rb_define_method(cVector2, "initialize_copy", RUBY_METHOD_FUNC(vector2_initialize_copy), 1);
-	rb_define_method(cVector2, "x", RUBY_METHOD_FUNC(vector2_get_x), 0);
-	rb_define_method(cVector2, "y", RUBY_METHOD_FUNC(vector2_get_y), 0);
-	rb_define_method(cVector2, "x=", RUBY_METHOD_FUNC(vector2_set_x), 1);
-	rb_define_method(cVector2, "y=", RUBY_METHOD_FUNC(vector2_set_y), 1);
 	// []
-	rb_define_method(cVector2, "len", RUBY_METHOD_FUNC(vector2_len), 0);
 	// unit
 	// coerce
 	// to_3d
@@ -154,6 +135,11 @@ void init_abaci()
 	// -
 	// *
 	// /
+	
+	// methods
+<% Vector2.each do |method| %>
+<%= "    rb_define_method(cVector2, \"#{method.rb_name}\", RUBY_METHOD_FUNC(vector2_#{method.c_name}), #{method.args.size});" %>
+<% end %>
 
 
 	//cVector3 = rb_define_class("Vector3", rb_cObject);

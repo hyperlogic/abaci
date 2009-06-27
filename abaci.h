@@ -76,6 +76,12 @@ struct Vector2
 	// Sets all elements to zero.
 	void SetZero();
 
+	// const array accessor
+	Scalar operator[](int i) const;
+
+	// array accessor
+	Scalar& operator[](int i);
+
 	// Returns a vector with same direction but unit length.
 	Vector2 Unit() const;
 
@@ -153,6 +159,12 @@ struct Vector3
 
 	// Set all elements to zero
 	void SetZero();
+
+	// const array accessor
+	Scalar operator[](int i) const;
+
+	// array accessor
+	Scalar& operator[](int i);
 
 	// Returns a vector with same direction but unit length.
 	Vector3 Unit() const;
