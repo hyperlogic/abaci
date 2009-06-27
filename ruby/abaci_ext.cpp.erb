@@ -11,6 +11,12 @@ extern "C"
 // Abaci classes dont need a mark function because they do not contain references to other Ruby objects.
 // Currently Abaci classes are allocated off of the C++ heap.
 
+#define GET_LONG(name) long name##_long = NUM2LONG(name);
+
+//
+// Vector2
+//
+
 inline Vector2d* GetVector2(VALUE data)
 {
 	Vector2d* vec;
@@ -19,7 +25,7 @@ inline Vector2d* GetVector2(VALUE data)
 }
 
 #define GET_VECTOR2(name) Vector2d* name##_vec = GetVector2(name);
-#define GET_LONG(name) long name##_long = NUM2LONG(name);
+#define NEW_VECTOR2(name) VALUE name = vector2_alloc(cVector2); Vector2d* name##_vec = GetVector2(name);
 
 VALUE cVector2;
 
@@ -58,14 +64,14 @@ CMethod = Struct.new :c_name, :rb_name, :args, :code
 def CMethod.getter klass, attrib
 	new("get_#{attrib}", attrib, [], <<-CODE)
 		GET_#{klass.upcase}(self);
-		return rb_float_new(self_vec->x);
+		return rb_float_new(self_vec->#{attrib});
 	CODE
 end
 
 def CMethod.setter klass, attrib
 	new("set_#{attrib}", "#{attrib}=", ['value'], <<-CODE)
 		GET_#{klass.upcase}(self);
-	    self_vec->x = NUM2DBL(value);
+	    self_vec->#{attrib} = NUM2DBL(value);
 	    return value;
     CODE
 end
@@ -80,8 +86,7 @@ end
 def CMethod.noargs_klass klass, c_name, rb_name
 	new(c_name, rb_name, [], <<-CODE)
 	    GET_#{klass.upcase}(self);
-	    VALUE result = #{klass.downcase}_alloc(c#{klass});
-		GET_#{klass.upcase}(result);
+		NEW_#{klass.upcase}(result);
 		*result_vec = self_vec->#{c_name}();
 	    return result;
 	CODE
@@ -102,12 +107,11 @@ def CMethod.binary_op klass, c_name, rb_name, c_op
 	   not_a_klass_code = "*result_vec = *self_vec #{c_op} NUM2DBL(other);"
 	end
 	new(c_name, rb_name, ['other'], <<-CODE)
-		GET_VECTOR2(self);
-		VALUE result = #{klass.downcase}_alloc(c#{klass});
-		GET_VECTOR2(result);
+		GET_#{klass.upcase}(self);
+		NEW_#{klass.upcase}(result);
 		if (TYPE(other) == T_DATA && RDATA(other)->dfree == (RUBY_DATA_FUNC)#{klass.downcase}_free)
 		{
-			GET_VECTOR2(other);
+			GET_#{klass.upcase}(other);
 	    	*result_vec = *self_vec #{c_op} *other_vec;
 		}
 		else
@@ -118,35 +122,66 @@ def CMethod.binary_op klass, c_name, rb_name, c_op
 	CODE
 end
 
-Vector2 = [
-
-	CMethod.new('initialize', 'initialize', nil, <<-CODE),
-		GET_VECTOR2(self);
-		if (argc == 2)
+def CMethod.init_method klass, num_elements
+	new('initialize', 'initialize', nil, <<-CODE)
+		GET_#{klass.upcase}(self);
+		if (argc == #{num_elements})
 		{
-			self_vec->Set(NUM2DBL(argv[0]), NUM2DBL(argv[1]));
+			self_vec->Set(#{(0...num_elements).map {|i| "NUM2DBL(argv[#{i}])"}.join(', ')});
 			return self;
 		}
-		else if (argc == 1 && (TYPE(argv[0]) == T_ARRAY) && (RARRAY_LEN(argv[0]) == 2))
+		else if (argc == 1 && (TYPE(argv[0]) == T_ARRAY) && (RARRAY_LEN(argv[0]) == #{num_elements}))
 		{
 			VALUE* ptr = RARRAY_PTR(argv[0]);
-			self_vec->Set(NUM2DBL(ptr[0]), NUM2DBL(ptr[1]));
+			self_vec->Set(#{(0...num_elements).map {|i| "NUM2DBL(ptr[#{i}])"}.join(', ')});
 			return self;
 		}
 		else if (argc == 1 && (TYPE(argv[0]) == T_DATA) && (RDATA(argv[0])->dfree == (RUBY_DATA_FUNC)vector2_free))
 		{
 			VALUE other = argv[0];
-			GET_VECTOR2(other);
+			GET_#{klass.upcase}(other);
 			(*self_vec) = *other_vec;
 			return self;
 		}
 		else
 		{
-		    rb_raise(rb_eRuntimeError, "bad arg count");
+		    rb_raise(rb_eRuntimeError, "Bad Arguments");
 			return Qnil;
 		}
     CODE
+end
 
+def CMethod.get_elem klass, num_elements
+	new('get_elem', '[]', ['index'], <<-CODE)
+	    GET_#{klass.upcase}(self);
+	    GET_LONG(index);
+		if (index_long < 0 || index_long >= #{num_elements})
+		    rb_raise(rb_eRuntimeError, "index out of range");
+		return rb_float_new((*self_vec)[index_long]);
+	CODE
+end
+
+def CMethod.set_elem klass, num_elements
+	new('set_elem', '[]=', ['index', 'value'], <<-CODE)
+	    GET_#{klass.upcase}(self);
+	    GET_LONG(index);
+		if (index_long < 0 || index_long >= #{num_elements})
+		    rb_raise(rb_eRuntimeError, "index out of range");
+		(*self_vec)[index_long] = NUM2DBL(value);
+		return value;
+	CODE
+end
+
+def CMethod.set_method klass, num_elements
+	new('set', 'set', (0...num_elements).map {|i| "p#{i}"} , <<-CODE)
+	    GET_VECTOR2(self);
+		self_vec->Set(#{(0...num_elements).map {|i| "NUM2DBL(p#{i})"}.join(',')});
+	    return self;
+	CODE
+end
+
+Vector2 = [
+	CMethod.init_method('Vector2', 2),
 
 	CMethod.noargs_float('Vector2', 'Len', 'len'),
 	CMethod.noargs_float('Vector2', 'LenSq', 'len_sq'),
@@ -160,28 +195,10 @@ Vector2 = [
 
 	CMethod.noargs_self('Vector2', 'SetZero', 'zero!'),
 
-	CMethod.new('set', 'set', ['x', 'y'], <<-CODE),
-	    GET_VECTOR2(self);
-		self_vec->Set(NUM2DBL(x), NUM2DBL(y));
-	    return self;
-	CODE
+	CMethod.get_elem('Vector2', 2),
+	CMethod.set_elem('Vector2', 2),
 
-	CMethod.new('get_elem', '[]', ['index'], <<-CODE),
-	    GET_VECTOR2(self);
-	    GET_LONG(index);
-		if (index_long < 0 || index_long >= 2)
-		    rb_raise(rb_eRuntimeError, "index out of range");
-		return rb_float_new((*self_vec)[index_long]);
-	CODE
-
-	CMethod.new('set_elem', '[]=', ['index', 'value'], <<-CODE),
-	    GET_VECTOR2(self);
-	    GET_LONG(index);
-		if (index_long < 0 || index_long >= 2)
-		    rb_raise(rb_eRuntimeError, "index out of range");
-		(*self_vec)[index_long] = NUM2DBL(value);
-		return value;
-	CODE
+	CMethod.set_method('Vector2', 2),
 
 	CMethod.new('dot', 'dot', ['other'], <<-CODE),
 	    GET_VECTOR2(self);
@@ -192,16 +209,14 @@ Vector2 = [
 	CMethod.new('lerp', 'lerp', ['other', 't'], <<-CODE),
 	    GET_VECTOR2(self);
 		GET_VECTOR2(other);
-	    VALUE result = vector2_alloc(cVector2);
-		GET_VECTOR2(result);
+		NEW_VECTOR2(result);
 		*result_vec = Lerp(*self_vec, *other_vec, NUM2DBL(t));
 	    return result;
 	CODE
 
 	CMethod.new('unary_minus', '-@', [], <<-CODE),
-	    VALUE result = vector2_alloc(cVector2);
 		GET_VECTOR2(self);
-		GET_VECTOR2(result);
+		NEW_VECTOR2(result);
 	    *result_vec = -(*self_vec);
 	    return result;
 	CODE
@@ -235,56 +250,17 @@ Vector2 = [
 <% end %>
 
 
+
 void init_abaci()
 {
 	// register alloc functions
 	cVector2 = rb_define_class("Vector2", rb_cObject);
 	rb_define_alloc_func(cVector2, vector2_alloc);
 	rb_define_method(cVector2, "initialize_copy", RUBY_METHOD_FUNC(vector2_initialize_copy), 1);
-	// coerce
-	// to_3d
-	// lerp
-	// fuzzy_equal
-	// unary -
-	// unary +
-	// dot
-	rb_define_method(cVector2, "+", RUBY_METHOD_FUNC(vector2_add), 1);
-	// -
-	// *
-	// /
-	
-	// methods
+
 <% Vector2.each do |method| %>
 <%= "    rb_define_method(cVector2, \"#{method.rb_name}\", RUBY_METHOD_FUNC(vector2_#{method.c_name}), #{method.args ? method.args.size : -1});" %>
 <% end %>
-
-
-	//cVector3 = rb_define_class("Vector3", rb_cObject);
-	// alloc
-	// init
-	// init_copy
-	// x
-	// y
-	// z
-	// x= 
-	// y=
-	// z=
-	// []
-	// len
-	// unit
-	// coerce
-	// to_3d
-	// lerp
-	// fuzzy_equal
-	// unary -
-	// unary +
-	// dot
-	// cross
-	// +
-	// -
-	// *
-	// /
-
 
 	//cVector4 = rb_define_class("Vector4", rb_cObject);
 	// alloc
