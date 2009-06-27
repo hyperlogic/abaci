@@ -1,0 +1,281 @@
+#include "abaci_ext.h"
+#include <stdio.h>
+#include "abaci.h"
+
+extern "C"
+{
+#include <ruby.h>
+}
+
+// GC NOTE:
+// Abaci classes dont need a mark function because they do not contain references to other Ruby objects.
+// Currently Abaci classes are allocated off of the C++ heap.
+
+
+// TODO: use erb to generate code.
+
+// Convert a Ruby VALUE to a double.
+static double v2d(VALUE v)
+{
+    switch (TYPE(v))
+    {
+    case T_FIXNUM:
+    case T_FLOAT:
+    case T_BIGNUM:
+         return NUM2DBL(v);
+	default:
+        rb_raise(rb_eRuntimeError, "Expected Fixnum or Float, not a %d", TYPE(v));
+    }
+    return 0.0f;
+}
+
+VALUE cVector2;
+
+inline Vector2d* GetVec2(VALUE data)
+{
+	Vector2d* vec;
+	Data_Get_Struct(data, Vector2d, vec);
+	return vec;
+}
+
+// free
+static void vector2_free(void* p)
+{
+	delete reinterpret_cast<Vector2d*>(p);
+}
+
+// alloc
+static VALUE vector2_alloc(VALUE klass)
+{
+	Vector2d* vec = new Vector2d(0, 0);
+	return Data_Wrap_Struct(klass, 0, vector2_free, vec);
+}
+
+// initialize
+static VALUE vector2_initialize(VALUE self, VALUE x, VALUE y)
+{
+	Vector2d* self_vec = GetVec2(self);
+	self_vec->Set(v2d(x), v2d(y));
+	return self;
+}
+
+// copy, used by clone and dup 
+static VALUE vector2_initialize_copy(VALUE copy, VALUE orig)
+{
+	if (copy == orig)
+		return copy;
+
+	if (TYPE(orig) != T_DATA || RDATA(orig)->dfree != (RUBY_DATA_FUNC)vector2_free)
+		rb_raise(rb_eTypeError, "wrong argument type");
+
+	Vector2d* orig_vec = GetVec2(orig);
+	Vector2d* copy_vec = GetVec2(copy);
+	*copy_vec = *orig_vec;
+
+	return copy;
+}
+
+// get x
+static VALUE vector2_get_x(VALUE self)
+{
+	Vector2d* self_vec = GetVec2(self);
+	return rb_float_new(self_vec->x);
+}
+
+// get y
+static VALUE vector2_get_y(VALUE self)
+{
+	Vector2d* self_vec = GetVec2(self);
+	return rb_float_new(self_vec->y);
+}
+
+// set x
+static VALUE vector2_set_x(VALUE self, VALUE value)
+{
+	Vector2d* self_vec = GetVec2(self);
+	self_vec->x = v2d(value);
+	return value;
+}
+
+// set y
+static VALUE vector2_set_y(VALUE self, VALUE value)
+{
+	Vector2d* self_vec = GetVec2(self);
+	self_vec->y = v2d(value);
+	return value;
+}
+
+// +
+static VALUE vector2_add(VALUE self, VALUE other)
+{
+	if (TYPE(other) != T_DATA || RDATA(other)->dfree != (RUBY_DATA_FUNC)vector2_free)
+		rb_raise(rb_eTypeError, "wrong argument type");
+
+	VALUE result = vector2_alloc(cVector2);
+
+	Vector2d* self_vec = GetVec2(self);
+	Vector2d* other_vec = GetVec2(other);
+	Vector2d* result_vec = GetVec2(result);
+
+	*result_vec = *self_vec + *other_vec;
+
+	return result;
+}
+
+// len
+static VALUE vector2_len(VALUE self)
+{
+	Vector2d* self_vec = GetVec2(self);
+	return rb_float_new(self_vec->Len());
+}
+
+void init_abaci()
+{
+	// register alloc functions
+	cVector2 = rb_define_class("Vector2", rb_cObject);
+	rb_define_alloc_func(cVector2, vector2_alloc);
+	rb_define_method(cVector2, "initialize", RUBY_METHOD_FUNC(vector2_initialize), 2);
+	rb_define_method(cVector2, "initialize_copy", RUBY_METHOD_FUNC(vector2_initialize_copy), 1);
+	rb_define_method(cVector2, "x", RUBY_METHOD_FUNC(vector2_get_x), 0);
+	rb_define_method(cVector2, "y", RUBY_METHOD_FUNC(vector2_get_y), 0);
+	rb_define_method(cVector2, "x=", RUBY_METHOD_FUNC(vector2_set_x), 1);
+	rb_define_method(cVector2, "y=", RUBY_METHOD_FUNC(vector2_set_y), 1);
+	// []
+	rb_define_method(cVector2, "len", RUBY_METHOD_FUNC(vector2_len), 0);
+	// unit
+	// coerce
+	// to_3d
+	// lerp
+	// fuzzy_equal
+	// unary -
+	// unary +
+	// dot
+	rb_define_method(cVector2, "+", RUBY_METHOD_FUNC(vector2_add), 1);
+	// -
+	// *
+	// /
+
+
+	//cVector3 = rb_define_class("Vector3", rb_cObject);
+	// alloc
+	// init
+	// init_copy
+	// x
+	// y
+	// z
+	// x= 
+	// y=
+	// z=
+	// []
+	// len
+	// unit
+	// coerce
+	// to_3d
+	// lerp
+	// fuzzy_equal
+	// unary -
+	// unary +
+	// dot
+	// cross
+	// +
+	// -
+	// *
+	// /
+
+
+	//cVector4 = rb_define_class("Vector4", rb_cObject);
+	// alloc
+	// init
+	// init_copy
+	// x
+	// y
+	// z
+	// w
+	// x= 
+	// y=
+	// z=
+	// w=
+	// []
+	// len
+	// unit
+	// coerce
+	// to_3d
+	// lerp
+	// fuzzy_equal
+	// unary -
+	// unary +
+	// dot
+	// +
+	// -
+	// *
+	// /
+
+	//cQuat = rb_define_class("Quat", rb_cObject);
+	// alloc
+	// init
+	// init_copy
+	// x
+	// y
+	// z
+	// w
+	// x=
+	// y=
+	// z=
+	// w=
+	// []
+	// axis_angle
+	// exp
+	// log
+	// *
+	// ~
+	// rotate
+	// fuzzy_equal
+
+	//Matrix
+
+	// Matrix::[] from hash
+	// Matrix::axes
+	// Matrix::rows
+	// Matrix::array
+	// Matrix::quat
+	// Matrix::frustum
+	// Matrix::ortho
+
+	// alloc
+	// init
+	// init_copy
+	// row0
+	// row1
+	// row2
+	// row3
+	// xaxis
+	// yaxis
+	// zaxis
+	// trans
+	// row0=
+	// row1=
+	// row2=
+	// row3=
+	// xaxis=
+	// yaxis=
+	// zaxis=
+	// trans=
+	// [r,c]
+	// quat
+	// scale
+	// scale=
+	// to_a
+	// *
+	// transpose
+	// ortho_inverse
+	// full_inverse
+	// mul3x3
+	// mul3x4
+	// mul4x4
+	// fuzzy_equal
+
+
+	// Complex
+
+	printf("Abaci Ruby Extension Active!\n");
+}
