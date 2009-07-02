@@ -7,68 +7,43 @@ extern "C"
 #include <ruby.h>
 }
 
-// GC NOTE:
-// Abaci classes dont need a mark function because they do not contain references to other Ruby objects.
-// Currently Abaci classes are allocated off of the C++ heap.
+/*
+This code generates a set of c-functions that provide access to the abaci classes
+Vector2, Vector3, Vector4 & Quat.
 
-#define GET_LONG(name) long name##_long = NUM2LONG(name);
+It's a failure.  Why, it is four times smaller then the resulting generated code,
+But is far more complex and error prone.
 
-//
-// Vector2
-//
+An alternate approach is needed...
+*/
 
-inline Vector2d* GetVector2(VALUE data)
-{
-	Vector2d* vec;
-	Data_Get_Struct(data, Vector2d, vec);
-	return vec;
-}
+/*
+Idea:
+What if it was more like swig?
+I.e. you specify the Class and its interface (in a Ruby DSL) and the functions and
+code are generated from that.
 
-#define GET_VECTOR2(name) Vector2d* name##_vec = GetVector2(name);
-#define NEW_VECTOR2(name) VALUE name = vector2_alloc(cVector2); Vector2d* name##_vec = GetVector2(name);
+Example:
+CClass "Vector3" do
+   CMethod "float", "Len", []
+   CMethod "float", "LenSq", []
+   CMethodFunc "float", "Dot", ["Vector3", "other"]
+   CMethodFunc "Vector3", "Cross", ["Vector3", "other"]
+end
 
-VALUE cVector2;
-
-// free
-static void vector2_free(void* p)
-{
-	delete reinterpret_cast<Vector2d*>(p);
-}
-
-// alloc
-static VALUE vector2_alloc(VALUE klass)
-{
-	Vector2d* vec = new Vector2d(0, 0);
-	return Data_Wrap_Struct(klass, 0, vector2_free, vec);
-}
-
-// copy, used by clone and dup 
-static VALUE vector2_initialize_copy(VALUE copy, VALUE orig)
-{
-	if (copy == orig)
-		return copy;
-
-	if (TYPE(orig) != T_DATA || RDATA(orig)->dfree != (RUBY_DATA_FUNC)vector2_free)
-		rb_raise(rb_eTypeError, "wrong argument type");
-
-	GET_VECTOR2(orig);
-	GET_VECTOR2(copy);
-	*copy_vec = *orig_vec;
-
-	return copy;
-}
+*/
 
 <%
-CMethod = Struct.new :c_name, :rb_name, :args, :code
+CFunction = Struct.new :c_name, :rb_name, :args, :code
 
-def CMethod.getter klass, attrib
+def CFunction.float_attrib_get klass, attrib
 	new("get_#{attrib}", attrib, [], <<-CODE)
 		GET_#{klass.upcase}(self);
 		return rb_float_new(self_vec->#{attrib});
 	CODE
 end
 
-def CMethod.setter klass, attrib
+def CFunction.float_attrib_set klass, attrib
 	new("set_#{attrib}", "#{attrib}=", ['value'], <<-CODE)
 		GET_#{klass.upcase}(self);
 	    self_vec->#{attrib} = NUM2DBL(value);
@@ -76,14 +51,14 @@ def CMethod.setter klass, attrib
     CODE
 end
 
-def CMethod.noargs_float klass, c_name, rb_name
+def CFunction.float_method klass, c_name, rb_name
     new(c_name, rb_name, [], <<-CODE)
 	    GET_#{klass.upcase}(self);
 	    return rb_float_new(self_vec->#{c_name}());
 	CODE
 end
 
-def CMethod.noargs_klass klass, c_name, rb_name
+def CFunction.klass_method klass, c_name, rb_name
 	new(c_name, rb_name, [], <<-CODE)
 	    GET_#{klass.upcase}(self);
 		NEW_#{klass.upcase}(result);
@@ -92,7 +67,7 @@ def CMethod.noargs_klass klass, c_name, rb_name
 	CODE
 end
 
-def CMethod.noargs_self klass, c_name, rb_name
+def CFunction.self_method klass, c_name, rb_name
 	new(c_name, rb_name, [], <<-CODE)
 	    GET_#{klass.upcase}(self);
 		self_vec->#{c_name}();
@@ -100,8 +75,8 @@ def CMethod.noargs_self klass, c_name, rb_name
 	CODE
 end
 
-def CMethod.binary_op klass, c_name, rb_name, c_op
-	if c_op == "+" || c_op == "-"
+def CFunction.binary_op klass, c_name, rb_name, c_op
+	if c_op == '+' || c_op == '-' || (klass == 'Quat')
 	   not_a_klass_code = 'rb_raise(rb_eTypeError, "wrong argument type");'
 	else
 	   not_a_klass_code = "*result_vec = *self_vec #{c_op} NUM2DBL(other);"
@@ -109,7 +84,7 @@ def CMethod.binary_op klass, c_name, rb_name, c_op
 	new(c_name, rb_name, ['other'], <<-CODE)
 		GET_#{klass.upcase}(self);
 		NEW_#{klass.upcase}(result);
-		if (TYPE(other) == T_DATA && RDATA(other)->dfree == (RUBY_DATA_FUNC)#{klass.downcase}_free)
+		if (IsA#{klass}(other))
 		{
 			GET_#{klass.upcase}(other);
 	    	*result_vec = *self_vec #{c_op} *other_vec;
@@ -122,8 +97,8 @@ def CMethod.binary_op klass, c_name, rb_name, c_op
 	CODE
 end
 
-def CMethod.init_method klass, num_elements
-	new('initialize', 'initialize', nil, <<-CODE)
+def CFunction.init_method klass, c_name, rb_name, num_elements
+	new(c_name, rb_name, nil, <<-CODE)
 		GET_#{klass.upcase}(self);
 		if (argc == #{num_elements})
 		{
@@ -136,7 +111,7 @@ def CMethod.init_method klass, num_elements
 			self_vec->Set(#{(0...num_elements).map {|i| "NUM2DBL(ptr[#{i}])"}.join(', ')});
 			return self;
 		}
-		else if (argc == 1 && (TYPE(argv[0]) == T_DATA) && (RDATA(argv[0])->dfree == (RUBY_DATA_FUNC)vector2_free))
+		else if (argc == 1 && IsA#{klass}(argv[0]))
 		{
 			VALUE other = argv[0];
 			GET_#{klass.upcase}(other);
@@ -151,7 +126,7 @@ def CMethod.init_method klass, num_elements
     CODE
 end
 
-def CMethod.get_elem klass, num_elements
+def CFunction.get_elem klass, num_elements
 	new('get_elem', '[]', ['index'], <<-CODE)
 	    GET_#{klass.upcase}(self);
 	    GET_LONG(index);
@@ -161,7 +136,7 @@ def CMethod.get_elem klass, num_elements
 	CODE
 end
 
-def CMethod.set_elem klass, num_elements
+def CFunction.set_elem klass, num_elements
 	new('set_elem', '[]=', ['index', 'value'], <<-CODE)
 	    GET_#{klass.upcase}(self);
 	    GET_LONG(index);
@@ -172,7 +147,7 @@ def CMethod.set_elem klass, num_elements
 	CODE
 end
 
-def CMethod.set_method klass, num_elements
+def CFunction.set_method klass, num_elements
 	new('set', 'set', (0...num_elements).map {|i| "p#{i}"} , <<-CODE)
 	    GET_VECTOR2(self);
 		self_vec->Set(#{(0...num_elements).map {|i| "NUM2DBL(p#{i})"}.join(',')});
@@ -180,75 +155,377 @@ def CMethod.set_method klass, num_elements
 	CODE
 end
 
-Vector2 = [
-	CMethod.init_method('Vector2', 2),
-
-	CMethod.noargs_float('Vector2', 'Len', 'len'),
-	CMethod.noargs_float('Vector2', 'LenSq', 'len_sq'),
-
-	CMethod.noargs_klass('Vector2', 'Unit', 'unit'),
-	
-	CMethod.getter('vector2', 'x'),
-	CMethod.getter('vector2', 'y'),
-	CMethod.setter('vector2', 'x'),
-	CMethod.setter('vector2', 'y'),
-
-	CMethod.noargs_self('Vector2', 'SetZero', 'zero!'),
-
-	CMethod.get_elem('Vector2', 2),
-	CMethod.set_elem('Vector2', 2),
-
-	CMethod.set_method('Vector2', 2),
-
-	CMethod.new('dot', 'dot', ['other'], <<-CODE),
-	    GET_VECTOR2(self);
-	    GET_VECTOR2(other);
+def CFunction.dot klass
+	new('dot', 'dot', ['other'], <<-CODE)
+	    GET_#{klass.upcase}(self);
+	    GET_#{klass.upcase}(other);
 	    return rb_float_new(Dot(*self_vec, *other_vec));
 	CODE
+end
 
-	CMethod.new('lerp', 'lerp', ['other', 't'], <<-CODE),
-	    GET_VECTOR2(self);
-		GET_VECTOR2(other);
-		NEW_VECTOR2(result);
+def CFunction.lerp klass
+	new('lerp', 'lerp', ['other', 't'], <<-CODE)
+	    GET_#{klass.upcase}(self);
+		GET_#{klass.upcase}(other);
+		NEW_#{klass.upcase}(result);
 		*result_vec = Lerp(*self_vec, *other_vec, NUM2DBL(t));
 	    return result;
 	CODE
+end
 
-	CMethod.new('unary_minus', '-@', [], <<-CODE),
-		GET_VECTOR2(self);
-		NEW_VECTOR2(result);
-	    *result_vec = -(*self_vec);
+def CFunction.unary_op klass, c_name, rb_name, c_op
+	new(c_name, rb_name, [], <<-CODE)
+		GET_#{klass.upcase}(self);
+		NEW_#{klass.upcase}(result);
+	    *result_vec = #{c_op}(*self_vec);
 	    return result;
 	CODE
+end
 
-	CMethod.new('unary_plus', '+@', [], <<-CODE),
+def CFunction.init_copy_method klass, c_name, rb_name
+	new(c_name, rb_name, ['orig'], <<-CODE)
+	    if (self == orig)
+		    return self;
+
+	    if (!IsA#{klass}(orig))
+		    rb_raise(rb_eTypeError, "wrong argument type");
+
+	    GET_#{klass.upcase}(orig);
+	    GET_#{klass.upcase}(self);
+	    *self_vec = *orig_vec;
+	    return self;
+	CODE
+end
+
+class CFunction
+  def output_func klass
+    if args
+	  proto = "static VALUE #{klass.downcase}_#{c_name}(#{(['self'] + args).map {|arg| "VALUE #{arg}"}.join(', ')})"
+	else
+	  proto = "static VALUE #{klass.downcase}_#{c_name}(int argc, VALUE* argv, VALUE self)"
+	end
+	proto + "\{\n#{code}\}"
+  end
+
+  def output_define_method klass
+    "rb_define_method(c#{klass}, \"#{rb_name}\", RUBY_METHOD_FUNC(#{klass.downcase}_#{c_name}), #{args ? args.size : -1});"
+  end
+end
+%>
+
+// GC NOTE:
+// Abaci classes dont need a mark function because they do not contain references to other Ruby objects.
+// Currently Abaci classes are allocated off of the C++ heap.
+
+#define GET_LONG(name) long name##_long = NUM2LONG(name);
+
+//
+// Vector2
+//
+
+// free
+static void vector2_free(void* p)
+{
+	delete reinterpret_cast<Vector2d*>(p);
+}
+
+// alloc
+static VALUE vector2_alloc(VALUE klass)
+{
+	Vector2d* vec = new Vector2d(0, 0);
+	return Data_Wrap_Struct(klass, 0, vector2_free, vec);
+}
+
+inline Vector2d* GetVector2(VALUE data)
+{
+	Vector2d* vec;
+	Data_Get_Struct(data, Vector2d, vec);
+	return vec;
+}
+
+inline bool IsAVector2(VALUE value)
+{
+	return (TYPE(value) == T_DATA) && (RDATA(value)->dfree == (RUBY_DATA_FUNC)vector2_free);
+}
+
+#define GET_VECTOR2(name) Vector2d* name##_vec = GetVector2(name);
+#define NEW_VECTOR2(name) VALUE name = vector2_alloc(cVector2); Vector2d* name##_vec = GetVector2(name);
+
+VALUE cVector2;
+
+<%
+Vector2 = [
+	CFunction.init_method('Vector2', 'initialize', 'initialize', 2),
+	CFunction.init_method('Vector2', 'set', 'set', 2),
+	CFunction.init_copy_method('Vector2', 'initialize_copy', 'initialize_copy'),
+	CFunction.float_method('Vector2', 'Len', 'len'),
+	CFunction.float_method('Vector2', 'LenSq', 'len_sq'),
+	CFunction.klass_method('Vector2', 'Unit', 'unit'),
+	CFunction.float_attrib_set('vector2', 'x'), CFunction.float_attrib_set('vector2', 'y'),
+	CFunction.float_attrib_get('vector2', 'x'), CFunction.float_attrib_get('vector2', 'y'),
+	CFunction.self_method('Vector2', 'SetZero', 'zero!'),
+	CFunction.get_elem('Vector2', 2),
+	CFunction.set_elem('Vector2', 2),
+	CFunction.dot('Vector2'),
+	CFunction.lerp('Vector2'),
+	CFunction.binary_op('Vector2', 'add', '+', '+'),
+	CFunction.binary_op('Vector2', 'sub', '-', '-'),
+	CFunction.binary_op('Vector2', 'mul', '*', '*'),
+	CFunction.binary_op('Vector2', 'div', '/', '/'),
+	CFunction.unary_op('Vector2', 'unary_minus', '-@', '-'),
+
+	CFunction.new('unary_plus', '+@', [], <<-CODE),
 	    return self;
 	CODE
 
-	CMethod.binary_op('Vector2', 'add', '+', '+'),
-	CMethod.binary_op('Vector2', 'sub', '-', '-'),
-	CMethod.binary_op('Vector2', 'mul', '*', '*'),
-	CMethod.binary_op('Vector2', 'div', '/', '/'),
-
-	CMethod.new('inspect', 'inspect', [], <<-CODE),
+	CFunction.new('inspect', 'inspect', [], <<-CODE),
 		GET_VECTOR2(self);
 		char temp[256];
-		sprintf(temp, "<%.5f, %.5f>", self_vec->x, self_vec->y);		
+		sprintf(temp, "<%.5f, %.5f>", self_vec->x, self_vec->y);
 	    return rb_str_new2(temp);
 	CODE
-
 ]
 %>
 
 <% Vector2.each do |method| %>
-<%   if method.args %>
-<%=     "static VALUE vector2_#{method.c_name}(#{(['self'] + method.args).map {|arg| "VALUE #{arg}"}.join(', ')})" %>
-<%   else %>
-<%=     "static VALUE vector2_#{method.c_name}(int argc, VALUE* argv, VALUE self)" %>
-<%   end %>
-<%= "\{\n#{method.code}\}" %>
+<%=  method.output_func 'Vector2'%>
 <% end %>
 
+
+//
+// Vector3
+//
+
+// free
+static void vector3_free(void* p)
+{
+	delete reinterpret_cast<Vector3d*>(p);
+}
+
+// alloc
+static VALUE vector3_alloc(VALUE klass)
+{
+	Vector3d* vec = new Vector3d();
+	vec->SetZero();
+	return Data_Wrap_Struct(klass, 0, vector3_free, vec);
+}
+
+inline Vector3d* GetVector3(VALUE data)
+{
+	Vector3d* vec;
+	Data_Get_Struct(data, Vector3d, vec);
+	return vec;
+}
+
+inline bool IsAVector3(VALUE value)
+{
+	return TYPE(value) == T_DATA && RDATA(value)->dfree == (RUBY_DATA_FUNC)vector3_free;
+}
+
+#define GET_VECTOR3(name) Vector3d* name##_vec = GetVector3(name);
+#define NEW_VECTOR3(name) VALUE name = vector3_alloc(cVector3); Vector3d* name##_vec = GetVector3(name);
+
+VALUE cVector3;
+
+<%
+Vector3 = [
+	CFunction.init_method('Vector3', 'initialize', 'initialize', 3),
+	CFunction.init_method('Vector3', 'set', 'set', 3),
+	CFunction.init_copy_method('Vector3', 'initialize_copy', 'initialize_copy'),
+	CFunction.float_method('Vector3', 'Len', 'len'),
+	CFunction.float_method('Vector3', 'LenSq', 'len_sq'),
+	CFunction.klass_method('Vector3', 'Unit', 'unit'),
+	CFunction.float_attrib_set('vector3', 'x'), CFunction.float_attrib_set('vector3', 'y'),	CFunction.float_attrib_set('vector3', 'z'),
+	CFunction.float_attrib_get('vector3', 'x'), CFunction.float_attrib_get('vector3', 'y'),	CFunction.float_attrib_get('vector3', 'z'),
+	CFunction.self_method('Vector3', 'SetZero', 'zero!'),
+	CFunction.get_elem('Vector3', 3),
+	CFunction.set_elem('Vector3', 3),
+	CFunction.dot('Vector3'),
+	CFunction.lerp('Vector3'),
+	CFunction.binary_op('Vector3', 'add', '+', '+'),
+	CFunction.binary_op('Vector3', 'sub', '-', '-'),
+	CFunction.binary_op('Vector3', 'mul', '*', '*'),
+	CFunction.binary_op('Vector3', 'div', '/', '/'),
+	CFunction.unary_op('Vector3', 'unary_minus', '-@', '-'),
+
+	CFunction.new('unary_plus', '+@', [], <<-CODE),
+	    return self;
+	CODE
+
+	CFunction.new('inspect', 'inspect', [], <<-CODE),
+		GET_VECTOR3(self);
+		char temp[256];
+		sprintf(temp, "<%.5f, %.5f, %.5f>", self_vec->x, self_vec->y, self_vec->z);
+	    return rb_str_new2(temp);
+	CODE
+
+	CFunction.new('cross', 'cross', ['other'], <<-CODE),
+		GET_VECTOR3(self);
+		GET_VECTOR3(other);
+		NEW_VECTOR3(result);
+		(*result_vec) = Cross(*self_vec, *other_vec);
+		return result;
+	CODE
+]
+%>
+
+<% Vector3.each do |method| %>
+<%=  method.output_func 'Vector3'%>
+<% end %>
+
+
+//
+// Vector4
+//
+
+// free
+static void vector4_free(void* p)
+{
+	delete reinterpret_cast<Vector4d*>(p);
+}
+
+// alloc
+static VALUE vector4_alloc(VALUE klass)
+{
+	Vector4d* vec = new Vector4d();
+	vec->SetZero();
+	return Data_Wrap_Struct(klass, 0, vector4_free, vec);
+}
+
+inline Vector4d* GetVector4(VALUE data)
+{
+	Vector4d* vec;
+	Data_Get_Struct(data, Vector4d, vec);
+	return vec;
+}
+
+inline bool IsAVector4(VALUE value)
+{
+	return TYPE(value) == T_DATA && RDATA(value)->dfree == (RUBY_DATA_FUNC)vector4_free;
+}
+
+#define GET_VECTOR4(name) Vector4d* name##_vec = GetVector4(name);
+#define NEW_VECTOR4(name) VALUE name = vector4_alloc(cVector4); Vector4d* name##_vec = GetVector4(name);
+
+VALUE cVector4;
+
+<%
+Vector4 = [
+	CFunction.init_method('Vector4', 'initialize', 'initialize', 4),
+	CFunction.init_method('Vector4', 'set', 'set', 4),
+	CFunction.init_copy_method('Vector4', 'initialize_copy', 'initialize_copy'),
+	CFunction.float_method('Vector4', 'Len', 'len'),
+	CFunction.float_method('Vector4', 'LenSq', 'len_sq'),
+	CFunction.klass_method('Vector4', 'Unit', 'unit'),
+	CFunction.float_attrib_set('vector4', 'x'), CFunction.float_attrib_set('vector4', 'y'),	
+	CFunction.float_attrib_set('vector4', 'z'), CFunction.float_attrib_set('vector4', 'w'),
+	CFunction.float_attrib_get('vector4', 'x'), CFunction.float_attrib_get('vector4', 'y'),	
+	CFunction.float_attrib_get('vector4', 'z'), CFunction.float_attrib_get('vector4', 'w'),
+	CFunction.self_method('Vector4', 'SetZero', 'zero!'),
+	CFunction.get_elem('Vector4', 4),
+	CFunction.set_elem('Vector4', 4),
+	CFunction.dot('Vector4'),
+	CFunction.lerp('Vector4'),
+	CFunction.binary_op('Vector4', 'add', '+', '+'),
+	CFunction.binary_op('Vector4', 'sub', '-', '-'),
+	CFunction.binary_op('Vector4', 'mul', '*', '*'),
+	CFunction.binary_op('Vector4', 'div', '/', '/'),
+	CFunction.unary_op('Vector4', 'unary_minus', '-@', '-'),
+
+	CFunction.new('unary_plus', '+@', [], <<-CODE),
+	    return self;
+	CODE
+
+	CFunction.new('inspect', 'inspect', [], <<-CODE),
+		GET_VECTOR4(self);
+		char temp[256];
+		sprintf(temp, "<%.5f, %.5f, %.5f, %.5f>", self_vec->x, self_vec->y, self_vec->z, self_vec->w);
+	    return rb_str_new2(temp);
+	CODE
+]
+%>
+
+<% Vector4.each do |method| %>
+<%=  method.output_func 'Vector4'%>
+<% end %>
+
+
+
+//
+// Quat
+//
+
+// free
+static void quat_free(void* p)
+{
+	delete reinterpret_cast<Quatd*>(p);
+}
+
+// alloc
+static VALUE quat_alloc(VALUE klass)
+{
+	Quatd* vec = new Quatd();
+	vec->SetZero();
+	return Data_Wrap_Struct(klass, 0, quat_free, vec);
+}
+
+inline Quatd* GetQuat(VALUE data)
+{
+	Quatd* vec;
+	Data_Get_Struct(data, Quatd, vec);
+	return vec;
+}
+
+inline bool IsAQuat(VALUE value)
+{
+	return TYPE(value) == T_DATA && RDATA(value)->dfree == (RUBY_DATA_FUNC)quat_free;
+}
+
+#define GET_QUAT(name) Quatd* name##_vec = GetQuat(name);
+#define NEW_QUAT(name) VALUE name = quat_alloc(cQuat); Quatd* name##_vec = GetQuat(name);
+
+VALUE cQuat;
+
+<%
+Quat = [
+	CFunction.init_method('Quat', 'initialize', 'initialize', 4),
+	CFunction.init_method('Quat', 'set', 'set', 4),
+	CFunction.init_copy_method('Quat', 'initialize_copy', 'initialize_copy'),
+	CFunction.float_method('Quat', 'Len', 'len'),
+	CFunction.float_method('Quat', 'LenSq', 'len_sq'),
+	CFunction.klass_method('Quat', 'Unit', 'unit'),
+	CFunction.float_attrib_set('Quat', 'i'), CFunction.float_attrib_set('Quat', 'j'),	
+	CFunction.float_attrib_set('Quat', 'k'), CFunction.float_attrib_set('Quat', 'r'),
+	CFunction.float_attrib_get('Quat', 'i'), CFunction.float_attrib_get('Quat', 'j'),	
+	CFunction.float_attrib_get('Quat', 'k'), CFunction.float_attrib_get('Quat', 'r'),
+	CFunction.self_method('Quat', 'SetZero', 'zero!'),
+#	CFunction.get_elem('Quat', 4),
+#	CFunction.set_elem('Quat', 4),
+	CFunction.dot('Quat'),
+#	CFunction.lerp('Quat'),
+	CFunction.binary_op('Quat', 'add', '+', '+'),
+	CFunction.binary_op('Quat', 'sub', '-', '-'),
+	CFunction.binary_op('Quat', 'mul', '*', '*'),
+#	CFunction.binary_op('Quat', 'div', '/', '/'),
+	CFunction.unary_op('Quat', 'unary_minus', '-@', '-'),
+	CFunction.unary_op('Quat', 'conj', '~', '~'),
+
+	CFunction.new('unary_plus', '+@', [], <<-CODE),
+	    return self;
+	CODE
+
+	CFunction.new('inspect', 'inspect', [], <<-CODE),
+		GET_QUAT(self);
+		char temp[256];
+		sprintf(temp, "<%.5f, %.5f, %.5f, %.5f>", self_vec->i, self_vec->j, self_vec->k, self_vec->r);
+	    return rb_str_new2(temp);
+	CODE
+]
+%>
+
+<% Quat.each do |method| %>
+<%=  method.output_func 'Quat'%>
+<% end %>
 
 
 void init_abaci()
@@ -256,38 +533,31 @@ void init_abaci()
 	// register alloc functions
 	cVector2 = rb_define_class("Vector2", rb_cObject);
 	rb_define_alloc_func(cVector2, vector2_alloc);
-	rb_define_method(cVector2, "initialize_copy", RUBY_METHOD_FUNC(vector2_initialize_copy), 1);
 
-<% Vector2.each do |method| %>
-<%= "    rb_define_method(cVector2, \"#{method.rb_name}\", RUBY_METHOD_FUNC(vector2_#{method.c_name}), #{method.args ? method.args.size : -1});" %>
-<% end %>
+    <% Vector2.each do |method| %>
+    <%= method.output_define_method 'Vector2' %>
+    <% end %>
 
-	//cVector4 = rb_define_class("Vector4", rb_cObject);
-	// alloc
-	// init
-	// init_copy
-	// x
-	// y
-	// z
-	// w
-	// x= 
-	// y=
-	// z=
-	// w=
-	// []
-	// len
-	// unit
-	// coerce
-	// to_3d
-	// lerp
-	// fuzzy_equal
-	// unary -
-	// unary +
-	// dot
-	// +
-	// -
-	// *
-	// /
+	cVector3 = rb_define_class("Vector3", rb_cObject);
+	rb_define_alloc_func(cVector3, vector3_alloc);
+
+    <% Vector3.each do |method| %>
+    <%= method.output_define_method 'Vector3' %>
+    <% end %>
+
+	cVector4 = rb_define_class("Vector4", rb_cObject);
+	rb_define_alloc_func(cVector4, vector4_alloc);
+
+    <% Vector4.each do |method| %>
+    <%= method.output_define_method 'Vector4' %>
+    <% end %>
+
+	cQuat = rb_define_class("Quat", rb_cObject);
+	rb_define_alloc_func(cQuat, quat_alloc);
+
+    <% Quat.each do |method| %>
+    <%= method.output_define_method 'Quat' %>
+    <% end %>
 
 	//cQuat = rb_define_class("Quat", rb_cObject);
 	// alloc

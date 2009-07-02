@@ -501,6 +501,14 @@ inline Quat<Scalar> Quat<Scalar>::AxisAngle(const Vector3<Scalar>& axis, Scalar 
 template <typename Scalar>
 inline Quat<Scalar>::Quat(Scalar iIn, Scalar jIn, Scalar kIn, Scalar rIn) : i(iIn), j(jIn), k(kIn), r(rIn) {}
 
+// Set from four Scalars.
+template <typename Scalar>
+inline void Quat<Scalar>::Set(Scalar iIn, Scalar jIn, Scalar kIn, Scalar rIn)
+{
+	i = iIn; j = jIn; k = kIn; r = rIn;
+}
+
+
 // Set all elements to zero.
 template <typename Scalar>
 inline void Quat<Scalar>::SetZero()

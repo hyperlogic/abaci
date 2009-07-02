@@ -332,6 +332,9 @@ struct Quat
 	// Construct from four Scalars.
 	Quat(Scalar iIn, Scalar jIn, Scalar kIn, Scalar rIn);
 
+	// Set from four Scalars.
+	void Set(Scalar iIn, Scalar jIn, Scalar kIn, Scalar rIn);
+
 	// Set all elements to zero.
 	void SetZero();
 
