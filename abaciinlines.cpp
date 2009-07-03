@@ -691,7 +691,7 @@ Matrix<Scalar> Matrix<Scalar>::QuatTrans(const Quat<Scalar>& q, const Vector3<Sc
 	m.SetXAxis(q.Rotate(Vector3<Scalar>(1, 0, 0)));
 	m.SetYAxis(q.Rotate(Vector3<Scalar>(0, 1, 0)));
 	m.SetZAxis(q.Rotate(Vector3<Scalar>(0, 0, 1)));
-	m.SetTrans(Vector3<Scalar>(0, 0, 0));
+	m.SetTrans(trans);
 	return m;
 }
 

@@ -220,9 +220,9 @@ Matrixd = ExtGen::CClass.new("Matrixd") do
   define(:method, "Vector4d", "GetCol", "column", [["int", "c"]])
   define(:method, "Quatd", "GetQuat", "quat", [])
 
-  define(:method, "Vector3d", "Mul3x3", "Mul3x3", [["Vector3d", "v"]])
-  define(:method, "Vector3d", "Mul3x4", "Mul3x4", [["Vector3d", "v"]])
-  define(:method, "Vector4d", "Mul4x4", "Mul4x4", [["Vector4d", "v"]])
+  define(:method, "Vector3d", "Mul3x3", "mul3x3", [["Vector3d", "v"]])
+  define(:method, "Vector3d", "Mul3x4", "mul3x4", [["Vector3d", "v"]])
+  define(:method, "Vector4d", "Mul4x4", "mul4x4", [["Vector4d", "v"]])
 
   define(:method, "Matrixd", "Transpose", "transpose", [])
   define(:method, "Matrixd", "OrthoInverse", "ortho_inverse", [])
