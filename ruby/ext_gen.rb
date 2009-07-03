@@ -29,6 +29,8 @@ module ExtGen
 
     def get_v type, name
       case type
+      when "int"
+        "\tint #{name}_v = NUM2INT(#{name});"
       when "double"
         "\tdouble #{name}_v = NUM2DBL(#{name});"
       else
@@ -139,6 +141,18 @@ CODE
     end
   end
 
+  class CMethodArg1 < CMethod
+    def gen_body
+<<CODE
+{
+#{@args.map {|type, name| get_v type, name}.join("\n")}
+    self_v.#{@c_name}(#{@args[1..-1].map{|type, name| "#{name}_v"}.join(", ")});
+    return #{@args[1][1]};
+}
+CODE
+    end
+  end
+
   class CMethodAttribGet < CMethod
     def initialize *rest
       super
@@ -203,16 +217,35 @@ CODE
     end
   end
 
+  class CMethodClass < CMethod
+    def gen_def
+      "\trb_define_module_function(c#{@klass_name}, \"#{@rb_name}\", RUBY_METHOD_FUNC(#{@klass_name}_#{@c_name}), #{@args.size - 1});\n"
+    end
+
+    def gen_body
+<<CODE
+{
+#{@args[1..-1].map {|type, name| get_v type, name}.join("\n")}
+#{make_v @return_type, 'result'}
+    result_v = #{@klass_name}::#{@c_name}(#{@args[1..-1].map{|type, name| "#{name}_v"}.join(", ")});
+    return result;
+}
+CODE
+    end
+  end
+
   MethodFactory = {:method => CMethod, 
+                   :self_method => CMethodSelf,
+                   :arg1_method => CMethodArg1,
                    :func => CMethodFunc, 
                    :binary_op => CMethodBinaryOp, 
                    :unary_op => CMethodUnaryOp,
                    :assign => CMethodAssign,
-                   :self_method => CMethodSelf,
                    :get_attrib => CMethodAttribGet,
                    :set_attrib => CMethodAttribSet,
                    :initialize => CMethodInitialize,
-                   :custom => CMethodCustom}
+                   :custom => CMethodCustom,
+                   :class_method => CMethodClass}
 
   class CClass
     def initialize(klass_name, &block)
@@ -251,17 +284,3 @@ CODE
   end
 
 end
-
-# Vector3f = ExtGen::CClass.new("Vector3f") do
-#   define(:assign, "Vector3f", "initialize_copy", "initialize_copy", [["Vector3f", "other"]])
-#   define(:method, "double", "Len", "len", [])
-#   define(:func, "double", "Lerp", "lerp", [["Vector3f", "other"], ["double", "t"]])
-#   define(:binary_op, "Vector3f", "plus", "+", [["Vector3f", "other"]], "+")
-#   define(:self_method, "void", "Set", "set", [["Vector3f", "other"]])
-#   define(:get_attrib, "double", "x", "x", [])
-#   define(:set_attrib, "double", "x", "x=", [["double", "v"]])
-# end
-
-# puts Vector3f.gen_functions
-
-# puts Vector3f.gen_defs

@@ -119,6 +119,8 @@ end
 # Quat
 
 Quatd = ExtGen::CClass.new("Quatd") do
+  define(:class_method, "Quatd", "AxisAngle", "axis_angle", [["Vector3d", "axis"], ["double", "angle"]])
+
   define(:initialize, "Quatd", "initialize", "initialize", [["double", "i"], ["double", "j"], ["double", "k"], ["double", "r"]])
   define(:assign, "Quatd", "initialize_copy", "initialize_copy", [["Quatd", "other"]])
 
@@ -182,12 +184,83 @@ Complexd = ExtGen::CClass.new("Complexd") do
   CODE
 end
 
+# Matrix
+
+Matrixd = ExtGen::CClass.new("Matrixd") do
+
+  define(:class_method, "Matrixd", "Axes", "axes", [["Vector3d", "x"], ["Vector3d", "y"], ["Vector3d", "z"], ["Vector3d", "t"]])
+  define(:class_method, "Matrixd", "Rows", "rows", [["Vector4d", "row0"], ["Vector4d", "row1"], ["Vector4d", "row2"], ["Vector4d", "row3"]])
+  define(:class_method, "Matrixd", "QuatTrans", "quat_trans", [["Quatd", "q"], ["Vector3d", "trans"]])
+  define(:class_method, "Matrixd", "ScaleQuatTrans", "scale_quat_trans", [["Vector3d", "scale"], ["Quatd", "q"], ["Vector3d", "trans"]])
+  define(:class_method, "Matrixd", "Identity", "identity", [])
+  define(:class_method, "Matrixd", "Frustum", "frustum", [["double", "fovy"], ["double", "aspect"], ["double", "near_val"], ["double", "far_val"]])
+  define(:class_method, "Matrixd", "Ortho", "ortho", [["double", "left"], ["double", "right"], ["double", "bottom"], ["double", "top"], ["double", "near_val"], ["double", "far_val"]])
+  define(:class_method, "Matrixd", "LookAt", "look_at", [["Vector3d", "eye"], ["Vector3d", "target"], ["Vector3d", "up"]])
+
+  define(:custom, "Matrixd", "initialize", "initialize", [], <<-CODE)
+      self_v = Matrixd::Identity();
+	  return self;
+  CODE
+
+  define(:assign, "Matrixd", "initialize_copy", "initialize_copy", [["Matrixd", "other"]])
+
+  define(:method, "Vector3d", "GetXAxis", "x_axis", [])
+  define(:method, "Vector3d", "GetYAxis", "y_axis", [])
+  define(:method, "Vector3d", "GetZAxis", "z_axis", [])
+  define(:method, "Vector3d", "GetTrans", "trans", [])
+
+  define(:arg1_method, "void", "SetXAxis", "x_axis=", [["Vector3d", "v"]])
+  define(:arg1_method, "void", "SetYAxis", "y_axis=", [["Vector3d", "v"]])
+  define(:arg1_method, "void", "SetZAxis", "z_axis=", [["Vector3d", "v"]])
+  define(:arg1_method, "void", "SetTrans", "trans=", [["Vector3d", "v"]])
+
+  define(:arg1_method, "void", "SetScale", "scale=", [["Vector3d", "v"]])
+
+  define(:method, "double", "Elem", "elem", [["int", "r"], ["int", "c"]])
+  define(:method, "Vector4d", "GetCol", "column", [["int", "c"]])
+  define(:method, "Quatd", "GetQuat", "quat", [])
+
+  define(:method, "Vector3d", "Mul3x3", "Mul3x3", [["Vector3d", "v"]])
+  define(:method, "Vector3d", "Mul3x4", "Mul3x4", [["Vector3d", "v"]])
+  define(:method, "Vector4d", "Mul4x4", "Mul4x4", [["Vector4d", "v"]])
+
+  define(:method, "Matrixd", "Transpose", "transpose", [])
+  define(:method, "Matrixd", "OrthoInverse", "ortho_inverse", [])
+  define(:method, "Matrixd", "FullInverse", "full_inverse", [])
+
+  # accessors
+  define(:get_attrib, "Vector4d", "row0", "row0", [])
+  define(:set_attrib, "Vector4d", "row0", "row0=", [["Vector4d", "v"]])
+  define(:get_attrib, "Vector4d", "row1", "row1", [])
+  define(:set_attrib, "Vector4d", "row1", "row1=", [["Vector4d", "v"]])
+  define(:get_attrib, "Vector4d", "row2", "row2", [])
+  define(:set_attrib, "Vector4d", "row2", "row2=", [["Vector4d", "v"]])
+  define(:get_attrib, "Vector4d", "row3", "row3", [])
+  define(:set_attrib, "Vector4d", "row3", "row3=", [["Vector4d", "v"]])
+
+  define(:binary_op, "Matrixd", "add", "+", [["Matrixd", "other"]], "+")
+  define(:binary_op, "Matrixd", "sub", "-", [["Matrixd", "other"]], "-")
+  define(:binary_op, "Matrixd", "mul", "*", [["Matrixd", "other"]], "*")
+
+  define(:custom, "void", "inspect", "inspect", [], <<-CODE)
+    char temp[256];
+    sprintf(temp, "| %10.3f %10.3f %10.3f %10.3f |\\n| %10.3f %10.3f %10.3f %10.3f |\\n| %10.3f %10.3f %10.3f %10.3f |\\n| %10.3f %10.3f %10.3f %10.3f |\\n", 
+	        self_v.row0.x, self_v.row0.y, self_v.row0.z, self_v.row0.w, 
+			self_v.row1.x, self_v.row1.y, self_v.row1.z, self_v.row1.w,
+			self_v.row2.x, self_v.row2.y, self_v.row2.z, self_v.row2.w,
+			self_v.row3.x, self_v.row3.y, self_v.row3.z, self_v.row3.w);
+    return rb_str_new2(temp);
+  CODE
+
+end
+
 %>
 <%= Vector2d.gen_functions %>
 <%= Vector3d.gen_functions %>
 <%= Vector4d.gen_functions %>
 <%= Quatd.gen_functions %>
 <%= Complexd.gen_functions %>
+<%= Matrixd.gen_functions %>
 
 void init_abaci()
 {
@@ -196,6 +269,7 @@ void init_abaci()
 <%= Vector4d.gen_defs %>
 <%= Quatd.gen_defs %>
 <%= Complexd.gen_defs %>
+<%= Matrixd.gen_defs %>
 
 	printf("Abaci Ruby Extension Active!\n");
 }
