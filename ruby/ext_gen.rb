@@ -284,8 +284,9 @@ CODE
                    :class_method => CMethodClass}
 
   class CClass
-    def initialize(klass_name, &block)
+    def initialize(klass_name, module_name = nil, &block)
       @klass_name = klass_name
+      @module_name = module_name
       @methods = []
       instance_eval &block
     end
@@ -312,9 +313,13 @@ CODE
     end
 
     def gen_defs
-      "\tc#{@klass_name} = rb_define_class(\"#{@klass_name}\", rb_cObject);\n" +
-      "\trb_define_alloc_func(c#{@klass_name}, #{@klass_name}_alloc);\n" +
-      @methods.map {|m| m.gen_def}.join()
+      if @module_name
+        define_str = "\tc#{@klass_name} = rb_define_class_under(#{@module_name}, \"#{@klass_name}\", rb_cObject);"
+      else
+        define_str = "\tc#{@klass_name} = rb_define_class(\"#{@klass_name}\", rb_cObject);\n"
+      end
+      define_str + "\trb_define_alloc_func(c#{@klass_name}, #{@klass_name}_alloc);\n" +
+        @methods.map {|m| m.gen_def}.join()
     end
 
   end

@@ -7,12 +7,14 @@ extern "C"
 #include <ruby.h>
 }
 
+VALUE mAbaci;
+
 <%
 require 'ext_gen'
 
 # Vector2
 
-Vector2d = ExtGen::CClass.new("Vector2d") do
+Vector2d = ExtGen::CClass.new("Vector2d", "mAbaci") do
   define(:initialize, "Vector2d", "initialize", "initialize", [["double", "x"], ["double", "y"]])
   define(:assign, "Vector2d", "initialize_copy", "initialize_copy", [["Vector2d", "other"]])
 
@@ -45,7 +47,7 @@ end
 
 # Vector3
 
-Vector3d = ExtGen::CClass.new("Vector3d") do
+Vector3d = ExtGen::CClass.new("Vector3d", "mAbaci") do
   define(:initialize, "Vector3d", "initialize", "initialize", [["double", "x"], ["double", "y"], ["double", "z"]])
   define(:assign, "Vector3d", "initialize_copy", "initialize_copy", [["Vector3d", "other"]])
 
@@ -81,7 +83,7 @@ end
 
 # Vector4
 
-Vector4d = ExtGen::CClass.new("Vector4d") do
+Vector4d = ExtGen::CClass.new("Vector4d", "mAbaci") do
   define(:initialize, "Vector4d", "initialize", "initialize", [["double", "x"], ["double", "y"], ["double", "z"], ["double", "w"]])
   define(:assign, "Vector4d", "initialize_copy", "initialize_copy", [["Vector4d", "other"]])
 
@@ -118,7 +120,7 @@ end
 
 # Quat
 
-Quatd = ExtGen::CClass.new("Quatd") do
+Quatd = ExtGen::CClass.new("Quatd", "mAbaci") do
   define(:class_method, "Quatd", "AxisAngle", "axis_angle", [["Vector3d", "axis"], ["double", "angle"]])
 
   define(:initialize, "Quatd", "initialize", "initialize", [["double", "i"], ["double", "j"], ["double", "k"], ["double", "r"]])
@@ -155,7 +157,7 @@ end
 
 # Complex
 
-Complexd = ExtGen::CClass.new("Complexd") do
+Complexd = ExtGen::CClass.new("Complexd", "mAbaci") do
   define(:initialize, "Complexd", "initialize", "initialize", [["double", "r"], ["double", "i"]])
   define(:assign, "Complexd", "initialize_copy", "initialize_copy", [["Complexd", "other"]])
 
@@ -186,7 +188,7 @@ end
 
 # Matrix
 
-Matrixd = ExtGen::CClass.new("Matrixd") do
+Matrixd = ExtGen::CClass.new("Matrixd", "mAbaci") do
 
   define(:class_method, "Matrixd", "Axes", "axes", [["Vector3d", "x"], ["Vector3d", "y"], ["Vector3d", "z"], ["Vector3d", "t"]])
   define(:class_method, "Matrixd", "Rows", "rows", [["Vector4d", "row0"], ["Vector4d", "row1"], ["Vector4d", "row2"], ["Vector4d", "row3"]])
@@ -264,6 +266,7 @@ end
 
 void init_abaci()
 {
+    mAbaci = rb_define_module("Abaci");
 <%= Vector2d.gen_defs %>
 <%= Vector3d.gen_defs %>
 <%= Vector4d.gen_defs %>
