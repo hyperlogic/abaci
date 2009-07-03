@@ -12,6 +12,16 @@
 # puts Vector3f.gen
 
 
+class Array
+  def map_with_index!
+    each_with_index do |e, idx| self[idx] = yield(e, idx); end
+  end
+
+  def map_with_index(&block)
+    dup.map_with_index!(&block)
+  end
+end
+
 module ExtGen
 
   class CMethod
@@ -23,19 +33,16 @@ module ExtGen
       @args = [[@klass_name, 'self']] + args
     end
 
-    def gen_proto
-      "static VALUE #{@klass_name}_#{@c_name}(#{@args.map {|type, name| "VALUE #{name}"}.join(", ")})\n"
-    end
-
-    def get_v type, name
+    def get_v type, name, from = nil
+      from = name unless from
       case type
       when "int"
-        "\tint #{name}_v = NUM2INT(#{name});"
+        "\tint #{name}_v = NUM2INT(#{from});"
       when "double"
-        "\tdouble #{name}_v = NUM2DBL(#{name});"
+        "\tdouble #{name}_v = NUM2DBL(#{from});"
       else
-        "\tif (TYPE(#{name}) != T_DATA || RDATA(#{name})->dfree != (RUBY_DATA_FUNC)#{type}_free) rb_raise(rb_eRuntimeError, \"#{name} is not a #{type}\");\n" +
-        "\t#{type}& #{name}_v = *(#{type}*)DATA_PTR(#{name});"
+        "\tif (TYPE(#{from}) != T_DATA || RDATA(#{from})->dfree != (RUBY_DATA_FUNC)#{type}_free) rb_raise(rb_eRuntimeError, \"#{from} is not a #{type}\");\n" +
+        "\t#{type}& #{name}_v = *(#{type}*)DATA_PTR(#{from});"
       end
     end
 
@@ -48,6 +55,10 @@ module ExtGen
         "\tVALUE #{name} = #{type}_alloc(c#{type});\n" +
         "\t#{type}& #{name}_v = *(#{type}*)DATA_PTR(#{name});"
       end
+    end
+
+    def gen_proto
+      "static VALUE #{@klass_name}_#{@c_name}(#{@args.map {|type, name| "VALUE #{name}"}.join(", ")})\n"
     end
 
     def gen_def
@@ -191,11 +202,36 @@ CODE
   end
 
   class CMethodInitialize < CMethod
+
+    def initialize *rest
+      super
+      @args = @args[1..-1]
+    end
+
+    def gen_proto
+      "static VALUE #{@klass_name}_#{@c_name}(int argc, VALUE* argv, VALUE self)\n"
+    end
+
+    def gen_def
+      "\trb_define_method(c#{@klass_name}, \"#{@rb_name}\", RUBY_METHOD_FUNC(#{@klass_name}_#{@c_name}), -1);\n"
+    end
+
     def gen_body
 <<CODE
 {
-#{@args.map {|type, name| get_v type, name}.join("\n")}
-#{@args[1..-1].map {|type, name| "\tself_v.#{name} = #{name}_v;"}.join("\n")}
+#{get_v @klass_name, 'self'}
+
+    if (argc && TYPE(argv[0]) == T_ARRAY)
+    {
+    if (RARRAY(argv[0])->len != #{@args.size}) rb_raise(rb_eRuntimeError, \"Expected Array of #{@args.size} elements.\");
+#{@args.map_with_index {|arg, i| get_v arg[0], arg[1], "RARRAY(argv[0])->ptr[#{i}]"}.join("\n")}
+#{@args.map {|type, name| "\tself_v.#{name} = #{name}_v;"}.join("\n")}
+    }
+    else
+    {
+#{@args.map_with_index {|arg, i| get_v arg[0], arg[1], "argv[#{i}]"}.join("\n")}
+#{@args.map {|type, name| "\tself_v.#{name} = #{name}_v;"}.join("\n")}
+    }
     return self;
 }
 CODE

@@ -886,23 +886,26 @@ Quat<Scalar> Matrix<Scalar>::GetQuat() const
 	Matrix<Scalar> m = Axes(GetXAxis().Unit(), GetYAxis().Unit(), GetZAxis().Unit(), Vector3<Scalar>(0,0,0));
 	Scalar trace = m.Elem(0,0) + m.Elem(1,1) + m.Elem(2,2);
 	Vector4<Scalar> q;
-	if (trace > -1.0f)
+	if (trace < -1.0)
 	{
 		int i = x, j = y, k = z;
 		if (m.Elem(y,y) > m.Elem(x,x)) { i = y; j = z; k = x; }
 		if (m.Elem(z,z) > m.Elem(i,i)) { i = z; j = x; k = y; }
 		Scalar r = sqrt(m.Elem(i,i) - m.Elem(j,j) - m.Elem(k,k) + 1);
-		q[i] = r / 2;
-		q[j] = (m.Elem(i,j) + m.Elem(j,i)) / (2 * r);
-		q[k] = (m.Elem(k,i) + m.Elem(i,k)) / (2 * r);
-		q[3] = (m.Elem(k,j) + m.Elem(j,k)) / (2 * r);
+		Scalar s = 0.5 / r;
+		q[i] = 0.5 * r;
+		q[j] = (m.Elem(i,j) + m.Elem(j,i)) * s;
+		q[k] = (m.Elem(k,i) + m.Elem(i,k)) * s;
+		q[3] = (m.Elem(k,j) + m.Elem(j,k)) * s;
 	}
     else
 	{
-		q.w = sqrt(1 + trace) / 2;
-		q.x = (row2[1] - row1[2]) / (4 * q.w);
-		q.y = (row0[2] - row2[0]) / (4 * q.w);
-		q.z = (row1[0] - row0[1]) / (4 * q.w);
+		Scalar r = sqrt(trace + 1.0);
+		Scalar s = 0.5 / r;
+		q[0] = (m.Elem(z,y) - m.Elem(y,z)) * s;
+		q[1] = (m.Elem(x,z) - m.Elem(z,x)) * s;
+		q[2] = (m.Elem(y,x) - m.Elem(x,y)) * s;
+		q[3] = 0.5 * r;
 	}
 	return Quat<Scalar>(q.x, q.y, q.z, q.w);
 }

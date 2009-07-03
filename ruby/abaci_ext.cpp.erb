@@ -204,14 +204,14 @@ Matrixd = ExtGen::CClass.new("Matrixd") do
 
   define(:assign, "Matrixd", "initialize_copy", "initialize_copy", [["Matrixd", "other"]])
 
-  define(:method, "Vector3d", "GetXAxis", "x_axis", [])
-  define(:method, "Vector3d", "GetYAxis", "y_axis", [])
-  define(:method, "Vector3d", "GetZAxis", "z_axis", [])
+  define(:method, "Vector3d", "GetXAxis", "xaxis", [])
+  define(:method, "Vector3d", "GetYAxis", "yaxis", [])
+  define(:method, "Vector3d", "GetZAxis", "zaxis", [])
   define(:method, "Vector3d", "GetTrans", "trans", [])
 
-  define(:arg1_method, "void", "SetXAxis", "x_axis=", [["Vector3d", "v"]])
-  define(:arg1_method, "void", "SetYAxis", "y_axis=", [["Vector3d", "v"]])
-  define(:arg1_method, "void", "SetZAxis", "z_axis=", [["Vector3d", "v"]])
+  define(:arg1_method, "void", "SetXAxis", "xaxis=", [["Vector3d", "v"]])
+  define(:arg1_method, "void", "SetYAxis", "yaxis=", [["Vector3d", "v"]])
+  define(:arg1_method, "void", "SetZAxis", "zaxis=", [["Vector3d", "v"]])
   define(:arg1_method, "void", "SetTrans", "trans=", [["Vector3d", "v"]])
 
   define(:arg1_method, "void", "SetScale", "scale=", [["Vector3d", "v"]])
