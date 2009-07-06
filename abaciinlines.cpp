@@ -764,11 +764,28 @@ inline Matrix<Scalar> Matrix<Scalar>::Ortho(Scalar left, Scalar right, Scalar bo
 template <typename Scalar>
 inline Matrix<Scalar> Matrix<Scalar>::LookAt(const Vector3<Scalar>& eye, const Vector3<Scalar>& target, const Vector3<Scalar>& up)
 {
+	const Scalar Epsilon = 0.0001;
+	const Scalar EpsilonSq = Epsilon * Epsilon;
+
+	Vector3<Scalar> x;
+	if ((target - eye).LenSq() < EpsilonSq)
+		x = Vector3<Scalar>(1, 0, 0);  // target == eye, so pick (1,0,0) for the x-axis
+	else
+		x = (target - eye).Unit();
+
+	Vector3<Scalar> u;
+	if (u.LenSq() < EpsilonSq)
+		u = Vector3<Scalar>(0, 1, 0);  // up is zero, so pick (0,1,0) for the y-axis.
+	else
+		u = up;
+
+	if (fabs(Dot(u, x)) > (u.LenSq() - EpsilonSq)) // are u & x parallel?
+		u = (u + Vector3<Scalar>(1,1,1)).Unit();  // nudge u so it's no longer parallel.
+
+	Vector3<Scalar> z = Cross(x, u).Unit();
+	Vector3<Scalar> y = Cross(z, x).Unit();
+
 	Matrix<Scalar> m;
-	Vector3<Scalar> x = (target - eye).Unit();
-	Vector3<Scalar> u = up.Unit();
-	Vector3<Scalar> z = Cross(x, u);
-	Vector3<Scalar> y = Cross(z, x);
 	m.SetXAxis(x);
 	m.SetYAxis(y);
 	m.SetZAxis(z);
