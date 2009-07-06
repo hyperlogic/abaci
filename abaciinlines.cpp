@@ -765,7 +765,7 @@ template <typename Scalar>
 inline Matrix<Scalar> Matrix<Scalar>::LookAt(const Vector3<Scalar>& eye, const Vector3<Scalar>& target, const Vector3<Scalar>& up)
 {
 	Matrix<Scalar> m;
-	Vector3<Scalar> x = (eye - target).Unit();
+	Vector3<Scalar> x = (target - eye).Unit();
 	Vector3<Scalar> u = up.Unit();
 	Vector3<Scalar> z = Cross(x, u);
 	Vector3<Scalar> y = Cross(z, x);
