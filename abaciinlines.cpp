@@ -750,12 +750,12 @@ template <typename Scalar>
 inline Matrix<Scalar> Matrix<Scalar>::Ortho(Scalar left, Scalar right, Scalar bottom, Scalar top, Scalar nearVal, Scalar farVal)
 {
 	Matrix<Scalar> m;
-	Scalar tx = -(right + left / right - left);
-	Scalar ty = -(top + bottom / top - bottom);
-	Scalar tz = -(farVal + nearVal / farVal - nearVal);
-	m.row0.Set(2.0f / right - left, 0, 0, tx);
-	m.row1.Set(0, 2.0f / top - bottom, 0, ty);
-	m.row2.Set(0, 0, -2.0f / farVal - nearVal, tz);
+	Scalar tx = -(right + left) / (right - left);
+	Scalar ty = -(top + bottom) / (top - bottom);
+	Scalar tz = -(farVal + nearVal) / (farVal - nearVal);
+	m.row0.Set(2.0f / (right - left), 0, 0, tx);
+	m.row1.Set(0, 2.0f / (top - bottom), 0, ty);
+	m.row2.Set(0, 0, -2.0f / (farVal - nearVal), tz);
 	m.row3.Set(0, 0, 0, 1);
 	return m;
 }
