@@ -165,6 +165,24 @@ inline Vector2<Scalar> operator+(const Vector2<Scalar>& a, const Vector2<Scalar>
 	return Vector2<Scalar>(a.x + b.x, a.y + b.y);
 }
 
+// Vector decrement.
+template <typename Scalar>
+Vector2<Scalar>& operator-=(Vector2<Scalar>& a, const Vector2<Scalar>& b)
+{
+	a.x -= b.x;
+	a.y -= b.y;
+	return a;
+}
+
+// Vector increment.
+template <typename Scalar>
+Vector2<Scalar>& operator+=(Vector2<Scalar>& a, const Vector2<Scalar>& b)
+{
+	a.x += b.x;
+	a.y += b.y;
+	return a;
+}
+
 // Multplies all elements of a vector by a scalar.
 template <typename Scalar>
 inline Vector2<Scalar> operator*(const Vector2<Scalar>& v, Scalar scalar)
@@ -307,6 +325,26 @@ inline Vector3<Scalar> operator+(const Vector3<Scalar>& a, const Vector3<Scalar>
 	return Vector3<Scalar>(a.x + b.x, a.y + b.y, a.z + b.z);
 }
 
+// Vector decrement.
+template <typename Scalar>
+Vector3<Scalar>& operator-=(Vector3<Scalar>& a, const Vector3<Scalar>& b)
+{
+	a.x -= b.x;
+	a.y -= b.y;
+	a.z -= b.z;
+	return a;
+}
+
+// Vector increment.
+template <typename Scalar>
+Vector3<Scalar>& operator+=(Vector3<Scalar>& a, const Vector3<Scalar>& b)
+{
+	a.x += b.x;
+	a.y += b.y;
+	a.z += b.z;
+	return a;
+}
+
 // Multplies all elements of a vector by a scalar.
 template <typename Scalar>
 inline Vector3<Scalar> operator*(const Vector3<Scalar>& v, Scalar factor)
@@ -441,6 +479,28 @@ template <typename Scalar>
 inline Vector4<Scalar> operator+(const Vector4<Scalar>& a, const Vector4<Scalar>& b)
 {
 	return Vector4<Scalar>(a.x + b.x, a.y + b.y, a.z + b.z, a.w + b.w);
+}
+
+// Vector decrement.
+template <typename Scalar>
+Vector4<Scalar>& operator-=(Vector4<Scalar>& a, const Vector4<Scalar>& b)
+{
+	a.x -= b.x;
+	a.y -= b.y;
+	a.z -= b.z;
+	a.w -= b.w;
+	return a;
+}
+
+// Vector increment.
+template <typename Scalar>
+Vector4<Scalar>& operator+=(Vector4<Scalar>& a, const Vector4<Scalar>& b)
+{
+	a.x += b.x;
+	a.y += b.y;
+	a.z += b.z;
+	a.w += b.w;
+	return a;
 }
 
 // Multplies all elements of a vector by a scalar.

@@ -118,6 +118,14 @@ Vector2<Scalar> operator-(const Vector2<Scalar>& a, const Vector2<Scalar>& b);
 template <typename Scalar>
 Vector2<Scalar> operator+(const Vector2<Scalar>& a, const Vector2<Scalar>& b);
 
+// Vector decrement.
+template <typename Scalar>
+Vector2<Scalar>& operator-=(Vector2<Scalar>& a, const Vector2<Scalar>& b);
+
+// Vector increment.
+template <typename Scalar>
+Vector2<Scalar>& operator+=(Vector2<Scalar>& a, const Vector2<Scalar>& b);
+
 // Multplies all elements of a vector by a scalar.
 template <typename Scalar>
 Vector2<Scalar> operator*(const Vector2<Scalar>& v, Scalar scalar);
@@ -207,6 +215,14 @@ Vector3<Scalar> operator-(const Vector3<Scalar>& a, const Vector3<Scalar>& b);
 template <typename Scalar>
 Vector3<Scalar> operator+(const Vector3<Scalar>& a, const Vector3<Scalar>& b);
 
+// Vector addition.
+template <typename Scalar>
+Vector3<Scalar> operator+(const Vector3<Scalar>& a, const Vector3<Scalar>& b);
+
+// Vector decrement.
+template <typename Scalar>
+Vector3<Scalar>& operator-=(Vector3<Scalar>& a, const Vector3<Scalar>& b);
+
 // Multplies all elements of a vector by a scalar.
 template <typename Scalar>
 Vector3<Scalar> operator*(const Vector3<Scalar>& v, Scalar factor);
@@ -292,6 +308,14 @@ Vector4<Scalar> operator-(const Vector4<Scalar>& a, const Vector4<Scalar>& b);
 // Vector addition.
 template <typename Scalar>
 Vector4<Scalar> operator+(const Vector4<Scalar>& a, const Vector4<Scalar>& b);
+
+// Vector addition.
+template <typename Scalar>
+Vector4<Scalar> operator+(const Vector4<Scalar>& a, const Vector4<Scalar>& b);
+
+// Vector decrement.
+template <typename Scalar>
+Vector4<Scalar>& operator-=(Vector4<Scalar>& a, const Vector4<Scalar>& b);
 
 // Multplies all elements of a vector by a scalar.
 template <typename Scalar>
