@@ -80,12 +80,25 @@ inline bool FuzzyEqual(Scalar rhs, Scalar lhs, Scalar epsilon)
 template <typename Scalar>
 inline Vector2<Scalar>::Vector2(Scalar xIn, Scalar yIn) : x(xIn), y(yIn) {}
 
+// Construct from Complex
+template <typename Scalar>
+inline Vector2<Scalar>::Vector2(const Complex<Scalar>& complexIn) :	
+	x(complexIn.r), y(complexIn.i) {}
+
 // Set from two Scalars
 template <typename Scalar>
 inline void Vector2<Scalar>::Set(Scalar xIn, Scalar yIn)
 {
 	x = xIn;
 	y = yIn;
+}
+
+// Set from Complex
+template <typename Scalar>
+void Vector2<Scalar>::Set(const Complex<Scalar>& complexIn)
+{
+	x = complexIn.r;
+	y = complexIn.i;
 }
 
 // Sets all elements to zero.
@@ -1219,6 +1232,11 @@ void PrintMatrix(const Matrix<Scalar>& m)
 // Construct from two floats
 template <typename Scalar>
 inline Complex<Scalar>::Complex(Scalar rIn, Scalar iIn) : r(rIn), i(iIn) {}
+
+// Construct from a Vector2
+template <typename Scalar>
+inline Complex<Scalar>::Complex(const Vector2<Scalar>& vector2In) :
+	r(vector2In.x), i(vector2In.y) {}
 
 // Length
 template <typename Scalar>

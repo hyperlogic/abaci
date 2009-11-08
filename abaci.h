@@ -58,6 +58,8 @@ Scalar Mod2Pi(Scalar theta);
 template <typename Scalar>
 bool FuzzyEqual(Scalar rhs, Scalar lhs, Scalar epsilon = 0.0001);
 
+// forward declare
+template <typename Scalar> class Complex;
 
 //////////////////////////////////////////////////////
 
@@ -70,8 +72,14 @@ struct Vector2
 	// Construct from two Scalars
 	Vector2(Scalar xIn, Scalar yIn);
 
+	// Construct from complex
+	Vector2(const Complex<Scalar>& complexIn);
+
 	// Set from two Scalars
 	void Set(Scalar xIn, Scalar yIn);
+
+	// Set from complex
+	void Set(const Complex<Scalar>& complexIn);
 
 	// Sets all elements to zero.
 	void SetZero();
@@ -536,6 +544,9 @@ struct Complex
 
 	// Construct from two floats
 	Complex(Scalar rIn, Scalar iIn);
+
+	// Construct from a Vector2
+	Complex(const Vector2<Scalar>& vector2In);
 
 	// Length
 	Scalar Len() const;
