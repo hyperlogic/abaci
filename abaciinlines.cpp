@@ -73,6 +73,13 @@ inline bool FuzzyEqual(Scalar rhs, Scalar lhs, Scalar epsilon)
 	return fabs(rhs - lhs) <= epsilon;
 }
 
+// Linear interpolate between two Scalar values.
+template <typename Scalar>
+inline Scalar Lerp(Scalar a, Scalar b, Scalar t)
+{
+    return a + (b - a) * t;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // Vector2
 

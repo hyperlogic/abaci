@@ -58,6 +58,9 @@ Scalar Mod2Pi(Scalar theta);
 template <typename Scalar>
 bool FuzzyEqual(Scalar rhs, Scalar lhs, Scalar epsilon = 0.0001);
 
+template <typename Scalar>
+Scalar Lerp(Scalar a, Scalar b, Scalar t);
+
 // forward declare
 template <typename Scalar> class Complex;
 
