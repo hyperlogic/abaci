@@ -1310,7 +1310,14 @@ inline Complex<Scalar> operator*(const Complex<Scalar>& a, const Complex<Scalar>
 	Scalar cc = b.r;
 	Scalar dd = b.i;
 
-	return Complex<Scalar>(aa * cc - (bb * dd), aa * dd + bb * cc);
+    // four muls & two adds
+	// return Complex<Scalar>(aa * cc - (bb * dd), aa * dd + bb * cc);
+
+	Scalar a_c = aa * cc;
+	Scalar b_d = bb * dd;
+
+	// three muls & five adds (faster?)
+	return Complex<Scalar>(a_c - b_d, (aa + bb) * (cc + dd) - a_c - b_d);
 }
 
 // Multiplication by a real number.
@@ -1322,7 +1329,7 @@ inline Complex<Scalar> operator*(Scalar scalar, const Complex<Scalar>& c)
 
 // Multiplication by a real number.
 template <typename Scalar>
-inline Complex<Scalar> operator*(Complex<Scalar>& c, Scalar scalar)
+inline Complex<Scalar> operator*(const Complex<Scalar>& c, Scalar scalar)
 {
 	return c * Complex<Scalar>(scalar, 0);
 }
@@ -1345,6 +1352,42 @@ template <typename Scalar>
 inline Complex<Scalar> ExpI(Scalar x)
 {
 	return Complex<Scalar>(cos(x), sin(x));
+}
+
+// Square root
+template <typename Scalar>
+Complex<Scalar> sqrt(const Complex<Scalar>& z)
+{
+	Scalar x = z.r;
+	Scalar y = z.i;
+
+	if (x == Scalar())
+	{
+		Scalar t = sqrt(abs(y) / 2);
+		return Complex<Scalar>(t, y < Scalar() ? -t : t);
+	}
+	else
+	{
+		Scalar t = sqrt(2 * (z.Len() + abs(x)));
+		Scalar u = t / 2;
+		return x > Scalar() ? Complex<Scalar>(u, y / t) :
+			                  Complex<Scalar>(abs(y) / t, y < Scalar() ? -u : u);
+	}
+}
+
+// Exponent
+template <typename Scalar>
+Complex<Scalar> exp(const Complex<Scalar>& z)
+{
+	Scalar e = exp(z.r);
+	return Complex<Scalar>(e * cos(z.i), e * sin(z.i));
+}
+
+// Natural Logarithm
+template <typename Scalar>
+Complex<Scalar> log(const Complex<Scalar>& z)
+{
+	return Complex<Scalar>(log(z.Len()), atan2(z.i, z.r));
 }
 
 #endif

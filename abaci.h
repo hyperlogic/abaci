@@ -602,11 +602,24 @@ Complex<Scalar> operator*(Scalar scalar, const Complex<Scalar>& c);
 
 // Multiplication by a real number.
 template <typename Scalar>
-Complex<Scalar> operator*(Complex<Scalar>& c, Scalar scalar);
+Complex<Scalar> operator*(const Complex<Scalar>& c, Scalar scalar);
 
 // e ^ 0 + xi
 template <typename Scalar>
 Complex<Scalar> ExpI(Scalar x);
+
+// Square root
+template <typename Scalar>
+Complex<Scalar> sqrt(const Complex<Scalar>& z);
+
+// Exponent
+template <typename Scalar>
+Complex<Scalar> exp(const Complex<Scalar>& z);
+
+// Natural Logarithm
+template <typename Scalar>
+Complex<Scalar> log(const Complex<Scalar>& z);
+
 
 // inlines
 #include "abaciinlines.cpp"
