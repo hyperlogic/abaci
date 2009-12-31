@@ -50,7 +50,7 @@ module ExtGen
       case type
       when "double"
         "\tVALUE #{name} = rb_float_new(0);\n" +
-        "\t#{type}& #{name}_v = RFLOAT(#{name})->value;"
+        "\t#{type}& #{name}_v = RFLOAT_VALUE(#{name});"
       else
         "\tVALUE #{name} = #{type}_alloc(c#{type});\n" +
         "\t#{type}& #{name}_v = *(#{type}*)DATA_PTR(#{name});"
@@ -223,8 +223,8 @@ CODE
 
     if (argc && TYPE(argv[0]) == T_ARRAY)
     {
-    if (RARRAY(argv[0])->len != #{@args.size}) rb_raise(rb_eRuntimeError, \"Expected Array of #{@args.size} elements.\");
-#{@args.map_with_index {|arg, i| get_v arg[0], arg[1], "RARRAY(argv[0])->ptr[#{i}]"}.join("\n")}
+    if (RARRAY_LEN(argv[0]) != #{@args.size}) rb_raise(rb_eRuntimeError, \"Expected Array of #{@args.size} elements.\");
+#{@args.map_with_index {|arg, i| get_v arg[0], arg[1], "RARRAY_PTR(argv[0])[#{i}]"}.join("\n")}
 #{@args.map {|type, name| "\tself_v.#{name} = #{name}_v;"}.join("\n")}
     }
     else
