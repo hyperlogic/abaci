@@ -212,7 +212,7 @@ Vector3<Scalar> Cross(const Vector3<Scalar>& a, const Vector3<Scalar>& b);
 
 // Linear interpolation between two vectors
 template <typename Scalar>
-Vector3<Scalar> Lerp(const Vector3<Scalar>& a, const Vector3<Scalar>& a, Scalar t);
+Vector3<Scalar> Lerp(const Vector3<Scalar>& a, const Vector3<Scalar>& b, Scalar t);
 
 // Unary minus.
 template <typename Scalar>
