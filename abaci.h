@@ -64,6 +64,15 @@ Scalar Lerp(Scalar a, Scalar b, Scalar t);
 // forward declare
 template <typename Scalar> class Complex;
 
+// returns a random integer between min and max.  
+// Note: closed interval. i.e. the values of min & max can be returned.
+int RandomInt(int min, int max);
+
+// returns a random scalar between min and max
+// Note: closed interval. i.e. the values of min & max can be returned.
+template <typename Scalar> 
+Scalar RandomScalar(Scalar min, Scalar max);
+
 //////////////////////////////////////////////////////
 
 template <typename Scalar>

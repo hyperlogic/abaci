@@ -25,6 +25,7 @@ THE SOFTWARE.
 #ifdef ABACI_H
 
 #include <stdio.h>
+#include <stdlib.h>
 
 // Convert from degrees to radians
 template <typename Scalar>
@@ -82,6 +83,18 @@ template <typename Scalar>
 inline Scalar Lerp(Scalar a, Scalar b, Scalar t)
 {
     return a + (b - a) * t;
+}
+
+inline int RandomInt(int min, int max)
+{
+	return min + (rand() % (max - min + 1));
+}
+
+template <typename Scalar> 
+Scalar RandomScalar(Scalar min, Scalar max)
+{
+	Scalar t = (Scalar)((rand() % 16127) / 16126.0);
+	return Lerp(min, max, t);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
