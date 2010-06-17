@@ -102,6 +102,9 @@ struct Vector2
 	// Returns length squared.
 	Scalar LenSq() const;
 
+	// Returns a vector with the same direction, but with a Len() <= len.
+	Vector2 MinLen(Scalar len) const;
+
 	Scalar x;
 	Scalar y;
 };
@@ -194,6 +197,9 @@ struct Vector3
 	// Returns length squared.
 	Scalar LenSq() const;
 
+	// Returns a vector with the same direction, but with a Len() <= len.
+	Vector3 MinLen(Scalar len) const;
+
 	Scalar x;
 	Scalar y;
 	Scalar z;
@@ -284,6 +290,9 @@ struct Vector4
 
 	// Returns length squared.
 	Scalar LenSq() const;
+
+	// Returns a vector with the same direction, but with a Len() <= len.
+	Vector4 MinLen(Scalar len) const;
 
 	// const array accessor
 	Scalar operator[](int i) const;
@@ -556,6 +565,9 @@ struct Complex
 
 	// Square of length
 	Scalar LenSq() const;
+
+	// Returns a vector with the same direction, but with a Len() <= len.
+	Complex MinLen(Scalar len) const;
 
 	Scalar r;
 	Scalar i;

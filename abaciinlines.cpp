@@ -154,6 +154,17 @@ inline Scalar Vector2<Scalar>::LenSq() const
 	return Dot(*this, *this);
 }
 
+// Returns a vector with the same direction, but with a Len() <= len.
+template <typename Scalar>
+inline Vector2<Scalar> Vector2<Scalar>::MinLen(Scalar len) const
+{
+	Scalar l = Len();
+	if (l > len)
+		return (*this / l) * len;
+	else
+		return *this;
+}
+
 // Dot product of two vectors.
 template <typename Scalar>
 inline Scalar Dot(const Vector2<Scalar>& a, const Vector2<Scalar>& b)
@@ -307,6 +318,17 @@ inline Scalar Vector3<Scalar>::LenSq() const
 	return Dot(*this, *this);
 }
 
+// Returns a vector with the same direction, but with a Len() <= len.
+template <typename Scalar>
+inline Vector3<Scalar> Vector3<Scalar>::MinLen(Scalar len) const
+{
+	Scalar l = Len();
+	if (l > len)
+		return (*this / l) * len;
+	else
+		return *this;
+}
+
 // Dot product of two vectors.
 template <typename Scalar>
 inline Scalar Dot(const Vector3<Scalar>& a, const Vector3<Scalar>& b)
@@ -454,6 +476,17 @@ template <typename Scalar>
 inline Scalar Vector4<Scalar>::LenSq() const
 {
 	return Dot(*this, *this);
+}
+
+// Returns a vector with the same direction, but with a Len() <= len.
+template <typename Scalar>
+inline Vector4<Scalar> Vector4<Scalar>::MinLen(Scalar len) const
+{
+	Scalar l = Len();
+	if (l > len)
+		return (*this / l) * len;
+	else
+		return *this;
 }
 
 // const array accessor
@@ -1261,6 +1294,17 @@ template <typename Scalar>
 inline Scalar Complex<Scalar>::LenSq() const
 {
 	return Dot(*this, *this);
+}
+
+// Returns a vector with the same direction, but with a Len() <= len.
+template <typename Scalar>
+inline Complex<Scalar> Complex<Scalar>::MinLen(Scalar len) const
+{
+	Scalar l = Len();
+	if (l > len)
+		return (*this / l) * len;
+	else
+		return *this;
 }
 
 // Dot product
