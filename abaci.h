@@ -50,7 +50,7 @@ Scalar Clamp(Scalar value, Scalar min, Scalar max);
 template <typename Scalar>
 Scalar LimitPi(Scalar theta);
 
-// Limits angle between zero & PI using modulus arithmetic
+// Limits angle between zero & 2 PI using modulus arithmetic
 template <typename Scalar>
 Scalar Mod2Pi(Scalar theta);
 

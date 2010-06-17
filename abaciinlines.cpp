@@ -59,11 +59,15 @@ inline Scalar LimitPi(Scalar theta)
 	return fmod(theta + PI, 2 * PI) - PI;
 }
 
-// Limits angle between zero & PI using modulus arithmetic
+// Limits angle between zero & 2 PI using modulus arithmetic
 template <typename Scalar>
 inline Scalar Mod2Pi(Scalar theta)
 {
-	return fmod(theta, 2 * PI);
+	float r = fmod(theta, 2 * PI);
+	if (r < 0.0)
+		return r + 2 * PI;
+	else
+		return r;
 }
 
 // Fuzzy comparison between two Scalar values.
