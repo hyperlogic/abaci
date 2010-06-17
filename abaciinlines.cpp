@@ -1367,15 +1367,15 @@ Complex<Scalar> sqrt(const Complex<Scalar>& z)
 
 	if (x == Scalar())
 	{
-		Scalar t = sqrt(abs(y) / 2);
+		Scalar t = sqrt(fabs(y) / 2);
 		return Complex<Scalar>(t, y < Scalar() ? -t : t);
 	}
 	else
 	{
-		Scalar t = sqrt(2 * (z.Len() + abs(x)));
+		Scalar t = sqrt(2 * (z.Len() + fabs(x)));
 		Scalar u = t / 2;
 		return x > Scalar() ? Complex<Scalar>(u, y / t) :
-			                  Complex<Scalar>(abs(y) / t, y < Scalar() ? -u : u);
+			                  Complex<Scalar>(fabs(y) / t, y < Scalar() ? -u : u);
 	}
 }
 
