@@ -7,6 +7,10 @@ extern "C"
 #include <ruby.h>
 }
 
+#ifndef RFLOAT_VALUE
+#define RFLOAT_VALUE(x) RFLOAT((x))->value
+#endif
+
 VALUE mAbaci;
 
 <%
