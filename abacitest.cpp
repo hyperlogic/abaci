@@ -54,7 +54,7 @@ void InitTestData()
 	srand((unsigned int)666);
 
 	// add random values
-	const int RANDOM_DATA_SIZE = 64;
+	const int RANDOM_DATA_SIZE = 512;
 	for (int i = 0; i < RANDOM_DATA_SIZE; ++i)
 	{
 		s_floatVec.push_back(RandomFloat());
@@ -161,6 +161,61 @@ void InitTestData()
 }
 
 //
+// Random tests
+//
+
+class RandomIntTest : public TestCase
+{
+public:
+	RandomIntTest() : TestCase("RandomInt") {}
+	~RandomIntTest() {}
+	bool Test() const
+	{
+		const int RangeMin = 0;
+		const int RangeMax = 9;
+
+		int bins[10];
+		for (int i = 0; i < 10; ++i)
+			bins[i] = 0;
+
+		for (int i = 0; i < 10000; ++i)
+		{
+			int r = RandomInt(RangeMin, RangeMax);
+			bins[r]++;
+			if (r < RangeMin || r > RangeMax)
+				return false;
+		}
+
+		// check to see if numbers are more or less uniformly distrubuted
+		for (int i = 0; i < 10; ++i)
+		{
+			if (bins[i] < 950)
+				return false;
+		}
+		return true;
+	}
+};
+
+class RandomScalarTest : public TestCase
+{
+public:
+	RandomScalarTest() : TestCase("RandomScalar") {}
+	~RandomScalarTest() {}
+	bool Test() const
+	{
+		const float RangeMin = 100;
+		const float RangeMax = 300;
+		for (int i = 0; i < 1024; ++i)
+		{
+			float r = RandomScalar(RangeMin, RangeMax);
+			if (r < RangeMin || r > RangeMax)
+				return false;
+		}
+		return true;
+	}
+};
+
+//
 // Float tests
 //
 
@@ -221,7 +276,10 @@ public:
 		float r = a;
 		if ((a > PI) || (a < -PI))
 			r = fmod(a + PI, 2.0f * PI) - PI;
-		return FuzzyFloatTest(LimitPi(a), r);
+		bool result = FuzzyFloatTest(LimitPi(a), r);
+		if (!result)
+			printf("a = %.5f, r = %.5f\n", a, r);
+		return result;
 	}
 };
 
@@ -231,10 +289,15 @@ public:
 	static const char* GetName() { return "Mod2Pi"; }
 	bool operator() (float a)
 	{
-		float r = a;
-		if ((a > 0) || (a < 2.0f * PI))
+		float r;
+		if (a < 0)
+			r = (2.0f * PI) + fmod(a, 2.0f * PI);
+		else
 			r = fmod(a, 2.0f * PI);
-		return FuzzyFloatTest(Mod2Pi(a), r);
+		bool result = FuzzyFloatTest(Mod2Pi(a), r);
+		if (!result)
+			printf("a = %.5f, r = %.5f, Mod2Pi(a) = %.5f\n", a, r, Mod2Pi(a));
+		return result;
 	}
 };
 
@@ -277,6 +340,21 @@ public:
 	}
 };
 
+class FloatLerp
+{
+public:
+	static const char* GetName() { return "Lerp"; }
+	bool operator() (float a, float b)
+	{
+		for (float t = 0.0f; t <= 1.0f; t += 0.01f)
+		{
+			float r = a + ((b - a) * t);
+			if (!FuzzyFloatTest(r, Lerp(a, b, t)))
+				return false;
+		}
+		return true;
+	}
+};
 
 template <class TernaryOp>
 class FloatTernaryOpTest : public TestCase
@@ -382,6 +460,19 @@ public:
 		return FloatTest(r, len);
 	}
 };
+
+class Vector2fSet
+{
+public:
+	static const char* GetName() { return "Set"; }
+	bool operator() (const Vector2f& a)
+	{
+		Vector2f v(0.0f, 0.0f);
+		v.Set(a);
+		return FloatTest(v.x, a.x) && FloatTest(v.y, a.y);
+	}
+};
+
 
 class Vector2fUnitVec
 {
@@ -1827,6 +1918,11 @@ int main(int argc, char* argv[])
 {
 	InitTestData();
 
+	TestSuite randomSuite("random");
+	randomSuite.AddTest(new RandomIntTest());
+	randomSuite.AddTest(new RandomScalarTest());
+	randomSuite.RunTests();
+
 	TestSuite floatSuite("float");
 	floatSuite.AddTest(new FloatUnaryOpTest<FloatDegToRad>());
 	floatSuite.AddTest(new FloatUnaryOpTest<FloatRadToDeg>());
@@ -1834,6 +1930,7 @@ int main(int argc, char* argv[])
 	floatSuite.AddTest(new FloatUnaryOpTest<FloatLimitPi>());
 	floatSuite.AddTest(new FloatUnaryOpTest<FloatMod2Pi>());
 	floatSuite.AddTest(new FloatBinaryOpTest<FloatFuzzyEqual>());
+	floatSuite.AddTest(new FloatBinaryOpTest<FloatLerp>());
 	floatSuite.RunTests();
 
 	TestSuite vector2Suite("Vector2f");
@@ -1848,11 +1945,21 @@ int main(int argc, char* argv[])
 	vector2Suite.AddTest(new Vector2fBinaryOpTest<Vector2fCompMul>());
 	vector2Suite.AddTest(new Vector2fBinaryOpTest<Vector2fCompDiv>());
 	vector2Suite.AddTest(new Vector2fSetZeroTest());
+	vector2Suite.AddTest(new Vector2fUnaryOpTest<Vector2fSet>());
 	vector2Suite.RunTests();
-	// TODO: SetZero()
+	// TODO: Construct from complex.
+	// TODO: Construct from 2 scalars.
 	// TODO: Set()
 	// TODO: LenSq()
 	// TODO: Lerp()
+	// TODO: []
+	// TODO: MinLen()
+	// TODO: -=
+	// TODO: +=
+	// TODO: vector * scalar
+	// TODO: scalar * vector
+	// TODO: vector / scalar
+	// TODO: scalar / vector
 
 	TestSuite vector3Suite("Vector3f");
 	vector3Suite.AddTest(new Vector3fUnaryOpTest<Vector3fNegation>());
@@ -1867,10 +1974,19 @@ int main(int argc, char* argv[])
 	vector3Suite.AddTest(new Vector3fBinaryOpTest<Vector3fCompDiv>());
 	vector3Suite.AddTest(new Vector3fBinaryOpTest<Vector3fCrossProduct>());
 	vector3Suite.RunTests();
+	// TODO: construct from 3 scalars.
 	// TODO: SetZero()
 	// TODO: Set()
 	// TODO: LenSq()
 	// TODO: Lerp()
+	// TODO: []
+	// TODO: MinLen()
+	// TODO: -=
+	// TODO: +=
+	// TODO: vector * scalar
+	// TODO: scalar * vector
+	// TODO: vector / scalar
+	// TODO: scalar / vector
 
 	TestSuite vector4Suite("Vector4f");
 	vector4Suite.AddTest(new Vector4fUnaryOpTest<Vector4fNegation>());
@@ -1884,11 +2000,19 @@ int main(int argc, char* argv[])
 	vector4Suite.AddTest(new Vector4fBinaryOpTest<Vector4fCompMul>());
 	vector4Suite.AddTest(new Vector4fBinaryOpTest<Vector4fCompDiv>());
 	vector4Suite.RunTests();
+	// TODO: construct from 4 scalars.
 	// TODO: SetZero()
 	// TODO: Set()
-	// TODO: []
 	// TODO: LenSq()
 	// TODO: Lerp()
+	// TODO: []
+	// TODO: MinLen()
+	// TODO: -=
+	// TODO: +=
+	// TODO: vector * scalar
+	// TODO: scalar * vector
+	// TODO: vector / scalar
+	// TODO: scalar / vector
 
 	TestSuite quatSuite("Quatf");
 	quatSuite.AddTest(new QuatfUnaryOpTest<QuatfRotate>());
@@ -1901,10 +2025,14 @@ int main(int argc, char* argv[])
 	quatSuite.AddTest(new QuatfBinaryOpTest<QuatfAddition>());
 	quatSuite.AddTest(new QuatfBinaryOpTest<QuatfSubtraction>());
 	quatSuite.RunTests();
+	// TODO: construct from 4 scalars.
+	// TODO: Set()
+	// TODO: SetZero()
 	// TODO: AxisAngle()
 	// TODO: SetZero()
 	// TODO: LenSq()
-	// TODO: *
+	// TODO: Dot()
+	// TODO: quat
 
 	TestSuite matrixSuite("Matrixf");
 	matrixSuite.AddTest(new MatrixfUnaryOpTest<MatrixfTransform3x3>());
@@ -1917,16 +2045,39 @@ int main(int argc, char* argv[])
 	// TODO: matrix from quat & trans
 	// TODO: matrix from quat, trans & scale
 	// TODO: matrix from axis angle.
+	// TODO: matrix from axes
+	// TODO: matrix from rows
 	// TODO: matrix set scale.
-	// TODO: make projection
-	// TODO: make look-at
-	// TODO: make ident
+	// TODO: Frustum proj
+	// TODO: Ortho proj
+	// TODO: LookAt
+	// TODO: Identity
 	// TODO: matrix addition
 	// TODO: matrix subtraction
 	// TODO: OrthonormalInverse
+	// TODO: Axis getters
+	// TODO: Axis setters
+	// TODO: SetScale uniform
+	// TODO: SetScale non-uniform
+	// TODO: Elem
+	// TODO: GetCol
+	// TODO: GetQuat
+	// TODO: Transpose
 	matrixSuite.RunTests();
 
 	// TODO: Complex Tests
+	// TODO: construct from 2 scalars
+	// TODO: construct from vec2
+	// TODO: ~
+	// TODO: -
+    // TODO: +
+	// TODO: *
+	// TODO: /
+	// TODO: * scalar
+	// TODO: ExpI
+	// TODO: sqrt
+	// TODO: exp
+	// TODO: log
 
 	return 0;
 }
