@@ -782,10 +782,10 @@ template <typename Scalar>
 inline Matrix<Scalar> Matrix<Scalar>::Rows(const Vector4<Scalar>& row0In, const Vector4<Scalar>& row1In, const Vector4<Scalar>& row2In, const Vector4<Scalar>& row3In)
 {
 	Matrix<Scalar> m;
-	m.row0 = row0In;
-	m.row1 = row1In;
-	m.row2 = row2In;
-	m.row3 = row3In;
+	m.col0.x = row0In.x; m.col1.x = row0In.y; m.col2.x = row0In.z; m.col3.x = row0In.w;
+	m.col0.y = row1In.x; m.col1.y = row1In.y; m.col2.y = row1In.z; m.col3.y = row1In.w;
+	m.col0.z = row2In.x; m.col1.z = row2In.y; m.col2.z = row2In.z; m.col3.z = row2In.w;
+	m.col0.w = row3In.x; m.col1.w = row3In.y; m.col2.w = row3In.z; m.col3.w = row3In.w;
 	return m;
 }
 
@@ -831,10 +831,10 @@ template <typename Scalar>
 inline Matrix<Scalar> Matrix<Scalar>::Identity()
 {
 	Matrix<Scalar> m;
-	m.row0.Set(1, 0, 0, 0);
-	m.row1.Set(0, 1, 0, 0);
-	m.row2.Set(0, 0, 1, 0);
-	m.row3.Set(0, 0, 0, 1);
+	m.col0.Set(1, 0, 0, 0);
+	m.col1.Set(0, 1, 0, 0);
+	m.col2.Set(0, 0, 1, 0);
+	m.col3.Set(0, 0, 0, 1);
 	return m;
 }
 
@@ -844,10 +844,10 @@ inline Matrix<Scalar> Matrix<Scalar>::Frustum(Scalar fovy, Scalar aspect, Scalar
 {
 	Matrix<Scalar> m;
 	Scalar f = 1.0f / tan(fovy / 2);
-	m.row0.Set(f / aspect, 0, 0, 0);
-	m.row1.Set(0, f, 0, 0);
-	m.row2.Set(0, 0, (farVal + nearVal) / (nearVal - farVal), (2 * farVal * nearVal) / (nearVal - farVal));
-	m.row3.Set(0, 0, -1, 0);
+	m.col0.Set(f / aspect, 0, 0, 0);
+	m.col1.Set(0, f, 0, 0);
+	m.col2.Set(0, 0, (farVal + nearVal) / (nearVal - farVal), -1);
+	m.col3.Set(0, 0, (2 * farVal * nearVal) / (nearVal - farVal), 0);
 	return m;
 }
 
@@ -859,10 +859,10 @@ inline Matrix<Scalar> Matrix<Scalar>::Ortho(Scalar left, Scalar right, Scalar bo
 	Scalar tx = -(right + left) / (right - left);
 	Scalar ty = -(top + bottom) / (top - bottom);
 	Scalar tz = -(farVal + nearVal) / (farVal - nearVal);
-	m.row0.Set(2.0f / (right - left), 0, 0, tx);
-	m.row1.Set(0, 2.0f / (top - bottom), 0, ty);
-	m.row2.Set(0, 0, -2.0f / (farVal - nearVal), tz);
-	m.row3.Set(0, 0, 0, 1);
+	m.col0.Set(2.0f / (right - left), 0, 0, 0);
+	m.col1.Set(0, 2.0f / (top - bottom), 0, 0);
+	m.col2.Set(0, 0, -2.0f / (farVal - nearVal), 0);
+	m.col3.Set(tx, ty, tz, 1);
 	return m;
 }
 
@@ -903,61 +903,95 @@ inline Matrix<Scalar> Matrix<Scalar>::LookAt(const Vector3<Scalar>& eye, const V
 template <typename Scalar>
 inline Vector3<Scalar> Matrix<Scalar>::GetXAxis() const
 {
-	return Vector3<Scalar>(row0.x, row1.x, row2.x);
+	return Vector3<Scalar>(col0.x, col0.y, col0.z);
 }
 
 template <typename Scalar>
 inline Vector3<Scalar> Matrix<Scalar>::GetYAxis() const
 {
-	return Vector3<Scalar>(row0.y, row1.y, row2.y);
+	return Vector3<Scalar>(col1.x, col1.y, col1.z);
 }
 
 template <typename Scalar>
 inline Vector3<Scalar> Matrix<Scalar>::GetZAxis() const
 {
-	return Vector3<Scalar>(row0.z, row1.z, row2.z);
+	return Vector3<Scalar>(col2.x, col2.y, col2.z);
 }
 
 template <typename Scalar>
 inline Vector3<Scalar> Matrix<Scalar>::GetTrans() const
 {
-	return Vector3<Scalar>(row0.w, row1.w, row2.w);
+	return Vector3<Scalar>(col3.x, col3.y, col3.z);
 }
 
 template <typename Scalar>
 inline void Matrix<Scalar>::SetXAxis(const Vector3<Scalar>& xAxis)
 {
-	row0.x = xAxis.x;
-	row1.x = xAxis.y;
-	row2.x = xAxis.z;
-	row3.x = 0.0f;
+	col0.Set(xAxis.x, xAxis.y, xAxis.z, 0);
 }
 
 template <typename Scalar>
 inline void Matrix<Scalar>::SetYAxis(const Vector3<Scalar>& yAxis)
 {
-	row0.y = yAxis.x;
-	row1.y = yAxis.y;
-	row2.y = yAxis.z;
-	row3.y = 0.0f;
+	col1.Set(yAxis.x, yAxis.y, yAxis.z, 0);
 }
 
 template <typename Scalar>
 inline void Matrix<Scalar>::SetZAxis(const Vector3<Scalar>& zAxis)
 {
-	row0.z = zAxis.x;
-	row1.z = zAxis.y;
-	row2.z = zAxis.z;
-	row3.z = 0.0f;
+	col2.Set(zAxis.x, zAxis.y, zAxis.z, 0);
 }
 
 template <typename Scalar>
 inline void Matrix<Scalar>::SetTrans(const Vector3<Scalar>& trans)
 {
-	row0.w = trans.x;
-	row1.w = trans.y;
-	row2.w = trans.z;
-	row3.w = 1.0f;
+	col3.Set(trans.x, trans.y, trans.z, 0);
+}
+
+// Row accessors
+template <typename Scalar>
+inline Vector4<Scalar> Matrix<Scalar>::GetRow(int index) const
+{
+	Scalar* p = (Scalar*)&col0;
+	return Vector4<Scalar>(p[0 + index], p[4 + index], p[8 + index], p[12 + index]);
+}
+
+template <typename Scalar>
+inline void Matrix<Scalar>::SetRow(int index, const Vector4<Scalar>& row)
+{
+	Scalar* p = (Scalar*)&col0;
+	p[0 + index] = row.x;
+	p[4 + index] = row.y;
+	p[8 + index] = row.z;
+	p[12 + index] = row.w;
+}
+
+// Column accessors
+template <typename Scalar>
+inline Vector4<Scalar> Matrix<Scalar>::GetCol(int index) const
+{
+	Vector4<Scalar>* v = (Vector4<Scalar>*)&col0;
+	return v[index];
+}
+
+template <typename Scalar>
+inline void Matrix<Scalar>::SetCol(int index, const Vector4<Scalar>& col)
+{
+	Vector4<Scalar>* v = (Vector4<Scalar>*)&col0;
+	v[index] = col;
+}
+
+// Element accessors
+template <typename Scalar>
+inline const Scalar& Matrix<Scalar>::Elem(int r, int c) const
+{
+	return ((Scalar*)&col0)[c * 4 + r];
+}
+
+template <typename Scalar>
+inline Scalar& Matrix<Scalar>::Elem(int r, int c)
+{
+	return ((Scalar*)&col0)[c * 4 + r];
 }
 
 // Multiplies by uniform scale.
@@ -976,26 +1010,6 @@ inline void Matrix<Scalar>::SetScale(const Vector3<Scalar>& scale)
 	SetXAxis(GetXAxis() * scale.x);
 	SetYAxis(GetYAxis() * scale.y);
 	SetZAxis(GetZAxis() * scale.z);
-}
-
-// Element accessors
-template <typename Scalar>
-inline const Scalar& Matrix<Scalar>::Elem(int r, int c) const
-{
-	return ((Scalar*)&row0)[r * 4 + c];
-}
-
-template <typename Scalar>
-inline Scalar& Matrix<Scalar>::Elem(int r, int c)
-{
-	return ((Scalar*)&row0)[r * 4 + c];
-}
-
-// Column accessor
-template <typename Scalar>
-inline Vector4<Scalar> Matrix<Scalar>::GetCol(int c) const
-{
-	return Vector4<Scalar>(row0[c], row1[c], row2[c], row3[c]);
 }
 
 // Returns the rotation component of this Matrix.
@@ -1037,21 +1051,32 @@ Quat<Scalar> Matrix<Scalar>::GetQuat() const
 template <typename Scalar>
 inline Vector3<Scalar> Matrix<Scalar>::Mul3x3(const Vector3<Scalar>& v) const
 {
-	return Vector3<Scalar>(Dot3(row0, v), Dot3(row1, v), Dot3(row2, v));
+	Vector4<Scalar> r = col0 * v.x;
+	r += col1 * v.y;
+	r += col2 * v.z;
+	return Vector3<Scalar>(r.x, r.y, r.z);
 }
 
 // Multiply the 3x4 component of this Matrix with a column vector. (w component of vector is 1.0)
 template <typename Scalar>
 inline Vector3<Scalar> Matrix<Scalar>::Mul3x4(const Vector3<Scalar>& v) const
 {
-	return Vector3<Scalar>(Dot3(row0, v) + row0.w, Dot3(row1, v) + row1.w, Dot3(row2, v) + row2.w);
+	Vector4<Scalar> r = col0 * v.x;
+	r += col1 * v.y;
+	r += col2 * v.z;
+	r += col3;
+	return Vector3<Scalar>(r.x, r.y, r.z);
 }
 
 // Multiply this Matrix with a column vector.
 template <typename Scalar>
 inline Vector4<Scalar> Matrix<Scalar>::Mul4x4(const Vector4<Scalar>& v) const
 {
-	return Vector4<Scalar>(Dot(row0, v), Dot(row1, v), Dot(row2, v), Dot(row3, v));
+	Vector4<Scalar> r = col0 * v.x;
+	r += col1 * v.y;
+	r += col2 * v.z;
+	r += col3 * v.w;
+	return r;
 }
 
 // Returns the transpose of this Matrix
@@ -1088,29 +1113,43 @@ Matrix<Scalar> Matrix<Scalar>::FullInverse() const
 template <typename Scalar>
 Matrix<Scalar> operator+(const Matrix<Scalar>& a, const Matrix<Scalar>& b)
 {
-	return Matrix<Scalar>::Rows(a.row0 + b.row0, a.row1 + b.row1, a.row2 + b.row2, a.row3 + b.row2);
+	Matrix<Scalar> m;
+	m.col0 = a.col0 + b.col0;
+	m.col1 = a.col1 + b.col1;
+	m.col2 = a.col2 + b.col2;
+	m.col3 = a.col3 + b.col3;
+	return m;
 }
 
 // Matrix subtraction
 template <typename Scalar>
 Matrix<Scalar> operator-(const Matrix<Scalar>& a, const Matrix<Scalar>& b)
 {
-	return Matrix<Scalar>::Rows(a.row0 - b.row0, a.row1 - b.row1, a.row2 - b.row2, a.row3 - b.row2);
+	Matrix<Scalar> m;
+	m.col0 = a.col0 - b.col0;
+	m.col1 = a.col1 - b.col1;
+	m.col2 = a.col2 - b.col2;
+	m.col3 = a.col3 - b.col3;
+	return m;
 }
 
 // Matrix multiplication
 template <typename Scalar>
 Matrix<Scalar> operator*(const Matrix<Scalar>& a, const Matrix<Scalar>& b)
 {
-	Matrix<Scalar> bt = b.Transpose();
-	return Matrix<Scalar>::Rows( Vector4<Scalar>(Dot(a.row0, bt.row0), Dot(a.row0, bt.row1), 
-												 Dot(a.row0, bt.row2), Dot(a.row0, bt.row3)), 
-								 Vector4<Scalar>(Dot(a.row1, bt.row0), Dot(a.row1, bt.row1), 
-												 Dot(a.row1, bt.row2), Dot(a.row1, bt.row3)),
-								 Vector4<Scalar>(Dot(a.row2, bt.row0), Dot(a.row2, bt.row1), 
-												 Dot(a.row2, bt.row2), Dot(a.row2, bt.row3)),
-								 Vector4<Scalar>(Dot(a.row3, bt.row0), Dot(a.row3, bt.row1), 
-												 Dot(a.row3, bt.row2), Dot(a.row3, bt.row3)));
+	Vector4<Scalar> a_row0 = a.GetRow(0);
+	Vector4<Scalar> a_row1 = a.GetRow(1);
+	Vector4<Scalar> a_row2 = a.GetRow(2);
+	Vector4<Scalar> a_row3 = a.GetRow(3);
+
+	return Matrix<Scalar>::Rows(Vector4<Scalar>(Dot(a_row0, b.col0), Dot(a_row0, b.col1), 
+												Dot(a_row0, b.col2), Dot(a_row0, b.col3)),
+								Vector4<Scalar>(Dot(a_row1, b.col0), Dot(a_row1, b.col1), 
+												Dot(a_row1, b.col2), Dot(a_row1, b.col3)),
+								Vector4<Scalar>(Dot(a_row2, b.col0), Dot(a_row2, b.col1), 
+												Dot(a_row2, b.col2), Dot(a_row2, b.col3)),
+								Vector4<Scalar>(Dot(a_row3, b.col0), Dot(a_row3, b.col1), 
+												Dot(a_row3, b.col2), Dot(a_row3, b.col3)));
 }
 
 template <typename T>
@@ -1136,10 +1175,11 @@ bool FullInverse(const Matrix<Scalar>& m, Matrix<Scalar>& result)
 
 	// initialize the augmented temp matrix. 
 	// the first four columns are from m
-	temp[0][0] = m.row0.x; temp[0][1] = m.row0.y; temp[0][2] = m.row0.z; temp[0][3] = m.row0.w;
-	temp[1][0] = m.row1.x; temp[1][1] = m.row1.y; temp[1][2] = m.row1.z; temp[1][3] = m.row1.w;
-	temp[2][0] = m.row2.x; temp[2][1] = m.row2.y; temp[2][2] = m.row2.z; temp[2][3] = m.row2.w;
-	temp[3][0] = m.row3.x; temp[3][1] = m.row3.y; temp[3][2] = m.row3.z; temp[3][3] = m.row3.w;
+	temp[0][0] = m.col0.x; temp[0][1] = m.col1.x; temp[0][2] = m.col2.x; temp[0][3] = m.col3.x;
+	temp[1][0] = m.col0.y; temp[1][1] = m.col1.y; temp[1][2] = m.col2.y; temp[1][3] = m.col3.y;
+	temp[2][0] = m.col0.z; temp[2][1] = m.col1.z; temp[2][2] = m.col2.z; temp[2][3] = m.col3.z;
+	temp[3][0] = m.col0.w; temp[3][1] = m.col1.w; temp[3][2] = m.col2.w; temp[3][3] = m.col3.w;
+
 	// the second four are identity
 	temp[0][4] = 1; temp[0][5] = 0; temp[0][6] = 0; temp[0][7] = 0;
 	temp[1][4] = 0; temp[1][5] = 1; temp[1][6] = 0; temp[1][7] = 0;
@@ -1240,10 +1280,10 @@ bool FullInverse(const Matrix<Scalar>& m, Matrix<Scalar>& result)
 	}
 
 	// init result
-	result.row0.x = row[0][4]; result.row0.y = row[0][5]; result.row0.z = row[0][6]; result.row0.w = row[0][7];
-	result.row1.x = row[1][4]; result.row1.y = row[1][5]; result.row1.z = row[1][6]; result.row1.w = row[1][7];
-	result.row2.x = row[2][4]; result.row2.y = row[2][5]; result.row2.z = row[2][6]; result.row2.w = row[2][7];
-	result.row3.x = row[3][4]; result.row3.y = row[3][5]; result.row3.z = row[3][6]; result.row3.w = row[3][7];
+	result.col0.Set(row[0][4], row[1][4], row[2][4], row[3][4]);
+	result.col1.Set(row[0][5], row[1][5], row[2][5], row[3][5]);
+	result.col2.Set(row[0][6], row[1][6], row[2][6], row[3][6]);
+	result.col3.Set(row[0][7], row[1][7], row[2][7], row[3][7]);
 
 	return true;	
 }
@@ -1253,10 +1293,10 @@ bool FullInverse(const Matrix<Scalar>& m, Matrix<Scalar>& result)
 template <typename Scalar>
 void PrintMatrix(const Matrix<Scalar>& m)
 {
-	printf("| %15.5f, %15.5f, %15.5f, %15.5f |\n", m.row0.x, m.row0.y, m.row0.z, m.row0.w);
-	printf("| %15.5f, %15.5f, %15.5f, %15.5f |\n", m.row1.x, m.row1.y, m.row1.z, m.row1.w);
-	printf("| %15.5f, %15.5f, %15.5f, %15.5f |\n", m.row2.x, m.row2.y, m.row2.z, m.row2.w);
-	printf("| %15.5f, %15.5f, %15.5f, %15.5f |\n", m.row3.x, m.row3.y, m.row3.z, m.row3.w);
+	printf("| %15.5f, %15.5f, %15.5f, %15.5f |\n", m.col0.x, m.col1.x, m.col2.x, m.col3.x);
+	printf("| %15.5f, %15.5f, %15.5f, %15.5f |\n", m.col0.y, m.col1.y, m.col2.y, m.col3.y);
+	printf("| %15.5f, %15.5f, %15.5f, %15.5f |\n", m.col0.z, m.col1.z, m.col2.z, m.col3.z);
+	printf("| %15.5f, %15.5f, %15.5f, %15.5f |\n", m.col0.w, m.col1.w, m.col2.w, m.col3.w);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

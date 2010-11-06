@@ -465,20 +465,25 @@ struct Matrix
 	void SetYAxis(const Vector3<Scalar>& yAxis);
 	void SetZAxis(const Vector3<Scalar>& zAxis);
 	void SetTrans(const Vector3<Scalar>& trans);
+
+	// Row accessors
+	Vector4<Scalar> GetRow(int index) const;
+	void SetRow(int index, const Vector4<Scalar>& row);
+
+	// Column accessors
+	Vector4<Scalar> GetCol(int index) const;
+	void SetCol(int index, const Vector4<Scalar>& col);
 	
+	// Element accessors
+	const Scalar& Elem(int r, int c) const;
+	Scalar& Elem(int r, int c);
+
 	// Multiplies by uniform scale.
 	void SetScale(Scalar scale);
 
 	// Multiplies by non-uniform scale.
 	void SetScale(const Vector3<Scalar>& scale);
 	
-	// Element accessors
-	const Scalar& Elem(int r, int c) const;
-	Scalar& Elem(int r, int c);
-	
-	// Column accessor
-	Vector4<Scalar> GetCol(int c) const;
-
 	// Returns the rotation component of this Matrix.
 	Quat<Scalar> GetQuat() const;
 
@@ -501,10 +506,10 @@ struct Matrix
 	// Full 4x4 Matrix Inverse, returns Identity if matrix has no inverse.
 	Matrix FullInverse() const;
 
-	Vector4<Scalar> row0;
-	Vector4<Scalar> row1;
-	Vector4<Scalar> row2;
-	Vector4<Scalar> row3;
+	Vector4<Scalar> col0;
+	Vector4<Scalar> col1;
+	Vector4<Scalar> col2;
+	Vector4<Scalar> col3;
 };
 
 typedef Matrix<float> Matrixf;
