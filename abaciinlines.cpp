@@ -945,7 +945,7 @@ inline void Matrix<Scalar>::SetZAxis(const Vector3<Scalar>& zAxis)
 template <typename Scalar>
 inline void Matrix<Scalar>::SetTrans(const Vector3<Scalar>& trans)
 {
-	col3.Set(trans.x, trans.y, trans.z, 0);
+	col3.Set(trans.x, trans.y, trans.z, 1);
 }
 
 // Row accessors
@@ -1083,7 +1083,7 @@ inline Vector4<Scalar> Matrix<Scalar>::Mul4x4(const Vector4<Scalar>& v) const
 template <typename Scalar>
 inline Matrix<Scalar> Matrix<Scalar>::Transpose() const
 {
-	return Rows(GetCol(0), GetCol(1), GetCol(2), GetCol(3));
+	return Rows(col0, col1, col2, col3);
 }
 
 // If the 3x3 portion of this Matrix is Orthogonal (i.e. columns are orthogonal unit vectors)
