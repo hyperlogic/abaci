@@ -235,14 +235,14 @@ Matrixd = ExtGen::CClass.new("Matrixd", "mAbaci") do
   define(:method, "Matrixd", "FullInverse", "full_inverse", [])
 
   # accessors
-  define(:get_attrib, "Vector4d", "row0", "row0", [])
-  define(:set_attrib, "Vector4d", "row0", "row0=", [["Vector4d", "v"]])
-  define(:get_attrib, "Vector4d", "row1", "row1", [])
-  define(:set_attrib, "Vector4d", "row1", "row1=", [["Vector4d", "v"]])
-  define(:get_attrib, "Vector4d", "row2", "row2", [])
-  define(:set_attrib, "Vector4d", "row2", "row2=", [["Vector4d", "v"]])
-  define(:get_attrib, "Vector4d", "row3", "row3", [])
-  define(:set_attrib, "Vector4d", "row3", "row3=", [["Vector4d", "v"]])
+  # define(:get_attrib, "Vector4d", "row0", "row0", [])
+  # define(:set_attrib, "Vector4d", "row0", "row0=", [["Vector4d", "v"]])
+  # define(:get_attrib, "Vector4d", "row1", "row1", [])
+  # define(:set_attrib, "Vector4d", "row1", "row1=", [["Vector4d", "v"]])
+  # define(:get_attrib, "Vector4d", "row2", "row2", [])
+  # define(:set_attrib, "Vector4d", "row2", "row2=", [["Vector4d", "v"]])
+  # define(:get_attrib, "Vector4d", "row3", "row3", [])
+  # define(:set_attrib, "Vector4d", "row3", "row3=", [["Vector4d", "v"]])
 
   define(:binary_op, "Matrixd", "add", "+", [["Matrixd", "other"]], "+")
   define(:binary_op, "Matrixd", "sub", "-", [["Matrixd", "other"]], "-")
