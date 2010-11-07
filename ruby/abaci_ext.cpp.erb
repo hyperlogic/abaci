@@ -251,10 +251,10 @@ Matrixd = ExtGen::CClass.new("Matrixd", "mAbaci") do
   define(:custom, "void", "inspect", "inspect", [], <<-CODE)
     char temp[256];
     sprintf(temp, "| %10.3f %10.3f %10.3f %10.3f |\\n| %10.3f %10.3f %10.3f %10.3f |\\n| %10.3f %10.3f %10.3f %10.3f |\\n| %10.3f %10.3f %10.3f %10.3f |\\n", 
-	        self_v.row0.x, self_v.row0.y, self_v.row0.z, self_v.row0.w, 
-			self_v.row1.x, self_v.row1.y, self_v.row1.z, self_v.row1.w,
-			self_v.row2.x, self_v.row2.y, self_v.row2.z, self_v.row2.w,
-			self_v.row3.x, self_v.row3.y, self_v.row3.z, self_v.row3.w);
+	        self_v.col0.x, self_v.col1.x, self_v.col2.x, self_v.col3.x, 
+			self_v.col0.y, self_v.col1.y, self_v.col2.y, self_v.col3.y,
+			self_v.col0.z, self_v.col1.z, self_v.col2.z, self_v.col3.z,
+			self_v.col0.w, self_v.col1.w, self_v.col2.w, self_v.col3.w);
     return rb_str_new2(temp);
   CODE
 
