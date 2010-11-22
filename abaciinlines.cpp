@@ -603,6 +603,13 @@ inline Quat<Scalar> Quat<Scalar>::AxisAngle(const Vector3<Scalar>& axis, Scalar 
 	return Quat<Scalar>(n.x, n.y, n.z, w);
 }
 
+// Create identity Quat
+template <typename Scalar>
+inline Quat<Scalar> Quat<Scalar>::Identity()
+{
+	return Quat<Scalar>(0, 0, 0, 1);
+}
+
 // Construct from four Scalars.
 template <typename Scalar>
 inline Quat<Scalar>::Quat(Scalar iIn, Scalar jIn, Scalar kIn, Scalar rIn) : i(iIn), j(jIn), k(kIn), r(rIn) {}

@@ -354,6 +354,9 @@ struct Quat
 {
 	// Create from axis and angle
 	static Quat AxisAngle(const Vector3<Scalar>& axis, Scalar angle);
+	
+	// Create identity Quat
+	static Quat Identity();
 
 	// Uninitialized by default.
 	Quat() {}
