@@ -49,11 +49,15 @@ int RandomInt(int min, int max);
 template <typename Scalar> 
 Scalar RandomScalar(Scalar min, Scalar max);
 
+
 //////////////////////////////////////////////////////
 
 template <typename Scalar>
 struct Vector2
 {
+    // Generates a random vector on the unit circle.
+	static Vector2 RandomUnitVector();
+
 	// Uninitialized by default.
 	Vector2() {}
 
@@ -155,6 +159,9 @@ Vector2<Scalar> operator/(const Vector2<Scalar>& a, const Vector2<Scalar>& b);
 template <typename Scalar>
 struct Vector3
 {
+    // Generates a random vector on the unit sphere.
+	static Vector3 RandomUnitVector();
+
 	// Uninitialized by default.
 	Vector3() {}
 
@@ -424,7 +431,10 @@ Quat<Scalar> operator*(const Quat<Scalar>& a, const Quat<Scalar>& b);
 
 //////////////////////////////////////////////////////
 
-// column major
+// Memory layout is column-major for OpenGL.
+// However, the API uses row-major notation. Vector4f vv = (A * B * C).Mul4x4(v), means
+// apply transformation C to v then B then A.  
+// This follows the mathematical convention of using column vectors.
 template <typename Scalar>
 struct Matrix
 {
@@ -433,6 +443,12 @@ struct Matrix
 
 	// Create a Matrix from four row vectors.
 	static Matrix Rows(const Vector4<Scalar>& row0In, const Vector4<Scalar>& row1In, const Vector4<Scalar>& row2In, const Vector4<Scalar>& row3In);
+
+	// Create a Matrix from a translation.
+	static Matrix Trans(const Vector3<Scalar>& trans);
+
+	// Create a Matrix from a quaternion.
+	static Matrix FromQuat(const Quat<Scalar>& q);
 
 	// Create a Matrix from a Quat and a translation.
 	static Matrix QuatTrans(const Quat<Scalar>& q, const Vector3<Scalar>& trans);

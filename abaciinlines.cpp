@@ -73,8 +73,17 @@ Scalar RandomScalar(Scalar min, Scalar max)
 	return Lerp(min, max, t);
 }
 
+
 ////////////////////////////////////////////////////////////////////////////////
 // Vector2
+
+// returns a random vector on the unit circle.
+template <typename Scalar>
+Vector2<Scalar> Vector2<Scalar>::RandomUnitVector()
+{
+	Scalar theta = RandomScalar(0.0f, (Scalar)(2 * PI));
+	return Vector2<Scalar>(cos(theta), sin(theta));
+}
 
 // Construct from two Scalars
 template <typename Scalar>
@@ -249,8 +258,18 @@ inline Vector2<Scalar> operator/(const Vector2<Scalar>& a, const Vector2<Scalar>
 	return Vector2<Scalar>(a.x / b.x, a.y / b.y);
 }
 
+
 ////////////////////////////////////////////////////////////////////////////////
 // Vector3
+
+// returns a random vector on the unit sphere.
+template <typename Scalar>
+Vector3<Scalar> Vector3<Scalar>::RandomUnitVector()
+{
+	Scalar theta = RandomScalar(0.0f, (Scalar)(2 * PI));
+	Scalar phi = RandomScalar(0.0f, (Scalar)(2 * PI));
+	return Vector3<Scalar>(cos(theta) * sin(phi), sin(theta) * sin(phi), cos(phi));
+}
 
 // Construct from three Scalars
 template <typename Scalar>
@@ -421,6 +440,7 @@ inline Vector3<Scalar> operator/(const Vector3<Scalar>& a, const Vector3<Scalar>
 {
 	return Vector3<Scalar>(a.x / b.x, a.y / b.y, a.z / b.z);
 }
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // Vector4
@@ -793,6 +813,31 @@ inline Matrix<Scalar> Matrix<Scalar>::Rows(const Vector4<Scalar>& row0In, const 
 	m.col0.y = row1In.x; m.col1.y = row1In.y; m.col2.y = row1In.z; m.col3.y = row1In.w;
 	m.col0.z = row2In.x; m.col1.z = row2In.y; m.col2.z = row2In.z; m.col3.z = row2In.w;
 	m.col0.w = row3In.x; m.col1.w = row3In.y; m.col2.w = row3In.z; m.col3.w = row3In.w;
+	return m;
+}
+
+
+// Create a Matrix from a translation.
+template <typename Scalar>
+inline Matrix<Scalar> Matrix<Scalar>::Trans(const Vector3<Scalar>& trans)
+{
+	Matrix<Scalar> m;
+	m.SetXAxis(Vector3<Scalar>(1, 0, 0));
+	m.SetYAxis(Vector3<Scalar>(0, 1, 0));
+	m.SetZAxis(Vector3<Scalar>(0, 0, 1));
+	m.SetTrans(trans);
+	return m;
+}
+
+// Create a Matrix from a quaternion.
+template <typename Scalar>
+inline Matrix<Scalar> Matrix<Scalar>::FromQuat(const Quat<Scalar>& q)
+{
+	Matrix<Scalar> m;
+	m.SetXAxis(q.Rotate(Vector3<Scalar>(1, 0, 0)));
+	m.SetYAxis(q.Rotate(Vector3<Scalar>(0, 1, 0)));
+	m.SetZAxis(q.Rotate(Vector3<Scalar>(0, 0, 1)));
+	m.SetTrans(Vector3<Scalar>(0, 0, 0));
 	return m;
 }
 
