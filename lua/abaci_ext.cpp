@@ -139,9 +139,9 @@ static const luaL_Reg vec2_lib_m [] = {
 	{NULL, NULL}
 };
 
-int luaopen_abaci(lua_State* L)
+extern "C" int luaopen_abaci(lua_State* L)
 {
-	luaL_newmetatable(L, "abaci.abaci");
+//	luaL_newmetatable(L, "abaci.abaci");
 	luaL_register(L, "abaci", abaci_lib_f);
 
 	luaL_newmetatable(L, "abaci.vec2");
@@ -149,6 +149,7 @@ int luaopen_abaci(lua_State* L)
 	lua_pushvalue(L, -1);
 	lua_setfield(L, -2, "__index");
 	luaL_register(L, NULL, vec2_lib_m);
+
 	
 	luaL_register(L, "vec2", vec2_lib_f);
 
