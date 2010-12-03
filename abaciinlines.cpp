@@ -1381,6 +1381,14 @@ template <typename Scalar>
 inline Complex<Scalar>::Complex(const Vector2<Scalar>& vector2In) :
 	r(vector2In.x), i(vector2In.y) {}
 
+// Set from two Scalars
+template <typename Scalar>
+inline void Complex<Scalar>::Set(Scalar rIn, Scalar iIn)
+{
+	r = rIn;
+	i = iIn;
+}
+
 // Length
 template <typename Scalar>
 inline Scalar Complex<Scalar>::Len() const
@@ -1395,13 +1403,20 @@ inline Scalar Complex<Scalar>::LenSq() const
 	return Dot(*this, *this);
 }
 
+// Unit
+template <typename Scalar>
+inline Complex<Scalar> Complex<Scalar>::Unit() const
+{
+	return *this / Complex<Scalar>(Len(), 0);
+}
+
 // Returns a vector with the same direction, but with a Len() <= len.
 template <typename Scalar>
 inline Complex<Scalar> Complex<Scalar>::MinLen(Scalar len) const
 {
 	Scalar l = Len();
 	if (l > len)
-		return (*this / l) * len;
+		return (*this / Complex<Scalar>(l, 0)) * Complex<Scalar>(len, 0);
 	else
 		return *this;
 }
@@ -1410,7 +1425,7 @@ inline Complex<Scalar> Complex<Scalar>::MinLen(Scalar len) const
 template <typename Scalar>
 inline Scalar Dot(const Complex<Scalar>& a, const Complex<Scalar>& b)
 {
-	return a.r * b.r + b.i * b.i;
+	return a.r * b.r + a.i * b.i;
 }
 
 // Complex conjugate
@@ -1494,13 +1509,6 @@ inline Complex<Scalar> operator/(const Complex<Scalar>& a, const Complex<Scalar>
 	return Complex<Scalar>((aa * cc + bb * dd) / denom, (bb * cc - aa * dd) / denom);
 }
 
-// e ^ 0 + xi
-template <typename Scalar>
-inline Complex<Scalar> ExpI(Scalar x)
-{
-	return Complex<Scalar>(cos(x), sin(x));
-}
-
 // Square root
 template <typename Scalar>
 Complex<Scalar> sqrt(const Complex<Scalar>& z)
@@ -1522,17 +1530,24 @@ Complex<Scalar> sqrt(const Complex<Scalar>& z)
 	}
 }
 
-// Exponent
+// Exponent e ^ z
 template <typename Scalar>
-Complex<Scalar> exp(const Complex<Scalar>& z)
+Complex<Scalar> Exp(const Complex<Scalar>& z)
 {
 	Scalar e = exp(z.r);
 	return Complex<Scalar>(e * cos(z.i), e * sin(z.i));
 }
 
-// Natural Logarithm
+// e ^ (0 + xi)
 template <typename Scalar>
-Complex<Scalar> log(const Complex<Scalar>& z)
+inline Complex<Scalar> ExpI(Scalar x)
+{
+	return Complex<Scalar>(cos(x), sin(x));
+}
+
+// Natural Logarithm, ln(z)
+template <typename Scalar>
+Complex<Scalar> Log(const Complex<Scalar>& z)
 {
 	return Complex<Scalar>(log(z.Len()), atan2(z.i, z.r));
 }

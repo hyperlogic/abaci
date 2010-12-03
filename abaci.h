@@ -581,11 +581,17 @@ struct Complex
 	// Construct from a Vector2
 	Complex(const Vector2<Scalar>& vector2In);
 
+	// Set from two Scalars
+	void Set(Scalar rIn, Scalar iIn);
+
 	// Length
 	Scalar Len() const;
 
 	// Square of length
 	Scalar LenSq() const;
+
+    // Unit
+    Complex Unit() const;
 
 	// Returns a vector with the same direction, but with a Len() <= len.
 	Complex MinLen(Scalar len) const;
@@ -637,21 +643,21 @@ Complex<Scalar> operator*(Scalar scalar, const Complex<Scalar>& c);
 template <typename Scalar>
 Complex<Scalar> operator*(const Complex<Scalar>& c, Scalar scalar);
 
-// e ^ 0 + xi
+// Square root
+template <typename Scalar>
+Complex<Scalar> Sqrt(const Complex<Scalar>& z);
+
+// Exponent e ^ z
+template <typename Scalar>
+Complex<Scalar> Exp(const Complex<Scalar>& z);
+
+// e ^ (0 + xi)
 template <typename Scalar>
 Complex<Scalar> ExpI(Scalar x);
 
-// Square root
+// Natural Logarithm, ln(z)
 template <typename Scalar>
-Complex<Scalar> sqrt(const Complex<Scalar>& z);
-
-// Exponent
-template <typename Scalar>
-Complex<Scalar> exp(const Complex<Scalar>& z);
-
-// Natural Logarithm
-template <typename Scalar>
-Complex<Scalar> log(const Complex<Scalar>& z);
+Complex<Scalar> Log(const Complex<Scalar>& z);
 
 
 // inlines
