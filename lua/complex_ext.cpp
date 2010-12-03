@@ -255,21 +255,10 @@ static int complex_lenop(lua_State* L)
     return 1;
 }
 
-// TODO: support numbers! i.e. vec * num
-#define BINARY_VEC_OP_FUNC(name, op)            \
-    static int complex_##name(lua_State* L)     \
-    {                                           \
-        Complexf* a = check_complex(L, 1);      \
-        Complexf* b = check_complex(L, 2);      \
-        new_complex(L, result);                 \
-        *result = *a op *b;                     \
-        return 1;                               \
-    }
-
-BINARY_VEC_OP_FUNC(add, +)
-BINARY_VEC_OP_FUNC(sub, -)
-BINARY_VEC_OP_FUNC(mul, *)
-BINARY_VEC_OP_FUNC(div, /)
+BINARY_VEC_OP_FUNC(add, Complexf, complex, operator+)
+BINARY_VEC_OP_FUNC(sub, Complexf, complex, operator-)
+BINARY_VEC_OP_FUNC2(mul, Complexf, complex, operator*)
+BINARY_VEC_OP_FUNC2(div, Complexf, complex, operator/)
 
 static int complex_dot(lua_State* L)
 {

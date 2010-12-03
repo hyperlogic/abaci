@@ -211,21 +211,10 @@ static int vec2_lenop(lua_State* L)
     return 1;
 }
 
-// TODO: support numbers! i.e. vec * num
-#define BINARY_VEC_OP_FUNC(name, op)            \
-    static int vec2_##name(lua_State* L)        \
-    {                                           \
-        Vector2f* a = check_vec2(L, 1);         \
-        Vector2f* b = check_vec2(L, 2);         \
-        new_vec2(L, result);                    \
-        *result = *a op *b;                     \
-        return 1;                               \
-    }
-
-BINARY_VEC_OP_FUNC(add, +)
-BINARY_VEC_OP_FUNC(sub, -)
-BINARY_VEC_OP_FUNC(mul, *)
-BINARY_VEC_OP_FUNC(div, /)
+BINARY_VEC_OP_FUNC(add, Vector2f, vec2, operator+)
+BINARY_VEC_OP_FUNC(sub, Vector2f, vec2, operator-)
+BINARY_VEC_OP_FUNC2(mul, Vector2f, vec2, operator*)
+BINARY_VEC_OP_FUNC2(div, Vector2f, vec2, operator/)
 
 static int vec2_dot(lua_State* L)
 {

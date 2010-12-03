@@ -278,19 +278,9 @@ static int quat_lenop(lua_State* L)
     return 1;
 }
 
-#define BINARY_VEC_OP_FUNC(name, op)            \
-    static int quat_##name(lua_State* L)        \
-    {                                           \
-        Quatf* a = check_quat(L, 1);            \
-        Quatf* b = check_quat(L, 2);            \
-        new_quat(L, result);                    \
-        *result = *a op *b;                     \
-        return 1;                               \
-    }
-
-BINARY_VEC_OP_FUNC(add, +)
-BINARY_VEC_OP_FUNC(sub, -)
-BINARY_VEC_OP_FUNC(mul, *)
+BINARY_VEC_OP_FUNC(add, Quatf, quat, operator+)
+BINARY_VEC_OP_FUNC(sub, Quatf, quat, operator-)
+BINARY_VEC_OP_FUNC(mul, Quatf, quat, operator*)
 
 static int quat_dot(lua_State* L)
 {

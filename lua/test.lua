@@ -117,10 +117,26 @@ function vec2_test()
     assert(eq(prod.x, a.x * b.x))
     assert(eq(prod.y, a.y * b.y))
 
+    -- test mul by scalar
+    prod = a * 2
+    assert(eq(prod.x, a.x * 2))
+    assert(eq(prod.y, a.y * 2))
+    prod = 2 * a
+    assert(eq(prod.x, a.x * 2))
+    assert(eq(prod.y, a.y * 2))
+
     -- div
     quo = a / b
     assert(eq(quo.x, a.x / b.x))
     assert(eq(quo.y, a.y / b.y))
+
+    -- test div by scalar
+    prod = a / 2
+    assert(eq(prod.x, a.x / 2))
+    assert(eq(prod.y, a.y / 2))
+    prod = 2 / a
+    assert(eq(prod.x, 2 / a.x))
+    assert(eq(prod.y, 2 / a.y))
 
     -- dot
     dot = a ^ b

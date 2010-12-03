@@ -42,4 +42,57 @@ extern "C" int luaopen_abaci(lua_State* L);
 	luaL_getmetatable(L, "abaci.complex");                            \
 	lua_setmetatable(L, -2)
 
+
+// this version only supports vec * vec
+#define BINARY_VEC_OP_FUNC(func, c_type, lua_type, op)              \
+    static int lua_type##_##func(lua_State* L)                      \
+    {                                                               \
+        c_type * a = check_##lua_type(L, 1);                        \
+        c_type * b = check_##lua_type(L, 2);                        \
+        new_##lua_type(L, result);                                  \
+        *result = op(*a, *b);                                       \
+        return 1;                                                   \
+    }
+
+// this version supports vec * num and num * vec
+#define BINARY_VEC_OP_FUNC2(func, c_type, lua_typename, op)          \
+    static int lua_typename##_##func(lua_State* L)                   \
+    {                                                                \
+        luaL_checkany(L, 1);                                         \
+        luaL_checkany(L, 2);                                         \
+        int a_type = lua_type(L, 1);                                 \
+        int b_type = lua_type(L, 2);                                 \
+        if (a_type == LUA_TUSERDATA && b_type == LUA_TUSERDATA)      \
+        {                                                            \
+            c_type * a = check_##lua_typename(L, 1);                 \
+            c_type * b = check_##lua_typename(L, 2);                 \
+            new_##lua_typename(L, result);                           \
+            *result = op(*a, *b);                                    \
+            return 1;                                                \
+        }                                                            \
+        else if (a_type == LUA_TNUMBER && b_type == LUA_TUSERDATA)   \
+        {                                                            \
+            lua_Number a = luaL_checknumber(L, 1);                   \
+            c_type * b = check_##lua_typename(L, 2);                 \
+            new_##lua_typename(L, result);                           \
+            *result = op((float)a, *b);                              \
+            return 1;                                                \
+        }                                                            \
+        else if (a_type == LUA_TUSERDATA && b_type == LUA_TNUMBER)   \
+        {                                                            \
+            c_type * a = check_##lua_typename(L, 1);                 \
+            lua_Number b = luaL_checknumber(L, 2);                   \
+            new_##lua_typename(L, result);                           \
+            *result = op(*a, (float)b);                              \
+            return 1;                                                \
+        }                                                            \
+        else                                                         \
+        {                                                            \
+            lua_pushstring(L, " lua_type : bad args");               \
+            lua_error(L);                                            \
+            return 0;                                                \
+        }                                                            \
+    }
+
+
 #endif

@@ -217,21 +217,10 @@ static int vec4_lenop(lua_State* L)
     return 1;
 }
 
-// TODO: support numbers! i.e. vec * num
-#define BINARY_VEC_OP_FUNC(name, op)            \
-    static int vec4_##name(lua_State* L)        \
-    {                                           \
-        Vector4f* a = check_vec4(L, 1);         \
-        Vector4f* b = check_vec4(L, 2);         \
-        new_vec4(L, result);                    \
-        *result = *a op *b;                     \
-        return 1;                               \
-    }
-
-BINARY_VEC_OP_FUNC(add, +)
-BINARY_VEC_OP_FUNC(sub, -)
-BINARY_VEC_OP_FUNC(mul, *)
-BINARY_VEC_OP_FUNC(div, /)
+BINARY_VEC_OP_FUNC(add, Vector4f, vec4, operator+)
+BINARY_VEC_OP_FUNC(sub, Vector4f, vec4, operator-)
+BINARY_VEC_OP_FUNC2(mul, Vector4f, vec4, operator*)
+BINARY_VEC_OP_FUNC2(div, Vector4f, vec4, operator/)
 
 static int vec4_dot(lua_State* L)
 {
