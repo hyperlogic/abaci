@@ -6,13 +6,6 @@
 // vec4 functions
 //
 
-#define check_vec4(L, n) (Vector4f*)luaL_checkudata(L, n, "abaci.vec4")
-
-#define new_vec4(L, name)                                             \
-	Vector4f* name = (Vector4f*)lua_newuserdata(L, sizeof(Vector4f)); \
-	luaL_getmetatable(L, "abaci.vec4");                               \
-	lua_setmetatable(L, -2)
-
 static int vec4_new(lua_State* L)
 {
 	lua_Number x = luaL_checknumber(L, 1);

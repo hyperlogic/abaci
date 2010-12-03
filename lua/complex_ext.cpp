@@ -6,20 +6,6 @@
 // complex functions
 //
 
-#define check_complex(L, n) (Complexf*)luaL_checkudata(L, n, "abaci.complex")
-
-#define new_complex(L, name)                                          \
-	Complexf* name = (Complexf*)lua_newuserdata(L, sizeof(Complexf)); \
-	luaL_getmetatable(L, "abaci.complex");                            \
-	lua_setmetatable(L, -2)
-
-#define check_vec2(L, n) (Vector2f*)luaL_checkudata(L, n, "abaci.vec2")
-
-#define new_vec2(L, name)                                             \
-	Vector2f* name = (Vector2f*)lua_newuserdata(L, sizeof(Vector2f)); \
-	luaL_getmetatable(L, "abaci.vec2");                               \
-	lua_setmetatable(L, -2)
-
 static int complex_new(lua_State* L)
 {
     luaL_checkany(L, 1);

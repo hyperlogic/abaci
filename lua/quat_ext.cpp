@@ -6,21 +6,6 @@
 // vec4 functions
 //
 
-#define check_quat(L, n) (Quatf*)luaL_checkudata(L, n, "abaci.quat")
-
-#define new_quat(L, name)                                             \
-	Quatf* name = (Quatf*)lua_newuserdata(L, sizeof(Quatf));          \
-	luaL_getmetatable(L, "abaci.quat");                               \
-	lua_setmetatable(L, -2)
-
-#define check_vec3(L, n) (Vector3f*)luaL_checkudata(L, n, "abaci.vec3")
-
-#define new_vec3(L, name)                                             \
-	Vector3f* name = (Vector3f*)lua_newuserdata(L, sizeof(Vector3f)); \
-	luaL_getmetatable(L, "abaci.vec3");                               \
-	lua_setmetatable(L, -2)
-
-
 static int quat_new(lua_State* L)
 {
 	lua_Number i = luaL_checknumber(L, 1);

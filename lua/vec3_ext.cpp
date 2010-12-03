@@ -6,13 +6,6 @@
 // vec3 functions
 //
 
-#define check_vec3(L, n) (Vector3f*)luaL_checkudata(L, n, "abaci.vec3")
-
-#define new_vec3(L, name)                                             \
-	Vector3f* name = (Vector3f*)lua_newuserdata(L, sizeof(Vector3f)); \
-	luaL_getmetatable(L, "abaci.vec3");                               \
-	lua_setmetatable(L, -2)
-
 static int vec3_new(lua_State* L)
 {
 	lua_Number x = luaL_checknumber(L, 1);

@@ -6,13 +6,6 @@
 // vec2 functions
 //
 
-#define check_vec2(L, n) (Vector2f*)luaL_checkudata(L, n, "abaci.vec2")
-
-#define new_vec2(L, name)                                             \
-	Vector2f* name = (Vector2f*)lua_newuserdata(L, sizeof(Vector2f)); \
-	luaL_getmetatable(L, "abaci.vec2");                               \
-	lua_setmetatable(L, -2)
-
 static int vec2_new(lua_State* L)
 {
 	lua_Number x = luaL_checknumber(L, 1);
