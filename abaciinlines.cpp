@@ -1509,6 +1509,20 @@ inline Complex<Scalar> operator/(const Complex<Scalar>& a, const Complex<Scalar>
 	return Complex<Scalar>((aa * cc + bb * dd) / denom, (bb * cc - aa * dd) / denom);
 }
 
+// Complex division by a scalar denominator (x + 0i)
+template <typename Scalar>
+Complex<Scalar> operator/(const Complex<Scalar>& c, Scalar denominator)
+{
+    return c / Complex<Scalar>(denominator, 0);
+}
+
+// Complex division with a scalar numerator (x + 0i)
+template <typename Scalar>
+Complex<Scalar> operator/(Scalar numerator, const Complex<Scalar>& c)
+{
+    return Complex<Scalar>(numerator, 0) / c;
+}
+
 // Square root
 template <typename Scalar>
 Complex<Scalar> sqrt(const Complex<Scalar>& z)

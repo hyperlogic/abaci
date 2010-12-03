@@ -631,10 +631,6 @@ Complex<Scalar> operator-(const Complex<Scalar>& a, const Complex<Scalar>& b);
 template <typename Scalar>
 Complex<Scalar> operator*(const Complex<Scalar>& a, const Complex<Scalar>& b);
 
-// Complex division.
-template <typename Scalar>
-Complex<Scalar> operator/(const Complex<Scalar>& a, const Complex<Scalar>& b);
-
 // Multiplication by a real number.
 template <typename Scalar>
 Complex<Scalar> operator*(Scalar scalar, const Complex<Scalar>& c);
@@ -642,6 +638,18 @@ Complex<Scalar> operator*(Scalar scalar, const Complex<Scalar>& c);
 // Multiplication by a real number.
 template <typename Scalar>
 Complex<Scalar> operator*(const Complex<Scalar>& c, Scalar scalar);
+
+// Complex division.
+template <typename Scalar>
+Complex<Scalar> operator/(const Complex<Scalar>& a, const Complex<Scalar>& b);
+
+// Complex division by a scalar denominator (x + 0i)
+template <typename Scalar>
+Complex<Scalar> operator/(const Complex<Scalar>& c, Scalar denominator);
+
+// Complex division with a scalar numerator (x + 0i)
+template <typename Scalar>
+Complex<Scalar> operator/(Scalar numerator, const Complex<Scalar>& c);
 
 // Square root
 template <typename Scalar>
