@@ -371,6 +371,12 @@ struct Quat
 	// Construct from four Scalars.
 	Quat(Scalar iIn, Scalar jIn, Scalar kIn, Scalar rIn);
 
+	// const array accessor
+	Scalar operator[](int i) const;
+
+	// array accessor
+	Scalar& operator[](int i);
+
 	// Set from four Scalars.
 	void Set(Scalar iIn, Scalar jIn, Scalar kIn, Scalar rIn);
 
@@ -407,6 +413,10 @@ typedef Quat<double> Quatd;
 // Dot product
 template <typename Scalar>
 Scalar Dot(const Quat<Scalar>& a, const Quat<Scalar>& b);
+
+// Linear interpolation between two vectors
+template <typename Scalar>
+Quat<Scalar> Lerp(const Quat<Scalar>& a, const Quat<Scalar>& b, Scalar t);
 
 // Quaternion conjugate
 template <typename Scalar>

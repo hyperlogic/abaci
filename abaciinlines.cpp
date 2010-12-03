@@ -637,6 +637,19 @@ inline void Quat<Scalar>::Set(Scalar iIn, Scalar jIn, Scalar kIn, Scalar rIn)
 	i = iIn; j = jIn; k = kIn; r = rIn;
 }
 
+// const array accessor
+template <typename Scalar>
+Scalar Quat<Scalar>::operator[](int index) const
+{
+	return *(&i + index);
+}
+
+// array accessor
+template <typename Scalar>
+Scalar& Quat<Scalar>::operator[](int index)
+{
+	return *(&i + index);
+}
 
 // Set all elements to zero.
 template <typename Scalar>
@@ -718,6 +731,15 @@ template <typename Scalar>
 inline Scalar Dot(const Quat<Scalar>& a, const Quat<Scalar>& b)
 {
 	return a.i * b.i + a.j * b.j + a.k * b.k + a.r * b.r;
+}
+
+// Linear interpolation between two quaternions
+template <typename Scalar>
+inline Quat<Scalar> Lerp(const Quat<Scalar>& a, const Quat<Scalar>& b, Scalar t)
+{
+    Quatf diff(b - a);
+    diff.Set(diff.i * t, diff.j * t, diff.k * t, diff.r * t);
+    return a + diff;
 }
 
 // Quaternion conjugate
