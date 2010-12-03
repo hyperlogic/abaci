@@ -33,18 +33,14 @@ inline Scalar Clamp(Scalar value, Scalar min, Scalar max)
 template <typename Scalar>
 inline Scalar LimitPi(Scalar theta)
 {
-	return fmod(theta + PI, 2 * PI) - PI;
+    return Mod2Pi(theta + PI) - PI;
 }
 
 // Limits angle between zero & 2 PI using modulus arithmetic
 template <typename Scalar>
 inline Scalar Mod2Pi(Scalar theta)
 {
-	float r = fmod(theta, 2 * PI);
-	if (r < 0.0)
-		return r + 2 * PI;
-	else
-		return r;
+    return theta - 2*PI * floor(theta/(2*PI));
 }
 
 // Fuzzy comparison between two Scalar values.

@@ -275,11 +275,37 @@ public:
 	{
 		float r = a;
 		if ((a > PI) || (a < -PI))
-			r = fmod(a + PI, 2.0f * PI) - PI;
+			r = (a + PI) - 2*PI * floor((a + PI)/(2*PI)) - PI;
 		bool result = FuzzyFloatTest(LimitPi(a), r);
 		if (!result)
 			printf("a = %.5f, r = %.5f\n", a, r);
+
 		return result;
+	}
+};
+
+class LimitPiTest : public TestCase
+{
+public:
+	LimitPiTest() : TestCase("LimitPiTest") {}
+	~LimitPiTest() {}
+
+	bool Test() const
+	{
+        float delta = 0.1f;
+        float r = -PI + delta;
+        float t = LimitPi(PI + delta);
+        bool pass1 = FuzzyFloatTest(r, t);
+        if (!pass1)
+            printf("r = %.5f, t = %.5f\n", r, t);
+
+        r = PI - delta;
+        t = LimitPi(-PI - delta);
+        bool pass2 = FuzzyFloatTest(r, t);
+        if (!pass2)
+            printf("r = %.5f, t = %.5f\n", r, t);
+
+        return pass1 && pass2;
 	}
 };
 
@@ -289,6 +315,10 @@ public:
 	static const char* GetName() { return "Mod2Pi"; }
 	bool operator() (float a)
 	{
+        // give flt_max a pass.
+        if (a == FLT_MAX || a == -FLT_MAX)
+            return true;
+
 		float r;
 		if (a < 0)
 			r = (2.0f * PI) + fmod(a, 2.0f * PI);
@@ -1928,6 +1958,7 @@ int main(int argc, char* argv[])
 	floatSuite.AddTest(new FloatUnaryOpTest<FloatRadToDeg>());
 	floatSuite.AddTest(new FloatTernaryOpTest<FloatClamp>());
 	floatSuite.AddTest(new FloatUnaryOpTest<FloatLimitPi>());
+    floatSuite.AddTest(new LimitPiTest());
 	floatSuite.AddTest(new FloatUnaryOpTest<FloatMod2Pi>());
 	floatSuite.AddTest(new FloatBinaryOpTest<FloatFuzzyEqual>());
 	floatSuite.AddTest(new FloatBinaryOpTest<FloatLerp>());
