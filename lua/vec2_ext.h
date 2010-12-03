@@ -1,5 +1,5 @@
-#ifndef ABACI_EXT_H
-#define ABACI_EXT_H
+#ifndef VEC2_EXT_H
+#define VEC2_EXT_H
 
 extern "C" {
 #include "lua.h"
@@ -7,6 +7,6 @@ extern "C" {
 #include "lauxlib.h"
 }
 
-int luaopen_abaci(lua_State* L);
+void init_vec2(lua_State* L);
 
 #endif
