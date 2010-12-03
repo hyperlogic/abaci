@@ -5,7 +5,7 @@ local vec3 = abaci.vec3
 local vec4 = abaci.vec4
 local quat = abaci.quat
 local complex = abaci.complex
-local eq = abaci.fuzzy_equals
+local eq = abaci.fuzzy_equal
 
 print("abaci test")
 

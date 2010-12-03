@@ -51,7 +51,7 @@ static int mod_two_pi(lua_State* L)
 	return 1;
 }
 
-static int fuzzy_equals(lua_State* L)
+static int fuzzy_equal(lua_State* L)
 {
 	double a = luaL_checknumber(L, 1);
 	double b = luaL_checknumber(L, 2);
@@ -90,7 +90,7 @@ static const luaL_Reg abaci_lib_f [] = {
 	{"clamp", clamp},
 	{"limit_pi", limit_pi},
 	{"mod_two_pi", mod_two_pi},
-	{"fuzzy_equals", fuzzy_equals},
+	{"fuzzy_equal", fuzzy_equal},
 	{"lerp", lerp},
 	{"rand_int", rand_int},
 	{"rand", rand},
