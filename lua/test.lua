@@ -4,6 +4,7 @@ local vec2 = abaci.vec2
 local vec3 = abaci.vec3
 local vec4 = abaci.vec4
 local quat = abaci.quat
+local complex = abaci.complex
 local eq = abaci.fuzzy_equals
 
 print("abaci test")
@@ -370,13 +371,6 @@ function quat_test()
     assert(eq(prod.k, a.i * b.j - a.j * b.i + a.k * b.r + a.r * b.k))
     assert(eq(prod.r, -a.i * b.i - a.j * b.j - a.k * b.k + a.r * b.r))
 
-    -- div
---    quo = a / b
---    assert(eq(quo.x, a.x / b.x))
---    assert(eq(quo.y, a.y / b.y))
---    assert(eq(quo.z, a.z / b.z))
---    assert(eq(quo.w, a.w / b.w))
-
     -- dot
     dot = a ^ b
     assert(eq(dot, a.i * b.i + a.j * b.j + a.k * b.k + a.r * b.r))
@@ -440,11 +434,98 @@ function quat_test()
     assert(eq(-1, x_prime.z))
 end
 
+--
+-- complex
+--
+function complex_test()
+    -- new
+    a = complex.new(1, 2)
+    b = complex.new(vec2.new(1, 2))
+
+    -- __index
+    assert(a.r == 1)
+    assert(a.i == 2)
+    assert(b.r == 1)
+    assert(b.i == 2)
+
+    -- __newindex
+    a.r = 0.1
+    a.i = 0.2
+    assert(eq(0.1, a.r))
+    assert(eq(0.2, a.i))
+
+    -- len
+    b = complex.new(0.3, 0.5)
+    assert(eq(math.sqrt(b.r * b.r + b.i * b.i), b:len()))
+    assert(eq(math.sqrt(a.r * a.r + a.i * a.i), a:len()))
+
+    -- min_len
+    c = b:min_len(0.5)
+    d = b:min_len(100.0)
+    assert(eq(c:len(), 0.5))
+    assert(eq(d:len(), b:len()))
+
+    -- add
+    sum = a + b
+    assert(eq(sum.r, a.r + b.r))
+    assert(eq(sum.i, a.i + b.i))
+
+    -- sub
+    dif = a - b
+    assert(eq(dif.r, a.r - b.r))
+    assert(eq(dif.i, a.i - b.i))
+
+    -- mul
+    prod = a * b
+
+    -- (a + bi) * (c + di) = (ac - bd) + (bc + ad)i
+    aa, bb = a.r, a.i
+    cc, dd = b.r, b.i
+
+    assert(eq(prod.r, aa*cc - bb*dd))
+    assert(eq(prod.i, bb*cc + aa*dd))
+
+    -- div
+    quo = a / b
+    -- (a + bi) / (c + di) = ((ac + bd) / (c^2 + d^2)) + ((bc - ad) / (c^2 + d^2))i
+    aa, bb = a.r, a.i
+    cc, dd = b.r, b.i
+    denom = cc * cc + dd * dd
+
+    assert(eq(quo.r, (aa*cc + bb*dd)/denom))
+    assert(eq(quo.i, (bb*cc - aa*dd)/denom))
+
+    -- dot
+    dot = a ^ b
+    assert(eq(dot, a.r * b.r + a.i * b.i))
+
+    -- unm
+    neg = -b
+    assert(eq(-b.r, neg.r))
+    assert(eq(-b.i, neg.i))
+
+    -- conj
+    conj = b:conj()
+    assert(eq(b.r, conj.r))
+    assert(eq(-b.i, conj.i))
+
+    -- len
+    assert(eq(#a, 2))
+
+    -- exp  todo
+    -- log  todo
+    -- expi
+    expi = complex.expi(math.pi/4)
+    assert(eq(1, expi:len()))
+    assert(eq(1/math.sqrt(2), expi.r))
+    assert(eq(1/math.sqrt(2), expi.i))
+end
 
 abaci_test()
 vec2_test()
 vec3_test()
 vec4_test()
 quat_test()
+complex_test()
 
 print("Success!")

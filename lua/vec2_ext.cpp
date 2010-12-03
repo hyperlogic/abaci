@@ -164,7 +164,6 @@ static int vec2_newindex(lua_State* L)
         if (i > 0 && i <= 2)
         {
             (*v)[i] = value;
-            lua_pushnumber(L, (*v)[i-1]);
             return 0;
         }
 
@@ -219,6 +218,7 @@ static int vec2_lenop(lua_State* L)
     return 1;
 }
 
+// TODO: support numbers! i.e. vec * num
 #define BINARY_VEC_OP_FUNC(name, op)            \
     static int vec2_##name(lua_State* L)        \
     {                                           \
