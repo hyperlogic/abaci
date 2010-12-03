@@ -138,7 +138,7 @@ static int vec4_index(lua_State* L)
         }
 
         // error
-        lua_pushstring(L, "vec4: unknown string key, must be x or y");
+        lua_pushstring(L, "vec4: unknown string key");
         lua_error(L);
     }
     else
@@ -196,7 +196,7 @@ static int vec4_newindex(lua_State* L)
         }
 
         // error
-        lua_pushstring(L, "vec4: unknown string key, must be x or y");
+        lua_pushstring(L, "vec4: unknown string key, must be x, y, z or w");
         lua_error(L);
     }
     else

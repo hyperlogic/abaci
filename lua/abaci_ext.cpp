@@ -7,6 +7,7 @@
 #include "vec2_ext.h"
 #include "vec3_ext.h"
 #include "vec4_ext.h"
+#include "quat_ext.h"
 
 //
 // abaci functions
@@ -114,6 +115,7 @@ extern "C" int luaopen_abaci(lua_State* L)
     init_vec2(L);
     init_vec3(L);
     init_vec4(L);
+    init_quat(L);
 
 	return 1;
 }

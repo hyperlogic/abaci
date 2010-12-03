@@ -3,6 +3,7 @@ require "math"
 local vec2 = abaci.vec2
 local vec3 = abaci.vec3
 local vec4 = abaci.vec4
+local quat = abaci.quat
 local eq = abaci.fuzzy_equals
 
 print("abaci test")
@@ -310,9 +311,99 @@ function vec4_test()
     assert(eq(#a, 4))
 end
 
+--
+-- quat
+--
+function quat_test()
+    -- new
+    a = quat.new(1, 2, 3, 4)
+
+    -- __index
+    assert(a.i == 1)
+    assert(a.j == 2)
+    assert(a.k == 3)
+    assert(a.r == 4)
+
+    -- __newindex
+    a.i = 0.1
+    a.j = 0.2
+    a.k = 0.3
+    a.r = 0.4
+    assert(eq(0.1, a.i))
+    assert(eq(0.2, a.j))
+    assert(eq(0.3, a.k))
+    assert(eq(0.4, a.r))
+
+    -- len
+    b = quat.new(0.3, 0.5, 0.7, 0.9)
+    assert(eq(math.sqrt(b.i * b.i + b.j * b.j + b.k * b.k + b.r * b.r), b:len()))
+    assert(eq(math.sqrt(a.i * a.i + a.j * a.j + a.k * a.k + a.r * a.r), a:len()))
+
+    -- lerp
+    l = quat.lerp(a, b, 0.3)
+    assert(eq(abaci.lerp(a.i, b.i, 0.3), l.i))
+    assert(eq(abaci.lerp(a.j, b.j, 0.3), l.j))
+    assert(eq(abaci.lerp(a.k, b.k, 0.3), l.k))
+    assert(eq(abaci.lerp(a.r, b.r, 0.3), l.r))
+
+    --print("a = ", a)
+    --print("b = ", b)
+
+    -- add
+    sum = a + b
+    assert(eq(sum.i, a.i + b.i))
+    assert(eq(sum.j, a.j + b.j))
+    assert(eq(sum.k, a.k + b.k))
+    assert(eq(sum.r, a.r + b.r))
+
+    -- sub
+    dif = a - b
+    assert(eq(dif.i, a.i - b.i))
+    assert(eq(dif.j, a.j - b.j))
+    assert(eq(dif.k, a.k - b.k))
+    assert(eq(dif.r, a.r - b.r))
+
+    -- mul
+    prod = a * b
+	assert(eq(prod.i, a.i * b.r + a.j * b.k - a.k * b.j + a.r * b.i))
+    assert(eq(prod.j, -a.i * b.k + a.j * b.r + a.k * b.i + a.r * b.j))
+    assert(eq(prod.k, a.i * b.j - a.j * b.i + a.k * b.r + a.r * b.k))
+    assert(eq(prod.r, -a.i * b.i - a.j * b.j - a.k * b.k + a.r * b.r))
+
+    -- div
+--    quo = a / b
+--    assert(eq(quo.x, a.x / b.x))
+--    assert(eq(quo.y, a.y / b.y))
+--    assert(eq(quo.z, a.z / b.z))
+--    assert(eq(quo.w, a.w / b.w))
+
+    -- dot
+    dot = a ^ b
+    assert(eq(dot, a.i * b.i + a.j * b.j + a.k * b.k + a.r * b.r))
+
+    -- unm
+    neg = -b
+    assert(eq(-b.i, neg.i))
+    assert(eq(-b.j, neg.j))
+    assert(eq(-b.k, neg.k))
+    assert(eq(-b.r, neg.r))
+
+    -- len
+    assert(eq(#a, 4))
+
+    -- conj
+    a_conj = a:conj()
+    assert(-a.i, a_conj.i)
+    assert(-a.j, a_conj.j)
+    assert(-a.k, a_conj.k)
+    assert(a.r, a_conj.r)
+end
+
+
 abaci_test()
 vec2_test()
 vec3_test()
 vec4_test()
+quat_test()
 
 print("Success!")
