@@ -1,0 +1,8 @@
+# ignore obj files
+*.o
+
+# ignore test exe
+abacitest
+
+# ignore lua so
+lua/abaci.so
