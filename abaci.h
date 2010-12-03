@@ -395,12 +395,6 @@ struct Quat
 	// Rotate a vector.
 	Vector3<Scalar> Rotate(const Vector3<Scalar>& v) const;
 
-	// Quaternian exponential
-	Quat Exp() const;
-
-	// Quaternian logarithm
-	Quat Log() const;
-
 	Scalar i;
 	Scalar j;
 	Scalar k;
@@ -437,6 +431,14 @@ Quat<Scalar> operator+(const Quat<Scalar>& a, const Quat<Scalar>& b);
 // Quaternion multplication.
 template <typename Scalar>
 Quat<Scalar> operator*(const Quat<Scalar>& a, const Quat<Scalar>& b);
+
+// Quaternian exponential, e ^ x
+template <typename Scalar>
+Quat<Scalar> Exp(const Quat<Scalar>& x);
+
+// Quaternian logarithm, ln(x)
+template <typename Scalar>
+Quat<Scalar> Log(const Quat<Scalar>& x);
 
 
 //////////////////////////////////////////////////////

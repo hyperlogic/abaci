@@ -1277,7 +1277,7 @@ public:
 		float ax = a.i, ay = a.j, az = a.k, aw = a.r;
 		float rx, ry, rz, rw;
 		QuatfExp(&rx, &ry, &rz, &rw, ax, ay, az, aw);
-		Quatf r = a.Exp();
+		Quatf r = Exp(a);
 		bool rval = FloatTest(rx, r.i) && FloatTest(ry, r.j) && FloatTest(rz, r.k) && FloatTest(rw, r.r);
 		if (!rval)
 		{
@@ -1318,7 +1318,7 @@ public:
 		float ax = a.i, ay = a.j, az = a.k, aw = a.r;
 		float rx, ry, rz, rw;
 		QuatfLog(&rx, &ry, &rz, &rw, ax, ay, az, aw);
-		Quatf r = a.Log();
+		Quatf r = Log(a);
 		bool retval = FuzzyFloatTest(rx, r.i) && FuzzyFloatTest(ry, r.j) && FuzzyFloatTest(rz, r.k) && FuzzyFloatTest(rw, r.r);
 		if (!retval)
 			printf("rx = %.5f, ry = %.5f, rz = %.5f, rw = %.5f\n", rx, ry, rz, rw);

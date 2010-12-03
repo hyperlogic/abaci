@@ -688,44 +688,6 @@ inline Vector3<Scalar> Quat<Scalar>::Rotate(const Vector3<Scalar>& v) const
 	return Vector3<Scalar>(r.i, r.j, r.k);
 }
 
-// Quaternian exponential
-template <typename Scalar>
-Quat<Scalar> Quat<Scalar>::Exp() const
-{
-	Scalar angle = Vector3<Scalar>(i, j, k).Len();
-	Vector3<Scalar> n;
-	if (angle > 0.0001f)
-		n = Vector3<Scalar>(i, j, k).Unit() * static_cast<Scalar>(sin(angle / 2));
-	else
-		n.Set(0,0,0);
-
-	return Quat<Scalar>(n.x, n.y, n.z, cos(angle / 2));
-}
-
-// Quaternian logarithm
-template <typename Scalar>
-Quat<Scalar> Quat<Scalar>::Log() const
-{
-	Scalar cos_a = r;
-	if (cos_a > 1) cos_a = 1;
-	if (cos_a < -1) cos_a = -1;
-
-    Scalar sin_a = sqrt(1 - cos_a * cos_a);
-
-    if (fabs(sin_a) < 0.0005)
-		sin_a = 1;
-	else
-		sin_a = 1/sin_a;
-
-    Scalar angle = 2 * acos(cos_a);
-	Quat<Scalar> log;
-    log.i = i * sin_a * angle;
-    log.j = j * sin_a * angle;
-    log.k = k * sin_a * angle;
-	log.r = 0;
-	return log;
-}
-
 // Dot product
 template <typename Scalar>
 inline Scalar Dot(const Quat<Scalar>& a, const Quat<Scalar>& b)
@@ -778,6 +740,44 @@ inline Quat<Scalar> operator*(const Quat<Scalar>& q1, const Quat<Scalar>& q2)
 						-q1.i * q2.k + q1.j * q2.r + q1.k * q2.i + q1.r * q2.j,
 						 q1.i * q2.j - q1.j * q2.i + q1.k * q2.r + q1.r * q2.k,
 						-q1.i * q2.i - q1.j * q2.j - q1.k * q2.k + q1.r * q2.r);
+}
+
+// Quaternian exponential, e ^ x
+template <typename Scalar>
+Quat<Scalar> Exp(const Quat<Scalar>& x)
+{
+	Scalar angle = Vector3<Scalar>(x.i, x.j, x.k).Len();
+	Vector3<Scalar> n;
+	if (angle > 0.0001f)
+		n = Vector3<Scalar>(x.i, x.j, x.k).Unit() * static_cast<Scalar>(sin(angle / 2));
+	else
+		n.Set(0,0,0);
+
+	return Quat<Scalar>(n.x, n.y, n.z, cos(angle / 2));
+}
+
+// Quaternian logarithm, ln(x)
+template <typename Scalar>
+Quat<Scalar> Log(const Quat<Scalar>& x)
+{
+	Scalar cos_a = x.r;
+	if (cos_a > 1) cos_a = 1;
+	if (cos_a < -1) cos_a = -1;
+
+    Scalar sin_a = sqrt(1 - cos_a * cos_a);
+
+    if (fabs(sin_a) < 0.0005)
+		sin_a = 1;
+	else
+		sin_a = 1/sin_a;
+
+    Scalar angle = 2 * acos(cos_a);
+	Quat<Scalar> log;
+    log.i = x.i * sin_a * angle;
+    log.j = x.j * sin_a * angle;
+    log.k = x.k * sin_a * angle;
+	log.r = 0;
+	return log;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
