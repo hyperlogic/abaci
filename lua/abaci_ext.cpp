@@ -3,8 +3,10 @@
 #include "abaci.h"
 #include <stdio.h>
 #include <string.h>
+#include "abaci_ext.h"
 #include "vec2_ext.h"
-
+#include "vec3_ext.h"
+#include "vec4_ext.h"
 
 //
 // abaci functions
@@ -110,6 +112,8 @@ extern "C" int luaopen_abaci(lua_State* L)
 	luaL_register(L, "abaci", abaci_lib_f);
 
     init_vec2(L);
+    init_vec3(L);
+    init_vec4(L);
 
 	return 1;
 }

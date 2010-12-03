@@ -96,14 +96,14 @@ static int vec2_index(lua_State* L)
     if (key_type == LUA_TNUMBER)
     {
         lua_Integer i = lua_tointeger(L, 2);
-        if (i >= 0 && i < 2)
+        if (i > 0 && i <= 2)
         {
-            lua_pushnumber(L, (*v)[i]);
+            lua_pushnumber(L, (*v)[i-1]);
             return 1;
         }
 
         // error
-        lua_pushstring(L, "vec2: num index out of range, must be 0 or 1");
+        lua_pushstring(L, "vec2: num index out of range, must be 1 or 2");
         lua_error(L);
     }
     else if (key_type == LUA_TSTRING)
@@ -161,15 +161,15 @@ static int vec2_newindex(lua_State* L)
     if (key_type == LUA_TNUMBER)
     {
         lua_Integer i = lua_tointeger(L, 2);
-        if (i >= 0 && i < 2)
+        if (i > 0 && i <= 2)
         {
             (*v)[i] = value;
-            lua_pushnumber(L, (*v)[i]);
+            lua_pushnumber(L, (*v)[i-1]);
             return 0;
         }
 
         // error
-        lua_pushstring(L, "vec2: num index out of range, must be 0 or 1");
+        lua_pushstring(L, "vec2: num index out of range, must be 1 or 2");
         lua_error(L);
     }
     else if (key_type == LUA_TSTRING)
@@ -214,7 +214,8 @@ static int vec2_tostring(lua_State* L)
 
 static int vec2_lenop(lua_State* L)
 {
-    lua_pushinteger(L, 2);
+    const int kLen = 2;
+    lua_pushinteger(L, kLen);
     return 1;
 }
 

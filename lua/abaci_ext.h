@@ -7,6 +7,6 @@ extern "C" {
 #include "lauxlib.h"
 }
 
-int luaopen_abaci(lua_State* L);
+extern "C" int luaopen_abaci(lua_State* L);
 
 #endif
