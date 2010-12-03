@@ -397,6 +397,47 @@ function quat_test()
     assert(-a.j, a_conj.j)
     assert(-a.k, a_conj.k)
     assert(a.r, a_conj.r)
+
+    -- axis angle
+    rot_x_90 = quat.axis_angle(vec3.new(1, 0, 0), math.pi/2)
+    rot_y_90 = quat.axis_angle(0, 1, 0, math.pi/2)
+    rot_z_90 = quat.axis_angle(vec3.new(0, 0, 1), math.pi/2)
+
+    assert(eq(rot_x_90.i, math.sin(math.pi/4)))
+    assert(eq(rot_x_90.j, 0))
+    assert(eq(rot_x_90.k, 0))
+    assert(eq(rot_x_90.r, math.cos(math.pi/4)))
+
+    assert(eq(rot_y_90.i, 0))
+    assert(eq(rot_y_90.j, math.sin(math.pi/4)))
+    assert(eq(rot_y_90.k, 0))
+    assert(eq(rot_y_90.r, math.cos(math.pi/4)))
+
+    assert(eq(rot_z_90.i, 0))
+    assert(eq(rot_z_90.j, 0))
+    assert(eq(rot_z_90.k, math.sin(math.pi/4)))
+    assert(eq(rot_y_90.r, math.cos(math.pi/4)))
+
+    -- log
+    q = quat.log(rot_x_90)
+    assert(eq(q.i, math.pi/2))
+    assert(eq(q.j, 0))
+    assert(eq(q.k, 0))
+    assert(eq(q.r, 0))
+    
+    -- exp
+    q = quat.exp(q)
+    assert(eq(q.i, rot_x_90.i))
+    assert(eq(q.j, rot_x_90.j))
+    assert(eq(q.k, rot_x_90.k))
+    assert(eq(q.r, rot_x_90.r))
+
+    -- rotate
+    x_axis = vec3.new(1, 0, 0)
+    x_prime = rot_y_90:rotate(x_axis)
+    assert(eq(0, x_prime.x))
+    assert(eq(0, x_prime.y))
+    assert(eq(-1, x_prime.z))
 end
 
 

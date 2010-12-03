@@ -13,6 +13,14 @@
 	luaL_getmetatable(L, "abaci.quat");                               \
 	lua_setmetatable(L, -2)
 
+#define check_vec3(L, n) (Vector3f*)luaL_checkudata(L, n, "abaci.vec3")
+
+#define new_vec3(L, name)                                             \
+	Vector3f* name = (Vector3f*)lua_newuserdata(L, sizeof(Vector3f)); \
+	luaL_getmetatable(L, "abaci.vec3");                               \
+	lua_setmetatable(L, -2)
+
+
 static int quat_new(lua_State* L)
 {
 	lua_Number i = luaL_checknumber(L, 1);
@@ -35,9 +43,61 @@ static int quat_lerp(lua_State* L)
     return 1;
 }
 
+static int quat_exp(lua_State* L)
+{
+    Quatf* x = check_quat(L, 1);
+    new_quat(L, result);
+    *result = Exp(*x);
+    return 1;
+}
+
+static int quat_log(lua_State* L)
+{
+    Quatf* x = check_quat(L, 1);
+    new_quat(L, result);
+    *result = Log(*x);
+    return 1;
+}
+
+static int quat_axis_angle(lua_State* L)
+{
+    luaL_checkany(L, 1);
+    luaL_checkany(L, 2);
+
+    int key_type = lua_type(L, 1);
+    if (key_type == LUA_TNUMBER)
+    {
+        lua_Number axis_x = luaL_checknumber(L, 1);
+        lua_Number axis_y = luaL_checknumber(L, 2);
+        lua_Number axis_z = luaL_checknumber(L, 3);
+        lua_Number theta = luaL_checknumber(L, 4);
+        new_quat(L, result);
+        *result = Quatf::AxisAngle(Vector3f(axis_x, axis_y, axis_z), theta);
+        return 1;
+    }
+    else if (key_type == LUA_TUSERDATA)
+    {
+        Vector3f* axis = check_vec3(L, 1);
+        lua_Number theta = luaL_checknumber(L, 2);
+        new_quat(L, result);
+        *result = Quatf::AxisAngle(*axis, theta);
+        return 1;
+    }
+    else
+    {
+        // error
+        lua_pushstring(L, "quat: expected 4 numbers, or 1 vec3 and 1 number");
+        lua_error(L);
+        return 0;
+    }
+}
+
 static const luaL_Reg quat_class_funcs [] = {
 	{"new", quat_new},
     {"lerp", quat_lerp},
+    {"exp", quat_exp},
+    {"log", quat_log},
+    {"axis_angle", quat_axis_angle},
 	{NULL, NULL}
 };
 
@@ -68,10 +128,20 @@ static int quat_conj(lua_State* L)
     return 1;
 }
 
+static int quat_rotate(lua_State* L)
+{
+    Quatf* self = check_quat(L, 1);
+    Vector3f* x = check_vec3(L, 2);
+    new_vec3(L, result);
+    *result = self->Rotate(*x);
+    return 1;
+}
+
 static const luaL_Reg quat_method_funcs [] = {
     {"len", quat_len},
     {"unit", quat_unit},
     {"conj", quat_conj},
+    {"rotate", quat_rotate},
 	{NULL, NULL}
 };
 
