@@ -8,12 +8,35 @@
 
 static int vec3_new(lua_State* L)
 {
-	lua_Number x = luaL_checknumber(L, 1);
-	lua_Number y = luaL_checknumber(L, 2);
-    lua_Number z = luaL_checknumber(L, 3);
-    new_vec3(L, result);
-	result->Set((float)x, (float)y, (float)z);
-	return 1;
+    int argCount = lua_gettop(L);
+    if (argCount == 1)
+    {
+        luaL_checktype(L, 1, LUA_TTABLE);
+        lua_rawgeti(L, 1, 1);
+        lua_rawgeti(L, 1, 2);
+        lua_rawgeti(L, 1, 3);
+        lua_Number x = luaL_checknumber(L, 2);
+        lua_Number y = luaL_checknumber(L, 3);
+        lua_Number z = luaL_checknumber(L, 4);
+        new_vec3(L, result);
+        result->Set((float)x, (float)y, (float)z);
+        return 1;
+    }
+    else if (argCount == 3)
+    {
+        lua_Number x = luaL_checknumber(L, 1);
+        lua_Number y = luaL_checknumber(L, 2);
+        lua_Number z = luaL_checknumber(L, 3);
+        new_vec3(L, result);
+        result->Set((float)x, (float)y, (float)z);
+        return 1;
+    }
+    else
+    {
+        lua_pushstring(L, "vec3.new: expected three numbers or a single table");
+        lua_error(L);
+        return 0;
+    }
 }
 
 static int vec3_random_unit(lua_State* L)

@@ -8,11 +8,32 @@
 
 static int vec2_new(lua_State* L)
 {
-	lua_Number x = luaL_checknumber(L, 1);
-	lua_Number y = luaL_checknumber(L, 2);
-    new_vec2(L, result);
-	result->Set((float)x, (float)y);
-	return 1;
+    int argCount = lua_gettop(L);
+    if (argCount == 1)
+    {
+        luaL_checktype(L, 1, LUA_TTABLE);
+        lua_rawgeti(L, 1, 1);
+        lua_rawgeti(L, 1, 2);
+        lua_Number x = luaL_checknumber(L, 2);
+        lua_Number y = luaL_checknumber(L, 3);
+        new_vec2(L, result);
+        result->Set((float)x, (float)y);
+        return 1;
+    }
+    else if (argCount == 2)
+    {
+        lua_Number x = luaL_checknumber(L, 1);
+        lua_Number y = luaL_checknumber(L, 2);
+        new_vec2(L, result);
+        result->Set((float)x, (float)y);
+        return 1;
+    }
+    else
+    {
+        lua_pushstring(L, "vec2.new: expected two numbers or a single table");
+        lua_error(L);
+        return 0;
+    }
 }
 
 static int vec2_random_unit(lua_State* L)

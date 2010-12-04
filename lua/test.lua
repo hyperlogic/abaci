@@ -83,10 +83,13 @@ end
 function vec2_test()
     -- new
     a = vec2.new(1, 2)
+    b = vec2.new{1, 2}  -- test table initializer
 
     -- __index
     assert(a.x == 1)
     assert(a.y == 2)
+    assert(b.x == 1)
+    assert(b.y == 2)
 
     -- __newindex
     a.x = 0.1
@@ -173,11 +176,16 @@ function vec3_test()
 
     -- new
     a = vec3.new(1, 2, 3)
+    b = vec3.new{1, 2, 3}  -- table test
 
     -- __index
     assert(a.x == 1)
     assert(a.y == 2)
     assert(a.z == 3)
+    assert(b.x == 1)
+    assert(b.y == 2)
+    assert(b.z == 3)
+
 
     -- __newindex
     a.x = 0.1
@@ -262,12 +270,11 @@ end
 function vec4_test()
     -- new
     a = vec4.new(1, 2, 3, 4)
+    b = vec4.new{1, 2, 3, 4} -- table test
 
     -- __index
-    assert(a.x == 1)
-    assert(a.y == 2)
-    assert(a.z == 3)
-    assert(a.w == 4)
+    assert(a.x == 1); assert(a.y == 2); assert(a.z == 3); assert(a.w == 4)
+    assert(b.x == 1); assert(b.y == 2); assert(b.z == 3); assert(b.w == 4)
 
     -- __newindex
     a.x = 0.1

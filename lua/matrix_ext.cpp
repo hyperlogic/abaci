@@ -284,7 +284,7 @@ static const luaL_Reg matrix_method_funcs [] = {
 
 static int matrix_index(lua_State* L)
 {
-    Matrixf* m = check_matrix(L, 1);
+    //Matrixf* m = check_matrix(L, 1);
     luaL_checkany(L, 2);
 
     int key_type = lua_type(L, 2);
