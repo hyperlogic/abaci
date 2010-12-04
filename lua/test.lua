@@ -5,14 +5,29 @@ local vec3 = abaci.vec3
 local vec4 = abaci.vec4
 local quat = abaci.quat
 local complex = abaci.complex
+local matrix = abaci.matrix
 local eq = abaci.fuzzy_equal
+
+local Vec2 = abaci.vec2.new
+local Vec3 = abaci.vec3.new
+local Vec4 = abaci.vec4.new
+local Quat = abaci.quat.new
+
+local function eq_vec(a, b)
+    assert(#a == #b)
+    for i = 1, #a do
+        if not eq(a[i], b[i]) then
+            return false
+        end
+    end
+    return true
+end
 
 print("abaci test")
 
 --
 -- abaci
 --
-
 function abaci_test()
 
     -- test fuzzy_equals it's used by everything else below
@@ -537,11 +552,175 @@ function complex_test()
     assert(eq(1/math.sqrt(2), expi.i))
 end
 
+--
+-- matrix
+--
+function matrix_test()
+    -- new
+    ident = matrix.new()
+    
+    -- row check
+    assert(eq_vec(Vec4(1,0,0,0), ident:get_row(1)))
+    assert(eq_vec(Vec4(0,1,0,0), ident:get_row(2)))
+    assert(eq_vec(Vec4(0,0,1,0), ident:get_row(3)))
+    assert(eq_vec(Vec4(0,0,0,1), ident:get_row(4)))
+
+    -- identity
+    ident = matrix.identity()
+    assert(eq_vec(Vec4(1,0,0,0), ident:get_row(1)))
+    assert(eq_vec(Vec4(0,1,0,0), ident:get_row(2)))
+    assert(eq_vec(Vec4(0,0,1,0), ident:get_row(3)))
+    assert(eq_vec(Vec4(0,0,0,1), ident:get_row(4)))
+
+    -- rows
+    a = matrix.rows(Vec4(1,2,3,4), Vec4(5,6,7,8), Vec4(9,10,11,12), Vec4(13,14,15,16))
+    assert(eq_vec(Vec4(1,2,3,4), a:get_row(1)))
+    assert(eq_vec(Vec4(5,6,7,8), a:get_row(2)))
+    assert(eq_vec(Vec4(9,10,11,12), a:get_row(3)))
+    assert(eq_vec(Vec4(13,14,15,16), a:get_row(4)))
+
+    -- axes with trans
+    a = matrix.axes(Vec3(1,5,9), Vec3(2,6,10), Vec3(3,7,11), Vec3(4,8,12))
+    assert(eq_vec(Vec4(1,2,3,4), a:get_row(1)))
+    assert(eq_vec(Vec4(5,6,7,8), a:get_row(2)))
+    assert(eq_vec(Vec4(9,10,11,12), a:get_row(3)))
+    assert(eq_vec(Vec4(0,0,0,1), a:get_row(4)))
+
+    -- axes w/o trans
+    a = matrix.axes(Vec3(1,5,9), Vec3(2,6,10), Vec3(3,7,11))
+    assert(eq_vec(Vec4(1,2,3,0), a:get_row(1)))
+    assert(eq_vec(Vec4(5,6,7,0), a:get_row(2)))
+    assert(eq_vec(Vec4(9,10,11,0), a:get_row(3)))
+    assert(eq_vec(Vec4(0,0,0,1), a:get_row(4)))
+
+    -- trans
+    a = matrix.trans(Vec3(1,2,3))
+    assert(eq_vec(Vec4(1,0,0,1), a:get_row(1)))
+    assert(eq_vec(Vec4(0,1,0,2), a:get_row(2)))
+    assert(eq_vec(Vec4(0,0,1,3), a:get_row(3)))
+    assert(eq_vec(Vec4(0,0,0,1), a:get_row(4)))
+
+    -- quat w/o trans
+    a = matrix.quat(quat.axis_angle(Vec3(0,1,0), math.pi/4))
+    phi = 1/math.sqrt(2)
+    assert(eq_vec(Vec3(phi, 0, -phi), a:get_xaxis()))
+    assert(eq_vec(Vec3(0, 1, 0), a:get_yaxis()))
+    assert(eq_vec(Vec3(phi, 0, phi), a:get_zaxis()))
+    assert(eq_vec(Vec3(0,0,0), a:get_trans()))
+
+    -- quat with trans
+    a = matrix.quat(quat.axis_angle(Vec3(0,1,0), -math.pi/4), Vec3(1,2,3))
+    phi = 1/math.sqrt(2)
+    assert(eq_vec(Vec3(phi, 0, phi), a:get_xaxis()))
+    assert(eq_vec(Vec3(0, 1, 0), a:get_yaxis()))
+    assert(eq_vec(Vec3(-phi, 0, phi), a:get_zaxis()))
+    assert(eq_vec(Vec3(1,2,3), a:get_trans()))
+
+    -- axis_angle w/o trans
+    a = matrix.axis_angle(Vec3(0,1,0), math.pi/4)
+    phi = 1/math.sqrt(2)
+    assert(eq_vec(Vec3(phi, 0, -phi), a:get_xaxis()))
+    assert(eq_vec(Vec3(0, 1, 0), a:get_yaxis()))
+    assert(eq_vec(Vec3(phi, 0, phi), a:get_zaxis()))
+    assert(eq_vec(Vec3(0,0,0), a:get_trans()))
+
+    -- axis_angle with trans
+    a = matrix.axis_angle(Vec3(0,1,0), -math.pi/4, Vec3(1,2,3))
+    phi = 1/math.sqrt(2)
+    assert(eq_vec(Vec3(phi, 0, phi), a:get_xaxis()))
+    assert(eq_vec(Vec3(0, 1, 0), a:get_yaxis()))
+    assert(eq_vec(Vec3(-phi, 0, phi), a:get_zaxis()))
+    assert(eq_vec(Vec3(1,2,3), a:get_trans()))
+
+    -- scale_quat w/o trans with non-uniform scale
+    a = matrix.scale_quat(Vec3(1,2,3),quat.axis_angle(Vec3(0,1,0), math.pi/4))
+    phi = 1/math.sqrt(2)
+    assert(eq_vec(1 * Vec3(phi, 0, -phi), a:get_xaxis()))
+    assert(eq_vec(2 * Vec3(0, 1, 0), a:get_yaxis()))
+    assert(eq_vec(3 * Vec3(phi, 0, phi), a:get_zaxis()))
+    assert(eq_vec(Vec3(0,0,0), a:get_trans()))
+
+    -- scale_quat with trans with non-uniform scale
+    a = matrix.scale_quat(Vec3(1,2,3), quat.axis_angle(Vec3(0,1,0), -math.pi/4), Vec3(1,2,3))
+    phi = 1/math.sqrt(2)
+    assert(eq_vec(1 * Vec3(phi, 0, phi), a:get_xaxis()))
+    assert(eq_vec(2 * Vec3(0, 1, 0), a:get_yaxis()))
+    assert(eq_vec(3 * Vec3(-phi, 0, phi), a:get_zaxis()))
+    assert(eq_vec(Vec3(1,2,3), a:get_trans()))
+
+    -- scale_quat w/o trans with uniform scale
+    a = matrix.scale_quat(0.5, quat.axis_angle(Vec3(0,1,0), math.pi/4))
+    phi = 1/math.sqrt(2)
+    assert(eq_vec(0.5 * Vec3(phi, 0, -phi), a:get_xaxis()))
+    assert(eq_vec(0.5 * Vec3(0, 1, 0), a:get_yaxis()))
+    assert(eq_vec(0.5 * Vec3(phi, 0, phi), a:get_zaxis()))
+    assert(eq_vec(Vec3(0,0,0), a:get_trans()))
+
+    -- scale_quat with trans with uniform scale
+    a = matrix.scale_quat(0.5, quat.axis_angle(Vec3(0,1,0), -math.pi/4), Vec3(1,2,3))
+    phi = 1/math.sqrt(2)
+    assert(eq_vec(0.5 * Vec3(phi, 0, phi), a:get_xaxis()))
+    assert(eq_vec(0.5 * Vec3(0, 1, 0), a:get_yaxis()))
+    assert(eq_vec(0.5 * Vec3(-phi, 0, phi), a:get_zaxis()))
+    assert(eq_vec(Vec3(1,2,3), a:get_trans()))
+
+    -- TODO:
+    -- frustum
+    -- ortho
+    -- look_at
+
+    -- mul3x3
+    x_axis = Vec3(1,0,0)
+    one = Vec3(1,1,1)
+    rot_x90 = matrix.axis_angle(Vec3(1,0,0), math.pi/4, one)
+    rot_y90 = matrix.axis_angle(Vec3(0,1,0), math.pi/4, one)
+    rot_z90 = matrix.axis_angle(Vec3(0,0,1), math.pi/4, one)
+
+    assert(eq_vec(Vec3(1,0,0), rot_x90:mul3x3(x_axis)))
+    assert(eq_vec(Vec3(phi,0,-phi), rot_y90:mul3x3(x_axis)))
+    assert(eq_vec(Vec3(phi,phi,0), rot_z90:mul3x3(x_axis)))
+    
+    -- mul3x4
+    assert(eq_vec(Vec3(1,0,0) + one, rot_x90:mul3x4(x_axis)))
+    assert(eq_vec(Vec3(phi,0,-phi) + one, rot_y90:mul3x4(x_axis)))
+    assert(eq_vec(Vec3(phi,phi,0) + one, rot_z90:mul3x4(x_axis)))
+
+    -- mul4x4
+    one4 = Vec4(1,1,1,0)
+    x_axis4 = Vec4(1,0,0,1)
+    assert(eq_vec(Vec4(1,0,0,1) + one4, rot_x90:mul4x4(x_axis4)))
+    assert(eq_vec(Vec4(phi,0,-phi,1) + one4, rot_y90:mul4x4(x_axis4)))
+    assert(eq_vec(Vec4(phi,phi,0,1) + one4, rot_z90:mul4x4(x_axis4)))
+
+    -- *
+    rot_xyz90 = rot_x90 * rot_y90 * rot_z90
+    x_prime = rot_x90:mul3x4(rot_y90:mul3x4(rot_z90:mul3x4(Vec3(1,0,0))))
+    assert(eq_vec(x_prime, rot_xyz90:mul3x4(Vec3(1,0,0))))
+
+    -- +
+    a = matrix.rows(Vec4(1,2,3,4), Vec4(5,6,7,8), Vec4(9,10,11,12), Vec4(13,14,15,16))
+    b = matrix.rows(Vec4(16,15,14,13), Vec4(12,11,10,9), Vec4(8,7,6,5), Vec4(4,3,2,1))
+    sum = a + b
+    seventeen = Vec4(17,17,17,17)
+    assert(eq_vec(seventeen, sum:get_row(1)))
+    assert(eq_vec(seventeen, sum:get_row(2)))
+    assert(eq_vec(seventeen, sum:get_row(3)))
+    assert(eq_vec(seventeen, sum:get_row(4)))
+    
+    -- -
+    dif = a - b
+    assert(eq_vec(Vec4(-15,-13,-11,-9), dif:get_row(1)))
+    assert(eq_vec(Vec4(-7,-5,-3,-1), dif:get_row(2)))
+    assert(eq_vec(Vec4(1,3,5,7), dif:get_row(3)))
+    assert(eq_vec(Vec4(9,11,13,15), dif:get_row(4)))
+end
+
 abaci_test()
 vec2_test()
 vec3_test()
 vec4_test()
 quat_test()
 complex_test()
+matrix_test()
 
 print("Success!")

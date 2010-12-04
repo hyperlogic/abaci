@@ -42,6 +42,12 @@ extern "C" int luaopen_abaci(lua_State* L);
 	luaL_getmetatable(L, "abaci.complex");                            \
 	lua_setmetatable(L, -2)
 
+#define check_matrix(L, n) (Matrixf*)luaL_checkudata(L, n, "abaci.matrix")
+#define new_matrix(L, name)                                           \
+	Matrixf* name = (Matrixf*)lua_newuserdata(L, sizeof(Matrixf));    \
+	luaL_getmetatable(L, "abaci.matrix");                             \
+	lua_setmetatable(L, -2)
+
 
 // this version only supports vec * vec
 #define BINARY_VEC_OP_FUNC(func, c_type, lua_type, op)              \
