@@ -330,9 +330,17 @@ static int matrix_newindex(lua_State* L)
 
 static int matrix_tostring(lua_State* L)
 {
-    Vector2f* v = check_vec2(L, 1);
-    char temp[64];
-    snprintf(temp, 64, "matrix(%p)", v);
+    Matrixf* m = check_matrix(L, 1);
+    char temp[128];
+    Vector4f row0 = m->GetRow(0);
+    Vector4f row1 = m->GetRow(1);
+    Vector4f row2 = m->GetRow(2);
+    Vector4f row3 = m->GetRow(3);
+    snprintf(temp, 64, "matrix((%.5f, %.5f, %.5f, %.5f), (%.5f, %.5f, %.5f, %.5f), (%.5f, %.5f, %.5f, %.5f), (%.5f, %.5f, %.5f, %.5f))",
+             row0.x, row0.y, row0.z, row0.w, 
+             row1.x, row1.y, row1.z, row1.w, 
+             row2.x, row2.y, row2.z, row2.w, 
+             row3.x, row3.y, row3.z, row3.w);
     lua_pushstring(L, temp);
     return 1;
 }
