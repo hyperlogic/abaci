@@ -17,6 +17,13 @@ static int quat_new(lua_State* L)
 	return 1;
 }
 
+static int quat_identity(lua_State* L)
+{
+    new_quat(L, result);
+	*result = Quatf::Identity();
+	return 1;
+}
+
 static int quat_lerp(lua_State* L)
 {
     Quatf* a = check_quat(L, 1);
@@ -79,6 +86,7 @@ static int quat_axis_angle(lua_State* L)
 
 static const luaL_Reg quat_class_funcs [] = {
 	{"new", quat_new},
+    {"identity", quat_identity},
     {"lerp", quat_lerp},
     {"exp", quat_exp},
     {"log", quat_log},

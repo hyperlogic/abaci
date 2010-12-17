@@ -210,6 +210,20 @@ GETTER(transpose, Transpose, matrix);
 GETTER(inverse, FullInverse, matrix);
 GETTER(ortho_inverse, OrthoInverse, matrix);
 
+#define VEC3_SETTER(name, c_name)               \
+    static int matrix_##name (lua_State* L)     \
+    {                                           \
+        Matrixf* self = check_matrix(L, 1);     \
+        Vector3f* arg = check_vec3(L, 2);       \
+        self->c_name(*arg);                     \
+        return 0;                               \
+    }
+
+VEC3_SETTER(set_xaxis, SetXAxis)
+VEC3_SETTER(set_yaxis, SetYAxis)
+VEC3_SETTER(set_zaxis, SetZAxis)
+VEC3_SETTER(set_trans, SetTrans)
+
 static int matrix_set_scale(lua_State* L)
 {
     Matrixf* self = check_matrix(L, 1);
@@ -272,6 +286,10 @@ static const luaL_Reg matrix_method_funcs [] = {
     {"inverse", matrix_inverse},
     {"ortho_inverse", matrix_ortho_inverse},
     {"set_scale", matrix_set_scale},
+    {"set_xaxis", matrix_set_xaxis},
+    {"set_yaxis", matrix_set_yaxis},
+    {"set_zaxis", matrix_set_zaxis},
+    {"set_trans", matrix_set_trans},
     {"mul3x3", matrix_mul3x3},
     {"mul3x4", matrix_mul3x4},
     {"mul4x4", matrix_mul4x4},
@@ -331,12 +349,12 @@ static int matrix_newindex(lua_State* L)
 static int matrix_tostring(lua_State* L)
 {
     Matrixf* m = check_matrix(L, 1);
-    char temp[128];
+    char temp[512];
     Vector4f row0 = m->GetRow(0);
     Vector4f row1 = m->GetRow(1);
     Vector4f row2 = m->GetRow(2);
     Vector4f row3 = m->GetRow(3);
-    snprintf(temp, 64, "matrix((%.5f, %.5f, %.5f, %.5f), (%.5f, %.5f, %.5f, %.5f), (%.5f, %.5f, %.5f, %.5f), (%.5f, %.5f, %.5f, %.5f))",
+    snprintf(temp, 512, "matrix((%.3f, %.3f, %.3f, %.3f), (%.3f, %.3f, %.3f, %.3f), (%.3f, %.3f, %.3f, %.3f), (%.3f, %.3f, %.3f, %.3f))",
              row0.x, row0.y, row0.z, row0.w, 
              row1.x, row1.y, row1.z, row1.w, 
              row2.x, row2.y, row2.z, row2.w, 
