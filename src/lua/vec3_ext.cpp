@@ -93,10 +93,23 @@ static int vec3_min_len(lua_State* L)
     return 1;
 }
 
+static int vec3_basis(lua_State* L)
+{
+    Vector3f* self = check_vec3(L, 1);
+
+    new_vec3(L, i);
+    new_vec3(L, j);
+    new_vec3(L, k);
+
+    self->Basis(*i, *j, *k);
+    return 3;
+}
+
 static const luaL_Reg vec3_method_funcs [] = {
     {"len", vec3_len},
     {"unit", vec3_unit},
 	{"min_len", vec3_min_len},
+    {"basis", vec3_basis},
 	{NULL, NULL}
 };
 

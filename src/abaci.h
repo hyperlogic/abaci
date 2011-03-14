@@ -192,6 +192,10 @@ struct Vector3
 	// Returns a vector with the same direction, but with a Len() <= len.
 	Vector3 MinLen(Scalar len) const;
 
+    // Returns basis vectors i, j & k.  Such that i is parallel to this. 
+    // j & k are orthonal to i and each other.
+    void Basis(Vector3<Scalar>& iOut, Vector3<Scalar>& jOut, Vector3<Scalar>& kOut);
+
 	Scalar x;
 	Scalar y;
 	Scalar z;

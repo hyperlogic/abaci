@@ -216,6 +216,13 @@ function vec3_test()
     assert(eq(c:len(), 0.5))
     assert(eq(d:len(), b:len()))
 
+    -- basis
+    local temp = vec3.new(1, 1, 1)
+    local i, j, k = temp:basis()
+    assert(eq_vec(k, i % j))
+    assert(eq_vec(i, j % k))
+    assert(eq_vec(j, k % i))
+
     --print("a = ", a)
     --print("b = ", b)
 

@@ -333,6 +333,27 @@ inline Vector3<Scalar> Vector3<Scalar>::MinLen(Scalar len) const
 		return *this;
 }
 
+// Generate vectors j and k which are orthognal to i and each other.
+template <typename Scalar>
+inline void Vector3<Scalar>::Basis(Vector3<Scalar>& iOut, Vector3<Scalar>& jOut, Vector3<Scalar>& kOut)
+{
+    iOut = Unit();
+    Scalar xabs = abs(iOut.x);
+    Scalar yabs = abs(iOut.y);
+    Scalar zabs = abs(iOut.z);
+
+    Vector3<Scalar> j;
+    if (xabs < yabs && xabs < zabs)
+        j.Set(0, -iOut.z, iOut.y);
+    else if (yabs < xabs && yabs < zabs)
+        j.Set(-iOut.z, 0, iOut.x);
+    else
+        j.Set(-iOut.y, iOut.x, 0);
+
+    jOut = j.Unit();
+    kOut = Cross(iOut, jOut);
+}
+
 // Dot product of two vectors.
 template <typename Scalar>
 inline Scalar Dot(const Vector3<Scalar>& a, const Vector3<Scalar>& b)
@@ -436,7 +457,6 @@ inline Vector3<Scalar> operator/(const Vector3<Scalar>& a, const Vector3<Scalar>
 {
 	return Vector3<Scalar>(a.x / b.x, a.y / b.y, a.z / b.z);
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // Vector4
@@ -940,7 +960,7 @@ inline Matrix<Scalar> Matrix<Scalar>::Ortho(Scalar left, Scalar right, Scalar bo
 template <typename Scalar>
 inline Matrix<Scalar> Matrix<Scalar>::LookAt(const Vector3<Scalar>& eye, const Vector3<Scalar>& target, const Vector3<Scalar>& up)
 {
-	const Scalar Epsilon = 0.0001;
+	const Scalar Epsilon = 0.001;
 	const Scalar EpsilonSq = Epsilon * Epsilon;
 
 	Vector3<Scalar> x;
@@ -956,7 +976,7 @@ inline Matrix<Scalar> Matrix<Scalar>::LookAt(const Vector3<Scalar>& eye, const V
 		u = up;
 
 	if (fabs(Dot(u, x)) > (u.LenSq() - EpsilonSq)) // are u & x parallel?
-		u = (u + Vector3<Scalar>(1,1,1)).Unit();  // nudge u so it's no longer parallel.
+		u = (u + Vector3<Scalar>(0.2,0.2,0.2)).Unit();  // nudge u so it's no longer parallel.
 
 	Vector3<Scalar> z = Cross(x, u).Unit();
 	Vector3<Scalar> y = Cross(z, x).Unit();
