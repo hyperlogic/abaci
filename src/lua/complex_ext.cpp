@@ -58,11 +58,11 @@ static int complex_log(lua_State* L)
 }
 
 static const luaL_Reg complex_class_funcs [] = {
-	{"new", complex_new},
+    {"new", complex_new},
     {"exp", complex_exp},
     {"expi", complex_expi},
     {"log", complex_log},
-	{NULL, NULL}
+    {NULL, NULL}
 };
 
 //
@@ -105,9 +105,9 @@ static int complex_conj(lua_State* L)
 static const luaL_Reg complex_method_funcs [] = {
     {"len", complex_len},
     {"unit", complex_unit},
-	{"min_len", complex_min_len},
+    {"min_len", complex_min_len},
     {"conj", complex_conj},
-	{NULL, NULL}
+    {NULL, NULL}
 };
 
 //
@@ -279,7 +279,7 @@ static int complex_unm(lua_State* L)
 static const luaL_Reg complex_meta_funcs [] = {
     {"__index", complex_index},
     {"__newindex", complex_newindex},
-	{"__len", complex_lenop},
+    {"__len", complex_lenop},
     {"__tostring", complex_tostring},
     {"__add", complex_add},
     {"__sub", complex_sub},
@@ -287,7 +287,7 @@ static const luaL_Reg complex_meta_funcs [] = {
     {"__div", complex_div},
     {"__pow", complex_dot},  // ^ as dot product
     {"__unm", complex_unm},  // unary minus
-	{NULL, NULL}
+    {NULL, NULL}
 };
 
 // assumes the "abaci" table is the top of the stack.
@@ -299,9 +299,9 @@ void init_complex(lua_State* L)
     lua_setfield(L, -2, "complex");
 
     // metatable for use with complex userdata.
-	luaL_newmetatable(L, "abaci.complex");
+    luaL_newmetatable(L, "abaci.complex");
 
     // registers all complex_meta_funcs functions in complex_mt
-	luaL_register(L, NULL, complex_meta_funcs);
+    luaL_register(L, NULL, complex_meta_funcs);
     lua_pop(L, 1);
 }

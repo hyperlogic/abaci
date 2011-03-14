@@ -54,9 +54,9 @@ static int vec4_lerp(lua_State* L)
 }
 
 static const luaL_Reg vec4_class_funcs [] = {
-	{"new", vec4_new},
+    {"new", vec4_new},
     {"lerp", vec4_lerp},
-	{NULL, NULL}
+    {NULL, NULL}
 };
 
 //
@@ -91,8 +91,8 @@ static int vec4_min_len(lua_State* L)
 static const luaL_Reg vec4_method_funcs [] = {
     {"len", vec4_len},
     {"unit", vec4_unit},
-	{"min_len", vec4_min_len},
-	{NULL, NULL}
+    {"min_len", vec4_min_len},
+    {NULL, NULL}
 };
 
 //
@@ -266,7 +266,7 @@ static int vec4_unm(lua_State* L)
 static const luaL_Reg vec4_meta_funcs [] = {
     {"__index", vec4_index},
     {"__newindex", vec4_newindex},
-	{"__len", vec4_lenop},
+    {"__len", vec4_lenop},
     {"__tostring", vec4_tostring},
     {"__add", vec4_add},
     {"__sub", vec4_sub},
@@ -274,7 +274,7 @@ static const luaL_Reg vec4_meta_funcs [] = {
     {"__div", vec4_div},
     {"__pow", vec4_dot},  // ^ as dot product
     {"__unm", vec4_unm},  // unary minus
-	{NULL, NULL}
+    {NULL, NULL}
 };
 
 // assumes the "abaci" table is the top of the stack.
@@ -286,9 +286,9 @@ void init_vec4(lua_State* L)
     lua_setfield(L, -2, "vec4");
 
     // metatable for use with vec4 userdata.
-	luaL_newmetatable(L, "abaci.vec4");
+    luaL_newmetatable(L, "abaci.vec4");
 
     // registers all vec4_meta_funcs functions in vec4_mt
-	luaL_register(L, NULL, vec4_meta_funcs);
+    luaL_register(L, NULL, vec4_meta_funcs);
     lua_pop(L, 1);
 }

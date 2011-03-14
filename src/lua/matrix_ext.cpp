@@ -9,8 +9,8 @@
 static int matrix_ident(lua_State* L)
 {
     new_matrix(L, result);
-	*result = Matrixf::Identity();
-	return 1;
+    *result = Matrixf::Identity();
+    return 1;
 }
 
 static int matrix_rows(lua_State* L)
@@ -20,8 +20,8 @@ static int matrix_rows(lua_State* L)
     Vector4f* row2 = check_vec4(L, 3);
     Vector4f* row3 = check_vec4(L, 4);
     new_matrix(L, result);
-	*result = Matrixf::Rows(*row0, *row1, *row2, *row3);
-	return 1;
+    *result = Matrixf::Rows(*row0, *row1, *row2, *row3);
+    return 1;
 }
 
 static int matrix_axes(lua_State* L)
@@ -46,8 +46,8 @@ static int matrix_trans(lua_State* L)
 {
     Vector3f* trans = check_vec3(L, 1);
     new_matrix(L, result);
-	*result = Matrixf::Trans(*trans);
-	return 1;
+    *result = Matrixf::Trans(*trans);
+    return 1;
 }
 
 static int matrix_quat(lua_State* L)
@@ -62,8 +62,8 @@ static int matrix_quat(lua_State* L)
         trans = check_vec3(L, 2);
 
     new_matrix(L, result);
-	*result = Matrixf::QuatTrans(*quat, *trans);
-	return 1;
+    *result = Matrixf::QuatTrans(*quat, *trans);
+    return 1;
 }
 
 static int matrix_axis_angle(lua_State* L)
@@ -79,8 +79,8 @@ static int matrix_axis_angle(lua_State* L)
         trans = check_vec3(L, 3);
 
     new_matrix(L, result);
-	*result = Matrixf::QuatTrans(Quatf::AxisAngle(*axis, theta), *trans);
-	return 1;
+    *result = Matrixf::QuatTrans(Quatf::AxisAngle(*axis, theta), *trans);
+    return 1;
 }
 
 static int matrix_scale_quat(lua_State* L)
@@ -115,8 +115,8 @@ static int matrix_scale_quat(lua_State* L)
         trans = check_vec3(L, 3);
 
     new_matrix(L, result);
-	*result = Matrixf::ScaleQuatTrans(*scale, *quat, *trans);
-	return 1;
+    *result = Matrixf::ScaleQuatTrans(*scale, *quat, *trans);
+    return 1;
 }
 
 static int matrix_frustum(lua_State* L)
@@ -127,8 +127,8 @@ static int matrix_frustum(lua_State* L)
     lua_Number farVal = luaL_checknumber(L, 4);
     
     new_matrix(L, result);
-	*result = Matrixf::Frustum(fovy, aspect, nearVal, farVal);
-	return 1;
+    *result = Matrixf::Frustum(fovy, aspect, nearVal, farVal);
+    return 1;
 }
 
 static int matrix_ortho(lua_State* L)
@@ -141,8 +141,8 @@ static int matrix_ortho(lua_State* L)
     lua_Number farVal = luaL_checknumber(L, 6);
     
     new_matrix(L, result);
-	*result = Matrixf::Ortho(left, right, bottom, top, nearVal, farVal);
-	return 1;
+    *result = Matrixf::Ortho(left, right, bottom, top, nearVal, farVal);
+    return 1;
 }
 
 static int matrix_look_at(lua_State* L)
@@ -151,12 +151,12 @@ static int matrix_look_at(lua_State* L)
     Vector3f* target = check_vec3(L, 2);
     Vector3f* up = check_vec3(L, 3);
     new_matrix(L, result);
-	*result = Matrixf::LookAt(*eye, *target, *up);
-	return 1;
+    *result = Matrixf::LookAt(*eye, *target, *up);
+    return 1;
 }
 
 static const luaL_Reg matrix_class_funcs [] = {
-	{"new", matrix_ident},
+    {"new", matrix_ident},
     {"identity", matrix_ident},
     {"rows", matrix_rows},
     {"axes", matrix_axes},
@@ -167,7 +167,7 @@ static const luaL_Reg matrix_class_funcs [] = {
     {"frustum", matrix_frustum},
     {"ortho", matrix_ortho},
     {"look_at", matrix_look_at},
-	{NULL, NULL}
+    {NULL, NULL}
 };
 
 //
@@ -293,7 +293,7 @@ static const luaL_Reg matrix_method_funcs [] = {
     {"mul3x3", matrix_mul3x3},
     {"mul3x4", matrix_mul3x4},
     {"mul4x4", matrix_mul4x4},
-	{NULL, NULL}
+    {NULL, NULL}
 };
 
 //
@@ -374,7 +374,7 @@ static const luaL_Reg matrix_meta_funcs [] = {
     {"__add", matrix_add},
     {"__sub", matrix_sub},
     {"__mul", matrix_mul},
-	{NULL, NULL}
+    {NULL, NULL}
 };
 
 // assumes the "abaci" table is the top of the stack.
@@ -386,9 +386,9 @@ void init_matrix(lua_State* L)
     lua_setfield(L, -2, "matrix");
 
     // metatable for use with matrix userdata.
-	luaL_newmetatable(L, "abaci.matrix");
+    luaL_newmetatable(L, "abaci.matrix");
 
     // registers all matrix_meta_funcs functions in matrix_mt
-	luaL_register(L, NULL, matrix_meta_funcs);
+    luaL_register(L, NULL, matrix_meta_funcs);
     lua_pop(L, 1);
 }

@@ -55,10 +55,10 @@ static int vec2_lerp(lua_State* L)
 }
 
 static const luaL_Reg vec2_class_funcs [] = {
-	{"new", vec2_new},
+    {"new", vec2_new},
     {"random_unit", vec2_random_unit},
     {"lerp", vec2_lerp},
-	{NULL, NULL}
+    {NULL, NULL}
 };
 
 //
@@ -93,8 +93,8 @@ static int vec2_min_len(lua_State* L)
 static const luaL_Reg vec2_method_funcs [] = {
     {"len", vec2_len},
     {"unit", vec2_unit},
-	{"min_len", vec2_min_len},
-	{NULL, NULL}
+    {"min_len", vec2_min_len},
+    {NULL, NULL}
 };
 
 //
@@ -256,7 +256,7 @@ static int vec2_unm(lua_State* L)
 static const luaL_Reg vec2_meta_funcs [] = {
     {"__index", vec2_index},
     {"__newindex", vec2_newindex},
-	{"__len", vec2_lenop},
+    {"__len", vec2_lenop},
     {"__tostring", vec2_tostring},
     {"__add", vec2_add},
     {"__sub", vec2_sub},
@@ -264,7 +264,7 @@ static const luaL_Reg vec2_meta_funcs [] = {
     {"__div", vec2_div},
     {"__pow", vec2_dot},  // ^ as dot product
     {"__unm", vec2_unm},  // unary minus
-	{NULL, NULL}
+    {NULL, NULL}
 };
 
 // assumes the "abaci" table is the top of the stack.
@@ -276,9 +276,9 @@ void init_vec2(lua_State* L)
     lua_setfield(L, -2, "vec2");
 
     // metatable for use with vec2 userdata.
-	luaL_newmetatable(L, "abaci.vec2");
+    luaL_newmetatable(L, "abaci.vec2");
 
     // registers all vec2_meta_funcs functions in vec2_mt
-	luaL_register(L, NULL, vec2_meta_funcs);
+    luaL_register(L, NULL, vec2_meta_funcs);
     lua_pop(L, 1);
 }

@@ -8,20 +8,20 @@
 
 static int quat_new(lua_State* L)
 {
-	lua_Number i = luaL_checknumber(L, 1);
-	lua_Number j = luaL_checknumber(L, 2);
+    lua_Number i = luaL_checknumber(L, 1);
+    lua_Number j = luaL_checknumber(L, 2);
     lua_Number k = luaL_checknumber(L, 3);
     lua_Number r = luaL_checknumber(L, 4);
     new_quat(L, result);
-	result->Set((float)i, (float)j, (float)k, (float)r);
-	return 1;
+    result->Set((float)i, (float)j, (float)k, (float)r);
+    return 1;
 }
 
 static int quat_identity(lua_State* L)
 {
     new_quat(L, result);
-	*result = Quatf::Identity();
-	return 1;
+    *result = Quatf::Identity();
+    return 1;
 }
 
 static int quat_lerp(lua_State* L)
@@ -85,13 +85,13 @@ static int quat_axis_angle(lua_State* L)
 }
 
 static const luaL_Reg quat_class_funcs [] = {
-	{"new", quat_new},
+    {"new", quat_new},
     {"identity", quat_identity},
     {"lerp", quat_lerp},
     {"exp", quat_exp},
     {"log", quat_log},
     {"axis_angle", quat_axis_angle},
-	{NULL, NULL}
+    {NULL, NULL}
 };
 
 //
@@ -135,7 +135,7 @@ static const luaL_Reg quat_method_funcs [] = {
     {"unit", quat_unit},
     {"conj", quat_conj},
     {"rotate", quat_rotate},
-	{NULL, NULL}
+    {NULL, NULL}
 };
 
 //
@@ -309,14 +309,14 @@ static int quat_unm(lua_State* L)
 static const luaL_Reg quat_meta_funcs [] = {
     {"__index", quat_index},
     {"__newindex", quat_newindex},
-	{"__len", quat_lenop},
+    {"__len", quat_lenop},
     {"__tostring", quat_tostring},
     {"__add", quat_add},
     {"__sub", quat_sub},
     {"__mul", quat_mul},
     {"__pow", quat_dot},  // ^ as dot product
     {"__unm", quat_unm},  // unary minus
-	{NULL, NULL}
+    {NULL, NULL}
 };
 
 // assumes the "abaci" table is the top of the stack.
@@ -328,9 +328,9 @@ void init_quat(lua_State* L)
     lua_setfield(L, -2, "quat");
 
     // metatable for use with vec4 userdata.
-	luaL_newmetatable(L, "abaci.quat");
+    luaL_newmetatable(L, "abaci.quat");
 
     // registers all quat_meta_funcs functions in quat_mt
-	luaL_register(L, NULL, quat_meta_funcs);
+    luaL_register(L, NULL, quat_meta_funcs);
     lua_pop(L, 1);
 }

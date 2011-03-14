@@ -411,7 +411,7 @@ function quat_test()
 
     -- mul
     prod = a * b
-	assert(eq(prod.i, a.i * b.r + a.j * b.k - a.k * b.j + a.r * b.i))
+    assert(eq(prod.i, a.i * b.r + a.j * b.k - a.k * b.j + a.r * b.i))
     assert(eq(prod.j, -a.i * b.k + a.j * b.r + a.k * b.i + a.r * b.j))
     assert(eq(prod.k, a.i * b.j - a.j * b.i + a.k * b.r + a.r * b.k))
     assert(eq(prod.r, -a.i * b.i - a.j * b.j - a.k * b.k + a.r * b.r))
