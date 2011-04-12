@@ -35,22 +35,6 @@ static int quat_lerp(lua_State* L)
     return 1;
 }
 
-static int quat_exp(lua_State* L)
-{
-    Quatf* x = check_quat(L, 1);
-    new_quat(L, result);
-    *result = Exp(*x);
-    return 1;
-}
-
-static int quat_log(lua_State* L)
-{
-    Quatf* x = check_quat(L, 1);
-    new_quat(L, result);
-    *result = Log(*x);
-    return 1;
-}
-
 static int quat_axis_angle(lua_State* L)
 {
     luaL_checkany(L, 1);
@@ -88,8 +72,6 @@ static const luaL_Reg quat_class_funcs [] = {
     {"new", quat_new},
     {"identity", quat_identity},
     {"lerp", quat_lerp},
-    {"exp", quat_exp},
-    {"log", quat_log},
     {"axis_angle", quat_axis_angle},
     {NULL, NULL}
 };
@@ -130,11 +112,29 @@ static int quat_rotate(lua_State* L)
     return 1;
 }
 
+static int quat_exp(lua_State* L)
+{
+    Quatf* x = check_quat(L, 1);
+    new_quat(L, result);
+    *result = Exp(*x);
+    return 1;
+}
+
+static int quat_log(lua_State* L)
+{
+    Quatf* x = check_quat(L, 1);
+    new_quat(L, result);
+    *result = Log(*x);
+    return 1;
+}
+
 static const luaL_Reg quat_method_funcs [] = {
     {"len", quat_len},
     {"unit", quat_unit},
     {"conj", quat_conj},
     {"rotate", quat_rotate},
+    {"exp", quat_exp},
+    {"log", quat_log},
     {NULL, NULL}
 };
 
