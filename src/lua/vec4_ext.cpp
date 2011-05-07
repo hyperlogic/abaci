@@ -140,6 +140,18 @@ static int vec4_index(lua_State* L)
                 return 1;
             }
         }
+        else if (size == 2 && s[0] == 'x' && s[1] == 'y')
+        {
+            new_vec2(L, result);
+            result->Set(v->x, v->y);
+            return 1;
+        }
+        else if (size == 3 && s[0] == 'x' && s[1] == 'y' && s[2] == 'z')
+        {
+            new_vec3(L, result);
+            result->Set(v->x, v->y, v->z);
+            return 1;
+        }
         else
         {
             // search for string key in vec4_method_funcs array.

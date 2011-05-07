@@ -155,6 +155,12 @@ static int vec3_index(lua_State* L)
                 return 1;
             }
         }
+        else if (size == 2 && s[0] == 'x' && s[1] == 'y')
+        {
+            new_vec2(L, result);
+            result->Set(v->x, v->y);
+            return 1;
+        }
         else
         {
             // search for string key in vec3_method_funcs array.
