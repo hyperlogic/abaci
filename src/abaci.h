@@ -49,7 +49,6 @@ int RandomInt(int min, int max);
 template <typename Scalar> 
 Scalar RandomScalar(Scalar min, Scalar max);
 
-
 //////////////////////////////////////////////////////
 
 template <typename Scalar>
@@ -153,6 +152,9 @@ Vector2<Scalar> operator/(Scalar numerator, const Vector2<Scalar>& v);
 template <typename Scalar>
 Vector2<Scalar> operator/(const Vector2<Scalar>& a, const Vector2<Scalar>& b);
 
+// Fuzzy comparison between two Vector2 values.
+template <typename Scalar>
+bool FuzzyEqual(const Vector2<Scalar>& rhs, const Vector2<Scalar>& lhs, Scalar epsilon = 0.0001);
 
 //////////////////////////////////////////////////////
 
@@ -260,6 +262,9 @@ Vector3<Scalar> operator/(Scalar numerator, const Vector3<Scalar>& v);
 template <typename Scalar>
 Vector3<Scalar> operator/(const Vector3<Scalar>& a, const Vector3<Scalar>& b);
 
+// Fuzzy comparison between two Vector3 values.
+template <typename Scalar>
+bool FuzzyEqual(const Vector3<Scalar>& rhs, const Vector3<Scalar>& lhs, Scalar epsilon = 0.0001);
 
 //////////////////////////////////////////////////////
 
@@ -357,6 +362,9 @@ Vector4<Scalar> operator/(Scalar numerator, const Vector4<Scalar>& v);
 template <typename Scalar>
 Vector4<Scalar> operator/(const Vector4<Scalar>& a, const Vector4<Scalar>& b);
 
+// Fuzzy comparison between two Vector4 values.
+template <typename Scalar>
+bool FuzzyEqual(const Vector4<Scalar>& rhs, const Vector4<Scalar>& lhs, Scalar epsilon = 0.0001);
 
 //////////////////////////////////////////////////////
 
@@ -444,6 +452,9 @@ Quat<Scalar> Exp(const Quat<Scalar>& x);
 template <typename Scalar>
 Quat<Scalar> Log(const Quat<Scalar>& x);
 
+// Fuzzy comparison between two Quat values.
+template <typename Scalar>
+bool FuzzyEqual(const Quat<Scalar>& rhs, const Quat<Scalar>& lhs, Scalar epsilon = 0.0001);
 
 //////////////////////////////////////////////////////
 
@@ -570,7 +581,6 @@ bool FullInverse(const Matrix<Scalar>& m, Matrix<Scalar>& result);
 template <typename Scalar>
 void PrintMatrix(const Matrix<Scalar>& m);
 
-
 //////////////////////////////////////////////////////
 
 template <typename Scalar>
@@ -671,6 +681,9 @@ Complex<Scalar> ExpI(Scalar x);
 template <typename Scalar>
 Complex<Scalar> Log(const Complex<Scalar>& z);
 
+// Fuzzy comparison between two Complex values.
+template <typename Scalar>
+bool FuzzyEqual(const Complex<Scalar>& rhs, const Complex<Scalar>& lhs, Scalar epsilon = 0.0001);
 
 // inlines
 #include "abaciinlines.cpp"

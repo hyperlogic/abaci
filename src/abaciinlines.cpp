@@ -69,7 +69,6 @@ Scalar RandomScalar(Scalar min, Scalar max)
     return Lerp(min, max, t);
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////
 // Vector2
 
@@ -254,6 +253,13 @@ inline Vector2<Scalar> operator/(const Vector2<Scalar>& a, const Vector2<Scalar>
     return Vector2<Scalar>(a.x / b.x, a.y / b.y);
 }
 
+// Fuzzy comparison between two Vector2 values.
+template <typename Scalar>
+bool FuzzyEqual(const Vector2<Scalar>& rhs, const Vector2<Scalar>& lhs, Scalar epsilon = 0.0001)
+{
+    return (FuzzyEqual(rhs.x, lhs.x, epsilon) && 
+            FuzzyEqual(rhs.y, lhs.y, epsilon));
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // Vector3
@@ -458,6 +464,15 @@ inline Vector3<Scalar> operator/(const Vector3<Scalar>& a, const Vector3<Scalar>
     return Vector3<Scalar>(a.x / b.x, a.y / b.y, a.z / b.z);
 }
 
+// Fuzzy comparison between two Vector3 values.
+template <typename Scalar>
+bool FuzzyEqual(const Vector3<Scalar>& rhs, const Vector3<Scalar>& lhs, Scalar epsilon = 0.0001)
+{
+    return (FuzzyEqual(rhs.x, lhs.x, epsilon) && 
+            FuzzyEqual(rhs.y, lhs.y, epsilon) &&
+            FuzzyEqual(rhs.z, lhs.z, epsilon));
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // Vector4
 
@@ -625,6 +640,16 @@ template <typename Scalar>
 inline Vector4<Scalar> operator/(const Vector4<Scalar>& a, const Vector4<Scalar>& b)
 {
     return Vector4<Scalar>(a.x / b.x, a.y / b.y, a.z / b.z, a.w / b.w);
+}
+
+// Fuzzy comparison between two Vector4 values.
+template <typename Scalar>
+bool FuzzyEqual(const Vector4<Scalar>& rhs, const Vector4<Scalar>& lhs, Scalar epsilon = 0.0001)
+{
+    return (FuzzyEqual(rhs.x, lhs.x, epsilon) && 
+            FuzzyEqual(rhs.y, lhs.y, epsilon) &&
+            FuzzyEqual(rhs.z, lhs.z, epsilon) &&
+            FuzzyEqual(rhs.w, lhs.w, epsilon));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -798,6 +823,16 @@ Quat<Scalar> Log(const Quat<Scalar>& x)
     log.k = x.k * sin_a * angle;
     log.r = 0;
     return log;
+}
+
+// Fuzzy comparison between two Quat values.
+template <typename Scalar>
+bool FuzzyEqual(const Quat<Scalar>& rhs, const Quat<Scalar>& lhs, Scalar epsilon = 0.0001)
+{
+    return (FuzzyEqual(rhs.i, lhs.i, epsilon) && 
+            FuzzyEqual(rhs.j, lhs.j, epsilon) &&
+            FuzzyEqual(rhs.k, lhs.k, epsilon) &&
+            FuzzyEqual(rhs.r, lhs.r, epsilon));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1584,6 +1619,14 @@ template <typename Scalar>
 Complex<Scalar> Log(const Complex<Scalar>& z)
 {
     return Complex<Scalar>(log(z.Len()), atan2(z.i, z.r));
+}
+
+// Fuzzy comparison between two Complex values.
+template <typename Scalar>
+bool FuzzyEqual(const Complex<Scalar>& rhs, const Complex<Scalar>& lhs, Scalar epsilon = 0.0001)
+{
+    return (FuzzyEqual(rhs.r, lhs.r, epsilon) && 
+            FuzzyEqual(rhs.i, lhs.i, epsilon));
 }
 
 #endif
