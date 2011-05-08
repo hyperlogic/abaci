@@ -344,14 +344,14 @@ template <typename Scalar>
 inline void Vector3<Scalar>::Basis(Vector3<Scalar>& iOut, Vector3<Scalar>& jOut, Vector3<Scalar>& kOut)
 {
     iOut = Unit();
-    Scalar xabs = abs(iOut.x);
-    Scalar yabs = abs(iOut.y);
-    Scalar zabs = abs(iOut.z);
+    Scalar xabs = fabs(iOut.x);
+    Scalar yabs = fabs(iOut.y);
+    Scalar zabs = fabs(iOut.z);
 
     Vector3<Scalar> j;
-    if (xabs < yabs && xabs < zabs)
+    if (xabs <= yabs && xabs <= zabs)
         j.Set(0, -iOut.z, iOut.y);
-    else if (yabs < xabs && yabs < zabs)
+    else if (yabs <= xabs && yabs <= zabs)
         j.Set(-iOut.z, 0, iOut.x);
     else
         j.Set(-iOut.y, iOut.x, 0);
@@ -1005,7 +1005,7 @@ inline Matrix<Scalar> Matrix<Scalar>::LookAt(const Vector3<Scalar>& eye, const V
         x = (target - eye).Unit();
 
     Vector3<Scalar> u;
-    if (u.LenSq() < EpsilonSq)
+    if (up.LenSq() < EpsilonSq)
         u = Vector3<Scalar>(0, 1, 0);  // up is zero, so pick (0,1,0) for the y-axis.
     else
         u = up;
