@@ -1,8 +1,14 @@
 # ignore obj files
 *.o
 
+# ignore make depenency files
+*.d
+
 # ignore test exe
 abacitest
 
-# ignore lua so
+# ignore generated binding files
 lua/abaci.so
+src/ruby/abaci_ext.cpp
+
+
