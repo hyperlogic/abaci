@@ -196,18 +196,18 @@ public:
 	}
 };
 
-class RandomScalarTest : public TestCase
+class RandomFloatTest : public TestCase
 {
 public:
-	RandomScalarTest() : TestCase("RandomScalar") {}
-	~RandomScalarTest() {}
+	RandomFloatTest() : TestCase("RandomFloat") {}
+	~RandomFloatTest() {}
 	bool Test() const
 	{
 		const float RangeMin = 100;
 		const float RangeMax = 300;
 		for (int i = 0; i < 1024; ++i)
 		{
-			float r = RandomScalar(RangeMin, RangeMax);
+			float r = RandomFloat(RangeMin, RangeMax);
 			if (r < RangeMin || r > RangeMax)
 				return false;
 		}
@@ -1950,7 +1950,7 @@ int main(int argc, char* argv[])
 
 	TestSuite randomSuite("random");
 	randomSuite.AddTest(new RandomIntTest());
-	randomSuite.AddTest(new RandomScalarTest());
+	randomSuite.AddTest(new RandomFloatTest());
 	randomSuite.RunTests();
 
 	TestSuite floatSuite("float");
