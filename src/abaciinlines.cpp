@@ -6,7 +6,7 @@
 // Convert from degrees to radians
 template <typename Scalar>
 inline Scalar DegToRad(Scalar deg)
-{ 
+{
     return deg * (PI / 180.0);
 }
 
@@ -26,7 +26,7 @@ inline Scalar Clamp(Scalar value, Scalar min, Scalar max)
         result = max;
     else if (value < min)
         result = min;
-    return result; 
+    return result;
 }
 
 // Limits angle between -PI & PI using modulus arithmetic
@@ -62,7 +62,7 @@ inline int RandomInt(int min, int max)
     return min + (rand() % (max - min + 1));
 }
 
-template <typename Scalar> 
+template <typename Scalar>
 Scalar RandomScalar(Scalar min, Scalar max)
 {
     Scalar t = (Scalar)((rand() % 16127) / 16126.0);
@@ -86,7 +86,7 @@ inline Vector2<Scalar>::Vector2(Scalar xIn, Scalar yIn) : x(xIn), y(yIn) {}
 
 // Construct from Complex
 template <typename Scalar>
-inline Vector2<Scalar>::Vector2(const Complex<Scalar>& complexIn) : 
+inline Vector2<Scalar>::Vector2(const Complex<Scalar>& complexIn) :
     x(complexIn.r), y(complexIn.i) {}
 
 // Set from two Scalars
@@ -257,7 +257,7 @@ inline Vector2<Scalar> operator/(const Vector2<Scalar>& a, const Vector2<Scalar>
 template <typename Scalar>
 bool FuzzyEqual(const Vector2<Scalar>& rhs, const Vector2<Scalar>& lhs, Scalar epsilon = 0.0001)
 {
-    return (FuzzyEqual(rhs.x, lhs.x, epsilon) && 
+    return (FuzzyEqual(rhs.x, lhs.x, epsilon) &&
             FuzzyEqual(rhs.y, lhs.y, epsilon));
 }
 
@@ -468,7 +468,7 @@ inline Vector3<Scalar> operator/(const Vector3<Scalar>& a, const Vector3<Scalar>
 template <typename Scalar>
 bool FuzzyEqual(const Vector3<Scalar>& rhs, const Vector3<Scalar>& lhs, Scalar epsilon = 0.0001)
 {
-    return (FuzzyEqual(rhs.x, lhs.x, epsilon) && 
+    return (FuzzyEqual(rhs.x, lhs.x, epsilon) &&
             FuzzyEqual(rhs.y, lhs.y, epsilon) &&
             FuzzyEqual(rhs.z, lhs.z, epsilon));
 }
@@ -611,14 +611,14 @@ inline Vector4<Scalar> operator*(const Vector4<Scalar>& v, Scalar factor)
 template <typename Scalar>
 inline Vector4<Scalar> operator*(Scalar factor, const Vector4<Scalar>& v)
 {
-    return Vector4<Scalar>(factor * v.x, factor * v.y, factor * v.z, factor * v.w); 
+    return Vector4<Scalar>(factor * v.x, factor * v.y, factor * v.z, factor * v.w);
 }
 
 // Vector multiplication.
 template <typename Scalar>
 inline Vector4<Scalar> operator*(const Vector4<Scalar>& a, const Vector4<Scalar>& b)
 {
-    return Vector4<Scalar>(a.x * b.x, a.y * b.y, a.z * b.z, a.w * b.w); 
+    return Vector4<Scalar>(a.x * b.x, a.y * b.y, a.z * b.z, a.w * b.w);
 }
 
 // Divides all elements of a vector by a scalar.
@@ -646,7 +646,7 @@ inline Vector4<Scalar> operator/(const Vector4<Scalar>& a, const Vector4<Scalar>
 template <typename Scalar>
 bool FuzzyEqual(const Vector4<Scalar>& rhs, const Vector4<Scalar>& lhs, Scalar epsilon = 0.0001)
 {
-    return (FuzzyEqual(rhs.x, lhs.x, epsilon) && 
+    return (FuzzyEqual(rhs.x, lhs.x, epsilon) &&
             FuzzyEqual(rhs.y, lhs.y, epsilon) &&
             FuzzyEqual(rhs.z, lhs.z, epsilon) &&
             FuzzyEqual(rhs.w, lhs.w, epsilon));
@@ -829,7 +829,7 @@ Quat<Scalar> Log(const Quat<Scalar>& x)
 template <typename Scalar>
 bool FuzzyEqual(const Quat<Scalar>& rhs, const Quat<Scalar>& lhs, Scalar epsilon = 0.0001)
 {
-    return (FuzzyEqual(rhs.i, lhs.i, epsilon) && 
+    return (FuzzyEqual(rhs.i, lhs.i, epsilon) &&
             FuzzyEqual(rhs.j, lhs.j, epsilon) &&
             FuzzyEqual(rhs.k, lhs.k, epsilon) &&
             FuzzyEqual(rhs.r, lhs.r, epsilon));
@@ -1125,7 +1125,7 @@ inline void Matrix<Scalar>::SetScale(Scalar scale)
 {
     SetXAxis(GetXAxis() * scale);
     SetYAxis(GetYAxis() * scale);
-    SetZAxis(GetZAxis() * scale);   
+    SetZAxis(GetZAxis() * scale);
 }
 
 // Multiplies by non-uniform scale.
@@ -1267,13 +1267,13 @@ Matrix<Scalar> operator*(const Matrix<Scalar>& a, const Matrix<Scalar>& b)
     Vector4<Scalar> a_row2 = a.GetRow(2);
     Vector4<Scalar> a_row3 = a.GetRow(3);
 
-    return Matrix<Scalar>::Rows(Vector4<Scalar>(Dot(a_row0, b.col0), Dot(a_row0, b.col1), 
+    return Matrix<Scalar>::Rows(Vector4<Scalar>(Dot(a_row0, b.col0), Dot(a_row0, b.col1),
                                                 Dot(a_row0, b.col2), Dot(a_row0, b.col3)),
-                                Vector4<Scalar>(Dot(a_row1, b.col0), Dot(a_row1, b.col1), 
+                                Vector4<Scalar>(Dot(a_row1, b.col0), Dot(a_row1, b.col1),
                                                 Dot(a_row1, b.col2), Dot(a_row1, b.col3)),
-                                Vector4<Scalar>(Dot(a_row2, b.col0), Dot(a_row2, b.col1), 
+                                Vector4<Scalar>(Dot(a_row2, b.col0), Dot(a_row2, b.col1),
                                                 Dot(a_row2, b.col2), Dot(a_row2, b.col3)),
-                                Vector4<Scalar>(Dot(a_row3, b.col0), Dot(a_row3, b.col1), 
+                                Vector4<Scalar>(Dot(a_row3, b.col0), Dot(a_row3, b.col1),
                                                 Dot(a_row3, b.col2), Dot(a_row3, b.col3)));
 }
 
@@ -1298,7 +1298,7 @@ bool FullInverse(const Matrix<Scalar>& m, Matrix<Scalar>& result)
     for (int r = 0; r < 4; ++r)
         row[r] = temp[r];
 
-    // initialize the augmented temp matrix. 
+    // initialize the augmented temp matrix.
     // the first four columns are from m
     temp[0][0] = m.col0.x; temp[0][1] = m.col1.x; temp[0][2] = m.col2.x; temp[0][3] = m.col3.x;
     temp[1][0] = m.col0.y; temp[1][1] = m.col1.y; temp[1][2] = m.col2.y; temp[1][3] = m.col3.y;
@@ -1320,7 +1320,7 @@ bool FullInverse(const Matrix<Scalar>& m, Matrix<Scalar>& result)
         AbaciSwap(row[0], row[3]);
 
     if (fabs(row[0][0]) < 0.00001)  // column is all zeros, there is no inverse.
-    {       
+    {
         return false;
     }
 
@@ -1335,7 +1335,7 @@ bool FullInverse(const Matrix<Scalar>& m, Matrix<Scalar>& result)
         for (int c = 0; c < 8; ++c) row[r][c] -= s * row[0][c];
     }
 
-    // move row with largest leading number 
+    // move row with largest leading number
     if (fabs(row[1][1]) < fabs(row[2][1]))
         AbaciSwap(row[1], row[2]);
     if (fabs(row[1][1]) < fabs(row[3][1]))
@@ -1349,7 +1349,7 @@ bool FullInverse(const Matrix<Scalar>& m, Matrix<Scalar>& result)
     // mult row[1] by 1/row[1][1].  To introduce a leading 1.
     s = 1 / row[1][1];
     for (int c = 0; c < 8; ++c) row[1][c] *= s;
-    
+
     // add multiples of top row to lower rows so that all entries below leading 1 become zeros.
     for (int r = 2; r < 4; ++r)
     {
@@ -1357,7 +1357,7 @@ bool FullInverse(const Matrix<Scalar>& m, Matrix<Scalar>& result)
         for (int c = 0; c < 8; ++c) row[r][c] -= s * row[1][c];
     }
 
-    // move row with largest leading number 
+    // move row with largest leading number
     if (fabs(row[2][2]) < fabs(row[3][2]))
         AbaciSwap(row[2], row[3]);
 
@@ -1369,7 +1369,7 @@ bool FullInverse(const Matrix<Scalar>& m, Matrix<Scalar>& result)
     // mult row[2] by 1/row[2][2].  To introduce a leading 1.
     s = 1.0f / row[2][2];
     for (int c = 0; c < 8; ++c) row[2][c] *= s;
-    
+
     // add multiples of top row to lower rows so that all entries below leading 1 become zeros.
     for (int r = 3; r < 4; ++r)
     {
@@ -1410,7 +1410,7 @@ bool FullInverse(const Matrix<Scalar>& m, Matrix<Scalar>& result)
     result.col2.Set(row[0][6], row[1][6], row[2][6], row[3][6]);
     result.col3.Set(row[0][7], row[1][7], row[2][7], row[3][7]);
 
-    return true;    
+    return true;
 }
 
 
@@ -1625,11 +1625,8 @@ Complex<Scalar> Log(const Complex<Scalar>& z)
 template <typename Scalar>
 bool FuzzyEqual(const Complex<Scalar>& rhs, const Complex<Scalar>& lhs, Scalar epsilon = 0.0001)
 {
-    return (FuzzyEqual(rhs.r, lhs.r, epsilon) && 
+    return (FuzzyEqual(rhs.r, lhs.r, epsilon) &&
             FuzzyEqual(rhs.i, lhs.i, epsilon));
 }
 
 #endif
-
-
-    

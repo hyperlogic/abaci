@@ -40,13 +40,13 @@ Scalar Lerp(Scalar a, Scalar b, Scalar t);
 // forward declare
 template <typename Scalar> class Complex;
 
-// returns a random integer between min and max.  
+// returns a random integer between min and max.
 // Note: closed interval. i.e. the values of min & max can be returned.
 int RandomInt(int min, int max);
 
 // returns a random scalar between min and max
 // Note: closed interval. i.e. the values of min & max can be returned.
-template <typename Scalar> 
+template <typename Scalar>
 Scalar RandomScalar(Scalar min, Scalar max);
 
 //////////////////////////////////////////////////////
@@ -373,7 +373,7 @@ struct Quat
 {
     // Create from axis and angle
     static Quat AxisAngle(const Vector3<Scalar>& axis, Scalar angle);
-    
+
     // Create identity Quat
     static Quat Identity();
 
@@ -460,7 +460,7 @@ bool FuzzyEqual(const Quat<Scalar>& rhs, const Quat<Scalar>& lhs, Scalar epsilon
 
 // Memory layout is column-major for OpenGL.
 // However, the API uses row-major notation. Vector4f vv = (A * B * C).Mul4x4(v), means
-// apply transformation C to v then B then A.  
+// apply transformation C to v then B then A.
 // This follows the mathematical convention of using column vectors.
 template <typename Scalar>
 struct Matrix
@@ -497,16 +497,16 @@ struct Matrix
 
     // Create a look at matrix. (x is forward)
     static Matrix LookAt(const Vector3<Scalar>& eye, const Vector3<Scalar>& target, const Vector3<Scalar>& up);
-    
+
     // Uninitialized by default.
     Matrix() {}
-    
+
     // Axes accessors
     Vector3<Scalar> GetXAxis() const;
     Vector3<Scalar> GetYAxis() const;
     Vector3<Scalar> GetZAxis() const;
     Vector3<Scalar> GetTrans() const;
-    
+
     void SetXAxis(const Vector3<Scalar>& xAxis);
     void SetYAxis(const Vector3<Scalar>& yAxis);
     void SetZAxis(const Vector3<Scalar>& zAxis);
@@ -519,7 +519,7 @@ struct Matrix
     // Column accessors
     Vector4<Scalar> GetCol(int index) const;
     void SetCol(int index, const Vector4<Scalar>& col);
-    
+
     // Element accessors
     const Scalar& Elem(int r, int c) const;
     Scalar& Elem(int r, int c);
@@ -529,7 +529,7 @@ struct Matrix
 
     // Multiplies by non-uniform scale.
     void SetScale(const Vector3<Scalar>& scale);
-    
+
     // Returns the rotation component of this Matrix.
     Quat<Scalar> GetQuat() const;
 
