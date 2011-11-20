@@ -21,7 +21,7 @@ endif
 CONFIG_CFLAGS = $(OPT_CFLAGS) $(SYMBOL_CFLAGS)
 
 # compile flags
-CFLAGS = $(CONFIG_CFLAGS) -Wall -DDARWIN -msse3 -I../src/
+CFLAGS = $(CONFIG_CFLAGS) -Wall -DDARWIN -DCMD_LINE -msse3 -I../src/
 
 # linker flags
 LFLAGS = -lstdc++ -lm -framework CoreServices

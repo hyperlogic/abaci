@@ -3,6 +3,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#ifdef ABACI_IOS
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_CPU_ARM
+// Sets length and stride to 0.
+#define VFP_VECTOR_LENGTH_ZERO "fmrx r0, fpscr           \n\t" \
+                               "bic  r0, r0, #0x00370000 \n\t" \
+                               "fmxr fpscr, r0           \n\t"
+
+// Set vector length. VEC_LENGTH has to be between 0 for length 1 and 3 for length 4.
+#define VFP_VECTOR_LENGTH(VEC_LENGTH) "fmrx r0, fpscr                         \n\t" \
+                                      "bic  r0, r0, #0x00370000               \n\t" \
+                                      "orr  r0, r0, #0x000" #VEC_LENGTH "0000 \n\t" \
+                                      "fmxr fpscr, r0                         \n\t"
+#endif
+
 // Convert from degrees to radians
 inline float DegToRad(float deg)
 {
@@ -159,7 +176,32 @@ inline Vector2 operator-(const Vector2& a)
 // Vector subtraction.
 inline Vector2 operator-(const Vector2& a, const Vector2& b)
 {
+// TODO: This is probably not worth it. Its just to test the VFP inline assembly
+#if TARGET_CPU_ARM
+    float result[2];
+    asm volatile (
+        VFP_VECTOR_LENGTH(2)
+
+        "fldmias %0, {s8-s9} \n\t"
+        "fldmias %1, {s10-s11} \n\t"
+        "fsubs s12, s8, s10 \n\t"
+        "fstmias %2, {s12-s13} \n\t"
+
+        VFP_VECTOR_LENGTH_ZERO
+
+        // output
+        :
+
+        // input
+        : "r" (&a), "r" (&b), "r" (result)
+
+        // clobber
+        : "r0", "s8", "s9", "s10", "s11", "s12", "s13", "cc", "memory"
+    );
+    return *reinterpret_cast<Vector2*>(result);
+#else
     return Vector2(a.x - b.x, a.y - b.y);
+#endif
 }
 
 // Vector addition.

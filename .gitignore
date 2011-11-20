@@ -11,4 +11,7 @@ abacitest
 lua/abaci.so
 src/ruby/abaci_ext.cpp
 
+# ignore userdata from ios xcode project
+xcuserdata
+
 

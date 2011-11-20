@@ -1,0 +1,349 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		9BAC3EFA147864C40051F676 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BAC3EF9147864C40051F676 /* UIKit.framework */; };
+		9BAC3EFC147864C40051F676 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BAC3EFB147864C40051F676 /* Foundation.framework */; };
+		9BAC3EFE147864C40051F676 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BAC3EFD147864C40051F676 /* CoreGraphics.framework */; };
+		9BAC3F00147864C40051F676 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BAC3EFF147864C40051F676 /* QuartzCore.framework */; };
+		9BAC3F02147864C40051F676 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BAC3F01147864C40051F676 /* OpenGLES.framework */; };
+		9BAC3F08147864C40051F676 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9BAC3F06147864C40051F676 /* InfoPlist.strings */; };
+		9BAC3F0B147864C40051F676 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BAC3F0A147864C40051F676 /* main.m */; };
+		9BAC3F0E147864C40051F676 /* abaciAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BAC3F0D147864C40051F676 /* abaciAppDelegate.m */; };
+		9BAC3F11147864C40051F676 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9BAC3F0F147864C40051F676 /* MainWindow.xib */; };
+		9BAC3F13147864C40051F676 /* Shader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 9BAC3F12147864C40051F676 /* Shader.fsh */; };
+		9BAC3F15147864C40051F676 /* Shader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 9BAC3F14147864C40051F676 /* Shader.vsh */; };
+		9BAC3F18147864C50051F676 /* EAGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9BAC3F17147864C50051F676 /* EAGLView.mm */; };
+		9BAC3F1B147864C50051F676 /* abaciViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9BAC3F1A147864C50051F676 /* abaciViewController.mm */; };
+		9BAC3F1E147864C50051F676 /* abaciViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9BAC3F1C147864C50051F676 /* abaciViewController.xib */; };
+		9BAC3F281478665D0051F676 /* abacitest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9BAC3F251478665D0051F676 /* abacitest.cpp */; };
+		9BAC3F291478665D0051F676 /* unittest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9BAC3F271478665D0051F676 /* unittest.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		9BAC3EF5147864C40051F676 /* abaci.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = abaci.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9BAC3EF9147864C40051F676 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		9BAC3EFB147864C40051F676 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		9BAC3EFD147864C40051F676 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		9BAC3EFF147864C40051F676 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		9BAC3F01147864C40051F676 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		9BAC3F05147864C40051F676 /* abaci-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "abaci-Info.plist"; sourceTree = "<group>"; };
+		9BAC3F07147864C40051F676 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		9BAC3F09147864C40051F676 /* abaci-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "abaci-Prefix.pch"; sourceTree = "<group>"; };
+		9BAC3F0A147864C40051F676 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		9BAC3F0C147864C40051F676 /* abaciAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = abaciAppDelegate.h; sourceTree = "<group>"; };
+		9BAC3F0D147864C40051F676 /* abaciAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = abaciAppDelegate.m; sourceTree = "<group>"; };
+		9BAC3F10147864C40051F676 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainWindow.xib; sourceTree = "<group>"; };
+		9BAC3F12147864C40051F676 /* Shader.fsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = Shader.fsh; path = Shaders/Shader.fsh; sourceTree = "<group>"; };
+		9BAC3F14147864C40051F676 /* Shader.vsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = Shader.vsh; path = Shaders/Shader.vsh; sourceTree = "<group>"; };
+		9BAC3F16147864C50051F676 /* EAGLView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EAGLView.h; sourceTree = "<group>"; };
+		9BAC3F17147864C50051F676 /* EAGLView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = EAGLView.mm; sourceTree = "<group>"; };
+		9BAC3F19147864C50051F676 /* abaciViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = abaciViewController.h; sourceTree = "<group>"; };
+		9BAC3F1A147864C50051F676 /* abaciViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = abaciViewController.mm; sourceTree = "<group>"; };
+		9BAC3F1D147864C50051F676 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/abaciViewController.xib; sourceTree = "<group>"; };
+		9BAC3F251478665D0051F676 /* abacitest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = abacitest.cpp; path = ../../abacitest.cpp; sourceTree = "<group>"; };
+		9BAC3F261478665D0051F676 /* unittest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = unittest.h; path = ../../unittest.h; sourceTree = "<group>"; };
+		9BAC3F271478665D0051F676 /* unittest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = unittest.cpp; path = ../../unittest.cpp; sourceTree = "<group>"; };
+		9BAC3F2B147866830051F676 /* abaciinlines.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = abaciinlines.cpp; path = ../../../src/abaciinlines.cpp; sourceTree = "<group>"; };
+		9BAC3F2C147866830051F676 /* abaci.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = abaci.h; path = ../../../src/abaci.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		9BAC3EF2147864C40051F676 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9BAC3EFA147864C40051F676 /* UIKit.framework in Frameworks */,
+				9BAC3EFC147864C40051F676 /* Foundation.framework in Frameworks */,
+				9BAC3EFE147864C40051F676 /* CoreGraphics.framework in Frameworks */,
+				9BAC3F00147864C40051F676 /* QuartzCore.framework in Frameworks */,
+				9BAC3F02147864C40051F676 /* OpenGLES.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		9BAC3EEA147864C30051F676 = {
+			isa = PBXGroup;
+			children = (
+				9BAC3F2A147866700051F676 /* src */,
+				9BAC3F241478662D0051F676 /* test */,
+				9BAC3F03147864C40051F676 /* abaci */,
+				9BAC3EF8147864C40051F676 /* Frameworks */,
+				9BAC3EF6147864C40051F676 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		9BAC3EF6147864C40051F676 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				9BAC3EF5147864C40051F676 /* abaci.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		9BAC3EF8147864C40051F676 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				9BAC3EF9147864C40051F676 /* UIKit.framework */,
+				9BAC3EFB147864C40051F676 /* Foundation.framework */,
+				9BAC3EFD147864C40051F676 /* CoreGraphics.framework */,
+				9BAC3EFF147864C40051F676 /* QuartzCore.framework */,
+				9BAC3F01147864C40051F676 /* OpenGLES.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		9BAC3F03147864C40051F676 /* abaci */ = {
+			isa = PBXGroup;
+			children = (
+				9BAC3F0C147864C40051F676 /* abaciAppDelegate.h */,
+				9BAC3F0D147864C40051F676 /* abaciAppDelegate.m */,
+				9BAC3F0F147864C40051F676 /* MainWindow.xib */,
+				9BAC3F12147864C40051F676 /* Shader.fsh */,
+				9BAC3F14147864C40051F676 /* Shader.vsh */,
+				9BAC3F16147864C50051F676 /* EAGLView.h */,
+				9BAC3F17147864C50051F676 /* EAGLView.mm */,
+				9BAC3F19147864C50051F676 /* abaciViewController.h */,
+				9BAC3F1A147864C50051F676 /* abaciViewController.mm */,
+				9BAC3F1C147864C50051F676 /* abaciViewController.xib */,
+				9BAC3F04147864C40051F676 /* Supporting Files */,
+			);
+			path = abaci;
+			sourceTree = "<group>";
+		};
+		9BAC3F04147864C40051F676 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				9BAC3F05147864C40051F676 /* abaci-Info.plist */,
+				9BAC3F06147864C40051F676 /* InfoPlist.strings */,
+				9BAC3F09147864C40051F676 /* abaci-Prefix.pch */,
+				9BAC3F0A147864C40051F676 /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		9BAC3F241478662D0051F676 /* test */ = {
+			isa = PBXGroup;
+			children = (
+				9BAC3F251478665D0051F676 /* abacitest.cpp */,
+				9BAC3F261478665D0051F676 /* unittest.h */,
+				9BAC3F271478665D0051F676 /* unittest.cpp */,
+			);
+			name = test;
+			sourceTree = "<group>";
+		};
+		9BAC3F2A147866700051F676 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				9BAC3F2B147866830051F676 /* abaciinlines.cpp */,
+				9BAC3F2C147866830051F676 /* abaci.h */,
+			);
+			name = src;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		9BAC3EF4147864C40051F676 /* abaci */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9BAC3F21147864C50051F676 /* Build configuration list for PBXNativeTarget "abaci" */;
+			buildPhases = (
+				9BAC3EF1147864C40051F676 /* Sources */,
+				9BAC3EF2147864C40051F676 /* Frameworks */,
+				9BAC3EF3147864C40051F676 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = abaci;
+			productName = abaci;
+			productReference = 9BAC3EF5147864C40051F676 /* abaci.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		9BAC3EEC147864C30051F676 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 9BAC3EEF147864C30051F676 /* Build configuration list for PBXProject "abaci" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 9BAC3EEA147864C30051F676;
+			productRefGroup = 9BAC3EF6147864C40051F676 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				9BAC3EF4147864C40051F676 /* abaci */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		9BAC3EF3147864C40051F676 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9BAC3F08147864C40051F676 /* InfoPlist.strings in Resources */,
+				9BAC3F11147864C40051F676 /* MainWindow.xib in Resources */,
+				9BAC3F13147864C40051F676 /* Shader.fsh in Resources */,
+				9BAC3F15147864C40051F676 /* Shader.vsh in Resources */,
+				9BAC3F1E147864C50051F676 /* abaciViewController.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		9BAC3EF1147864C40051F676 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9BAC3F0B147864C40051F676 /* main.m in Sources */,
+				9BAC3F0E147864C40051F676 /* abaciAppDelegate.m in Sources */,
+				9BAC3F18147864C50051F676 /* EAGLView.mm in Sources */,
+				9BAC3F1B147864C50051F676 /* abaciViewController.mm in Sources */,
+				9BAC3F281478665D0051F676 /* abacitest.cpp in Sources */,
+				9BAC3F291478665D0051F676 /* unittest.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		9BAC3F06147864C40051F676 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				9BAC3F07147864C40051F676 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		9BAC3F0F147864C40051F676 /* MainWindow.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				9BAC3F10147864C40051F676 /* en */,
+			);
+			name = MainWindow.xib;
+			sourceTree = "<group>";
+		};
+		9BAC3F1C147864C50051F676 /* abaciViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				9BAC3F1D147864C50051F676 /* en */,
+			);
+			name = abaciViewController.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		9BAC3F1F147864C50051F676 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		9BAC3F20147864C50051F676 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				SDKROOT = iphoneos;
+			};
+			name = Release;
+		};
+		9BAC3F22147864C50051F676 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Anthony Thibault (3FGE6FJZ3J)";
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "abaci/abaci-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					DEBUG,
+					ABACI_IOS,
+				);
+				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
+				INFOPLIST_FILE = "abaci/abaci-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "145AFB31-2BF7-4036-87E0-B7A3462045E0";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		9BAC3F23147864C50051F676 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Anthony Thibault (3FGE6FJZ3J)";
+				COPY_PHASE_STRIP = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "abaci/abaci-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = ABACI_IOS;
+				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = "";
+				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
+				INFOPLIST_FILE = "abaci/abaci-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "145AFB31-2BF7-4036-87E0-B7A3462045E0";
+				VALIDATE_PRODUCT = YES;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		9BAC3EEF147864C30051F676 /* Build configuration list for PBXProject "abaci" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9BAC3F1F147864C50051F676 /* Debug */,
+				9BAC3F20147864C50051F676 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9BAC3F21147864C50051F676 /* Build configuration list for PBXNativeTarget "abaci" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9BAC3F22147864C50051F676 /* Debug */,
+				9BAC3F23147864C50051F676 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 9BAC3EEC147864C30051F676 /* Project object */;
+}

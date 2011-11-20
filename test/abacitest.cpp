@@ -54,7 +54,7 @@ void InitTestData()
     srand((unsigned int)666);
 
     // add random values
-    const int RANDOM_DATA_SIZE = 512;
+    const int RANDOM_DATA_SIZE = 128;
     for (int i = 0; i < RANDOM_DATA_SIZE; ++i)
     {
         s_floatVec.push_back(RandomFloat());
@@ -620,7 +620,8 @@ public:
         float bx = b.x, by = b.y;
         float rx = ax - bx, ry = ay - by;
         Vector2f r = a - b;
-        return FloatTest(rx, r.x) && FloatTest(ry, r.y);
+
+        return FuzzyFloatTest(rx, r.x) && FuzzyFloatTest(ry, r.y);
     }
 };
 
@@ -1944,7 +1945,11 @@ public:
     }
 };
 
+#ifdef CMD_LINE
 int main(int argc, char* argv[])
+#else
+int AbaciUnitTest()
+#endif
 {
     InitTestData();
 
