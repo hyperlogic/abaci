@@ -902,6 +902,31 @@ inline Matrix<Scalar> Matrix<Scalar>::Trans(const Vector3<Scalar>& trans)
     return m;
 }
 
+
+// Create a scale Matrix.
+template <typename Scalar>
+inline Matrix<Scalar> Matrix<Scalar>::Scale(const Vector3<Scalar>& scale)
+{
+    Matrix<Scalar> m;
+    m.SetXAxis(Vector3<Scalar>(scale.x, 0, 0));
+    m.SetYAxis(Vector3<Scalar>(0, scale.y, 0));
+    m.SetZAxis(Vector3<Scalar>(0, 0, scale.z));
+    m.SetTrans(Vector3<Scalar>(0, 0, 0));
+    return m;
+}
+
+// Create a uniform scale Matrix.
+template <typename Scalar>
+inline Matrix<Scalar> Matrix<Scalar>::Scale(Scalar uniformScale)
+{
+    Matrix<Scalar> m;
+    m.SetXAxis(Vector3<Scalar>(uniformScale, 0, 0));
+    m.SetYAxis(Vector3<Scalar>(0, uniformScale, 0));
+    m.SetZAxis(Vector3<Scalar>(0, 0, uniformScale));
+    m.SetTrans(Vector3<Scalar>(0, 0, 0));
+    return m;
+}
+
 // Create a Matrix from a quaternion.
 template <typename Scalar>
 inline Matrix<Scalar> Matrix<Scalar>::FromQuat(const Quat<Scalar>& q)

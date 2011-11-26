@@ -474,6 +474,12 @@ struct Matrix
     // Create a Matrix from a translation.
     static Matrix Trans(const Vector3<Scalar>& trans);
 
+    // Create a scale Matrix.
+    static Matrix Scale(const Vector3<Scalar>& scale);
+
+    // Create a uniform scale Matrix.
+    static Matrix Scale(Scalar uniformScale);
+
     // Create a Matrix from a quaternion.
     static Matrix FromQuat(const Quat<Scalar>& q);
 
