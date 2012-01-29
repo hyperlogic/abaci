@@ -255,7 +255,7 @@ inline Vector2<Scalar> operator/(const Vector2<Scalar>& a, const Vector2<Scalar>
 
 // Fuzzy comparison between two Vector2 values.
 template <typename Scalar>
-bool FuzzyEqual(const Vector2<Scalar>& rhs, const Vector2<Scalar>& lhs, Scalar epsilon = 0.0001)
+bool FuzzyEqual(const Vector2<Scalar>& rhs, const Vector2<Scalar>& lhs, Scalar epsilon)
 {
     return (FuzzyEqual(rhs.x, lhs.x, epsilon) &&
             FuzzyEqual(rhs.y, lhs.y, epsilon));
@@ -466,7 +466,7 @@ inline Vector3<Scalar> operator/(const Vector3<Scalar>& a, const Vector3<Scalar>
 
 // Fuzzy comparison between two Vector3 values.
 template <typename Scalar>
-bool FuzzyEqual(const Vector3<Scalar>& rhs, const Vector3<Scalar>& lhs, Scalar epsilon = 0.0001)
+bool FuzzyEqual(const Vector3<Scalar>& rhs, const Vector3<Scalar>& lhs, Scalar epsilon)
 {
     return (FuzzyEqual(rhs.x, lhs.x, epsilon) &&
             FuzzyEqual(rhs.y, lhs.y, epsilon) &&
@@ -644,7 +644,7 @@ inline Vector4<Scalar> operator/(const Vector4<Scalar>& a, const Vector4<Scalar>
 
 // Fuzzy comparison between two Vector4 values.
 template <typename Scalar>
-bool FuzzyEqual(const Vector4<Scalar>& rhs, const Vector4<Scalar>& lhs, Scalar epsilon = 0.0001)
+bool FuzzyEqual(const Vector4<Scalar>& rhs, const Vector4<Scalar>& lhs, Scalar epsilon)
 {
     return (FuzzyEqual(rhs.x, lhs.x, epsilon) &&
             FuzzyEqual(rhs.y, lhs.y, epsilon) &&
@@ -827,7 +827,7 @@ Quat<Scalar> Log(const Quat<Scalar>& x)
 
 // Fuzzy comparison between two Quat values.
 template <typename Scalar>
-bool FuzzyEqual(const Quat<Scalar>& rhs, const Quat<Scalar>& lhs, Scalar epsilon = 0.0001)
+bool FuzzyEqual(const Quat<Scalar>& rhs, const Quat<Scalar>& lhs, Scalar epsilon)
 {
     return (FuzzyEqual(rhs.i, lhs.i, epsilon) &&
             FuzzyEqual(rhs.j, lhs.j, epsilon) &&
@@ -1648,7 +1648,7 @@ Complex<Scalar> Log(const Complex<Scalar>& z)
 
 // Fuzzy comparison between two Complex values.
 template <typename Scalar>
-bool FuzzyEqual(const Complex<Scalar>& rhs, const Complex<Scalar>& lhs, Scalar epsilon = 0.0001)
+bool FuzzyEqual(const Complex<Scalar>& rhs, const Complex<Scalar>& lhs, Scalar epsilon)
 {
     return (FuzzyEqual(rhs.r, lhs.r, epsilon) &&
             FuzzyEqual(rhs.i, lhs.i, epsilon));
