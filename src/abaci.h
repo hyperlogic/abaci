@@ -38,7 +38,7 @@ template <typename Scalar>
 Scalar Lerp(Scalar a, Scalar b, Scalar t);
 
 // forward declare
-template <typename Scalar> class Complex;
+template <typename Scalar> struct Complex;
 
 // returns a random integer between min and max.
 // Note: closed interval. i.e. the values of min & max can be returned.
