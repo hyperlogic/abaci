@@ -867,7 +867,7 @@ inline Scalar Dot3(const Vector4<Scalar>& a, const Vector4<Scalar>& b)
 
 // Create Matrix from three principle axes and a translation.
 template <typename Scalar>
-inline Matrix<Scalar> Matrix<Scalar>::Axes(const Vector3<Scalar>& xAxis, const Vector3<Scalar>& yAxis, const Vector3<Scalar>& zAxis, const Vector3<Scalar>& trans)
+inline ABACI_NAMESPACE::Matrix<Scalar> Matrix<Scalar>::Axes(const Vector3<Scalar>& xAxis, const Vector3<Scalar>& yAxis, const Vector3<Scalar>& zAxis, const Vector3<Scalar>& trans)
 {
     Matrix<Scalar> m;
     m.SetXAxis(xAxis);
@@ -1253,7 +1253,7 @@ template <typename Scalar>
 Matrix<Scalar> Matrix<Scalar>::FullInverse() const
 {
     Matrix<Scalar> m;
-    if (::FullInverse((*this), m))
+    if (ABACI_NAMESPACE::FullInverse((*this), m))
         return m;
     else
         return Identity();

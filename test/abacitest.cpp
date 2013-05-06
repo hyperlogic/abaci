@@ -6,8 +6,8 @@
 #include <math.h>
 #include "unittest.h"
 
-#ifdef ABACI_NAMESPACE
-using namespace ABACI_NAMESPACE;
+#ifdef USE_ABACI_NAMESPACE
+using namespace abaci;
 #endif
 
 // static test containers

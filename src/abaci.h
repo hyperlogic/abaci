@@ -3,10 +3,14 @@
 
 #include <math.h>
 
-#ifdef ABACI_NAMESPACE
-namespace ABACI_NAMESPACE
+#ifdef USE_ABACI_NAMESPACE
+namespace abaci
 {
+#define ABACI_NAMESPACE abaci
+#else
+#define ABACI_NAMESPACE
 #endif
+
 
 // Convert from degrees to radians
 template <typename Scalar>
@@ -692,7 +696,7 @@ bool FuzzyEqual(const Complex<Scalar>& rhs, const Complex<Scalar>& lhs, Scalar e
 // inlines
 #include "abaciinlines.cpp"
 
-#ifdef ABACI_NAMESPACE
+#ifdef USE_ABACI_NAMESPACE
 } // namespace
 #endif
 
