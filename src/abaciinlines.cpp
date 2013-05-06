@@ -7,14 +7,14 @@
 template <typename Scalar>
 inline Scalar DegToRad(Scalar deg)
 {
-    return deg * (PI / 180.0);
+    return deg * (M_PI / 180.0);
 }
 
 // Convert from radians to degrees.
 template <typename Scalar>
 inline Scalar RadToDeg(Scalar rad)
 {
-    return rad * (180.0 / PI);
+    return rad * (180.0 / M_PI);
 }
 
 // Clamps value between min & max.
@@ -33,14 +33,14 @@ inline Scalar Clamp(Scalar value, Scalar min, Scalar max)
 template <typename Scalar>
 inline Scalar LimitPi(Scalar theta)
 {
-    return Mod2Pi(theta + PI) - PI;
+    return Mod2Pi(theta + M_PI) - M_PI;
 }
 
 // Limits angle between zero & 2 PI using modulus arithmetic
 template <typename Scalar>
 inline Scalar Mod2Pi(Scalar theta)
 {
-    return theta - 2*PI * floor(theta/(2*PI));
+    return theta - 2*M_PI * floor(theta/(2*M_PI));
 }
 
 // Fuzzy comparison between two Scalar values.
@@ -76,7 +76,7 @@ Scalar RandomScalar(Scalar min, Scalar max)
 template <typename Scalar>
 Vector2<Scalar> Vector2<Scalar>::RandomUnitVector()
 {
-    Scalar theta = RandomScalar(0.0f, (Scalar)(2 * PI));
+    Scalar theta = RandomScalar(0.0f, (Scalar)(2 * M_PI));
     return Vector2<Scalar>(cos(theta), sin(theta));
 }
 
@@ -268,8 +268,8 @@ bool FuzzyEqual(const Vector2<Scalar>& rhs, const Vector2<Scalar>& lhs, Scalar e
 template <typename Scalar>
 Vector3<Scalar> Vector3<Scalar>::RandomUnitVector()
 {
-    Scalar theta = RandomScalar(0.0f, (Scalar)(2 * PI));
-    Scalar phi = RandomScalar(0.0f, (Scalar)(2 * PI));
+    Scalar theta = RandomScalar(0.0f, (Scalar)(2 * M_PI));
+    Scalar phi = RandomScalar(0.0f, (Scalar)(2 * M_PI));
     return Vector3<Scalar>(cos(theta) * sin(phi), sin(theta) * sin(phi), cos(phi));
 }
 

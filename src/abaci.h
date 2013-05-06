@@ -8,8 +8,6 @@ namespace ABACI_NAMESPACE
 {
 #endif
 
-#define PI M_PI
-
 // Convert from degrees to radians
 template <typename Scalar>
 Scalar DegToRad(Scalar deg);

@@ -248,7 +248,7 @@ public:
 	static const char* GetName() { return "DegToRad"; }
 	bool operator() (float a)
 	{
-		float r = a * (PI / 180.0f);
+		float r = a * (M_PI / 180.0f);
 		bool retval = FuzzyFloatTest(DegToRad(a), r);
 		if (!retval)
 			printf("r = %.5f\n", r);
@@ -262,7 +262,7 @@ public:
 	static const char* GetName() { return "RadToDeg"; }
 	bool operator() (float a)
 	{
-		float r = a * (180.0f / PI);
+		float r = a * (180.0f / M_PI);
 		return FuzzyFloatTest(RadToDeg(a), r);
 	}
 };
@@ -274,8 +274,8 @@ public:
 	bool operator() (float a)
 	{
 		float r = a;
-		if ((a > PI) || (a < -PI))
-			r = (a + PI) - 2*PI * floor((a + PI)/(2*PI)) - PI;
+		if ((a > M_PI) || (a < -M_PI))
+			r = (a + M_PI) - 2*M_PI * floor((a + M_PI)/(2*M_PI)) - M_PI;
 		bool result = FuzzyFloatTest(LimitPi(a), r);
 		if (!result)
 			printf("a = %.5f, r = %.5f\n", a, r);
@@ -293,14 +293,14 @@ public:
 	bool Test() const
 	{
         float delta = 0.1f;
-        float r = -PI + delta;
-        float t = LimitPi(PI + delta);
+        float r = -M_PI + delta;
+        float t = LimitPi(M_PI + delta);
         bool pass1 = FuzzyFloatTest(r, t);
         if (!pass1)
             printf("r = %.5f, t = %.5f\n", r, t);
 
-        r = PI - delta;
-        t = LimitPi(-PI - delta);
+        r = M_PI - delta;
+        t = LimitPi(-M_PI - delta);
         bool pass2 = FuzzyFloatTest(r, t);
         if (!pass2)
             printf("r = %.5f, t = %.5f\n", r, t);
@@ -321,9 +321,9 @@ public:
 
 		float r;
 		if (a < 0)
-			r = (2.0f * PI) + fmod(a, 2.0f * PI);
+			r = (2.0f * M_PI) + fmod(a, 2.0f * M_PI);
 		else
-			r = fmod(a, 2.0f * PI);
+			r = fmod(a, 2.0f * M_PI);
 		bool result = FuzzyFloatTest(Mod2Pi(a), r);
 		if (!result)
 			printf("a = %.5f, r = %.5f, Mod2Pi(a) = %.5f\n", a, r, Mod2Pi(a));
@@ -1870,7 +1870,7 @@ public:
 	static const char* GetName() { return "Inverse"; }
 	bool operator()(const Matrixf& a) const
 	{
-//		Matrixf m(Quatf(Vector3f(0.3f,1.5f,0.7f), -PI/2.0f), Vector3f(1.0, 2.0f, 3.0f));
+//		Matrixf m(Quatf(Vector3f(0.3f,1.5f,0.7f), -M_PI/2.0f), Vector3f(1.0, 2.0f, 3.0f));
 //		m.SetScale(Vector3f(1,2,1));
 
 		float fv[16];
