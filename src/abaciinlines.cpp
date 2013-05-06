@@ -45,9 +45,9 @@ inline Scalar Mod2Pi(Scalar theta)
 
 // Fuzzy comparison between two Scalar values.
 template <typename Scalar>
-inline bool FuzzyEqual(Scalar rhs, Scalar lhs, Scalar epsilon)
+inline bool FuzzyEqual(Scalar lhs, Scalar rhs, Scalar epsilon)
 {
-    return fabs(rhs - lhs) <= epsilon;
+    return fabs(lhs - rhs) <= epsilon;
 }
 
 // Linear interpolate between two Scalar values.

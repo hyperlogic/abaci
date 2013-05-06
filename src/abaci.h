@@ -32,13 +32,10 @@ Scalar Mod2Pi(Scalar theta);
 
 // Fuzzy comparison between two Scalar values.
 template <typename Scalar>
-bool FuzzyEqual(Scalar rhs, Scalar lhs, Scalar epsilon = 0.0001);
+bool FuzzyEqual(Scalar lhs, Scalar rhs, Scalar epsilon = 0.0001);
 
 template <typename Scalar>
 Scalar Lerp(Scalar a, Scalar b, Scalar t);
-
-// forward declare
-template <typename Scalar> struct Complex;
 
 // returns a random integer between min and max.
 // Note: closed interval. i.e. the values of min & max can be returned.
@@ -50,6 +47,9 @@ template <typename Scalar>
 Scalar RandomScalar(Scalar min, Scalar max);
 
 //////////////////////////////////////////////////////
+
+// forward declare
+template <typename Scalar> class Complex;
 
 template <typename Scalar>
 struct Vector2
