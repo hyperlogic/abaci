@@ -51,7 +51,7 @@ Scalar RandomScalar(Scalar min, Scalar max);
 //////////////////////////////////////////////////////
 
 // forward declare
-template <typename Scalar> class Complex;
+template <typename Scalar> struct Complex;
 
 template <typename Scalar>
 struct Vector2
