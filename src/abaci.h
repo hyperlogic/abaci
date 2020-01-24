@@ -1,7 +1,8 @@
 #ifndef ABACI_H
 #define ABACI_H
 
-#include <math.h>
+#define _USE_MATH_DEFINES
+#include <cmath>
 
 #ifdef USE_ABACI_NAMESPACE
 namespace abaci
